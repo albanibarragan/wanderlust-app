@@ -5,7 +5,7 @@ const Logo = require('./assets/logo-app-movil.png');
 export default function App() {
   return (
     <View style={styles.container}>
-      <Image source={Logo} style={styles.logo} />
+      <Image source={Logo} style={styles.logo}/>
       <StatusBar style="auto" />
     </View>
   );
@@ -18,8 +18,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logo: {
-    width: 323,
+  logo:  {
+    width: 323,         
     height: 128,
     resizeMode: 'contain',
   },
