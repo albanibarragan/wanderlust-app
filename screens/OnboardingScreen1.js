@@ -1,16 +1,25 @@
-import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import Brujula from '../assets/brujula-logo.png';
-
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from "react-native";
+import Brujula from "../assets/brujula-logo.png";
 
 export default function OnboardingScreen1({ navigation }) {
   return (
     <View style={styles.container}>
-      <Image source={Brujula} style={styles.logo}/>
+      <Image source={Brujula} style={styles.logo} />
       <Text style={styles.titleBienvenido}>Bienvenido</Text>
       <Text style={styles.subtitleBienvenido}>
-        Estamos emocionados por que compartas tus experiencias y recuerdos de tus viajes.
+        Estamos emocionados por que compartas tus experiencias y recuerdos de
+        tus viajes.
       </Text>
-      <TouchableHighlight style={styles.buttonLetsGo} onPress={() => navigation.navigate('OnboardingScreen2')}> 
+      <TouchableHighlight
+        style={styles.buttonLetsGo}
+        onPress={() => navigation.navigate("OnboardingScreen2")}
+      >
         <Text style={styles.textVamos}>Vamos</Text>
       </TouchableHighlight>
     </View>
@@ -20,34 +29,34 @@ export default function OnboardingScreen1({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0FA3E2',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#0FA3E2",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
-  titleBienvenido:  {
+  titleBienvenido: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
     marginBottom: 10,
   },
-  subtitleBienvenido:  {
+  subtitleBienvenido: {
     fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
+    color: "#fff",
+    textAlign: "center",
     marginBottom: 40,
   },
-  textVamos:{
+  textVamos: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-  buttonLetsGo:{
-    backgroundColor: '#fff',
+  buttonLetsGo: {
+    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 10,
     width: 295,
-    height:52, 
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
+    height: 52,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

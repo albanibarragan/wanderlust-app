@@ -1,5 +1,7 @@
-import AppNavigator from './navigation/AppNavigator';
+import AppNavigator from "./navigation/AppNavigator";
 
 export default function App() {
-  return   <AppNavigator />;
+  // Cargar fuentes del figma Roboto
+
+  return <AppNavigator />;
 }
