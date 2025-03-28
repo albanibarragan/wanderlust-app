@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import Brujula from '../assets/brujula-logo.png';
 import StoriesIllustration from '../assets/stories-illustration.png';
 
-export default function App() {
+export default function OnboardingScreen2({ navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.containerlogo}>
@@ -14,7 +14,7 @@ export default function App() {
             <Text style={styles.subtitleBienvenido}>
                 Únete a una comunidad de viajeros apasionados. Comparte fotos, consejos y anécdotas de tus aventuras.
             </Text>
-            <TouchableHighlight style={styles.buttonArrow}>
+            <TouchableHighlight style={styles.buttonArrow} onPress={() => navigation.replace('Main')}>
              <Text style={styles.arrow}>→</Text>
             </TouchableHighlight> 
         </View>
