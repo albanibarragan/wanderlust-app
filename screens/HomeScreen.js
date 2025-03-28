@@ -1,9 +1,19 @@
-import {Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import HeaderWanderlust from '../components/HeaderWanderlust';
 
 export default function HomeScreen({ navigation }) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Home Screen</Text>
-    </View>
+    <SafeAreaView  style={styles.container}>
+      <HeaderWanderlust />
+      <Text>Home Screen</Text>
+    </SafeAreaView >
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+});

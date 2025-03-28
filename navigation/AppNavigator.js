@@ -1,14 +1,14 @@
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import OnboardingScreen1 from '../screens/OnboardingScreen1';
-import OnboardingScreen2 from '../screens/OnboardingScreen2';
-import Splash from '../screens/SplashScreen';
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import CreatePostScreen from "../screens/CreatePostScreen";
 import HomeScreen from "../screens/HomeScreen";
 import LikesScreen from "../screens/LikesScreen";
-import CreatePostScreen from "../screens/CreatePostScreen";
-import SearchScreen from "../screens/SearchScreen";
+import OnboardingScreen1 from '../screens/OnboardingScreen1';
+import OnboardingScreen2 from '../screens/OnboardingScreen2';
 import ProfileScreen from "../screens/ProfileScreen";
+import SearchScreen from "../screens/SearchScreen";
+import Splash from '../screens/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab =  createBottomTabNavigator();
