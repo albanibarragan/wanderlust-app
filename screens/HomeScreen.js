@@ -1,7 +1,15 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderWanderlust from "../components/HeaderWanderlust";
+import ExploreFeed from "./ExploreFeed";
+import FollowingFeed from "./FollowingFeed";
 
 export default function HomeScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("explore");
@@ -25,12 +33,8 @@ export default function HomeScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <View>
-        {activeTab === "explore" ? (
-          <Text>Explore Content</Text>
-        ) : (
-          <Text>Following Content</Text>
-        )}
+      <View style={styles.feedContainer}>
+        {activeTab === "explore" ? <ExploreFeed /> : <FollowingFeed />}
       </View>
     </SafeAreaView>
   );
@@ -46,19 +50,22 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     padding: 5,
     borderBottomWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: '#888',
-        paddingBottom: 4,
+    borderBottomWidth: 1,
+    borderColor: "#888",
+    paddingBottom: 4,
   },
   tab: {
     fontSize: 16,
-    color: '#888',
+    color: "#888",
   },
   activeTab: {
     fontWeight: "bold",
     color: "#000",
     borderBottomWidth: 1,
-    borderColor: '#000',
+    borderColor: "#000",
     paddingBottom: 4,
+  },
+  feedContainer: {
+    flex: 1, // Muy importante para que ocupe el resto de la pantalla
   },
 });
