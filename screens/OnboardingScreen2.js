@@ -1,74 +1,122 @@
 import {
   Image,
+  ImageBackground,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
 } from "react-native";
-import Brujula from "../assets/brujula-logo.png";
-import StoriesIllustration from "../assets/stories-illustration.png";
+import { SafeAreaView } from "react-native-safe-area-context";
+import BackgroundPortugal from "../assets/background-portugal.jpg";
+import BrujulaLogo from "../assets/brujula-logo.png";
 
 export default function OnboardingScreen2({ navigation }) {
-    return (
-        <View style={styles.container}>
-            <View style={styles.containerlogo}>
-                <Image source={Brujula} style={styles.brujula} />
-                <Text style={styles.titleBienvenido}>Wanderlust</Text>
-            </View>
-            <Image source={StoriesIllustration} style={styles.storiesIllustration} />
-            <Text style={styles.titleBienvenido}>Inspírate con historias de viaje y crea las tuyas</Text>
-            <Text style={styles.subtitleBienvenido}>
-                Únete a una comunidad de viajeros apasionados. Comparte fotos, consejos y anécdotas de tus aventuras.
-            </Text>
-            <TouchableHighlight style={styles.buttonArrow} onPress={() => navigation.replace('Main')}>
-             <Text style={styles.arrow}>→</Text>
-            </TouchableHighlight> 
+  return (
+    <ImageBackground source={BackgroundPortugal} style={styles.background}>
+      <View style={styles.overlay} />
+
+      <SafeAreaView style={styles.container}>
+        {/* Header con logo y título */}
+        <View style={styles.header}>
+          <Image source={BrujulaLogo} style={styles.logo} />
+          <Text style={styles.appName}>Wanderlust</Text>
         </View>
-    );
+
+        {/* Contenido inferior */}
+        <View style={styles.bottomSection}>
+          <Text style={styles.title}>
+            Inspírate con historias de viaje y crea las tuyas
+          </Text>
+
+          <Text style={styles.subtitle}>
+            Únete a una comunidad de viajeros apasionados.{"\n"}Comparte fotos,
+            consejos y anécdotas de tus aventuras.
+          </Text>
+
+          {/* Indicadores de progreso */}
+          <View style={styles.dots}>
+            <View style={styles.dot} />
+            <View style={[styles.dot, styles.activeDot]} />
+            <View style={styles.dot} />
+          </View>
+
+          {/* Botón siguiente */}
+          <TouchableHighlight
+            style={styles.nextButton}
+            onPress={() => navigation.replace("Login")}
+            underlayColor="#e85c3d"
+          >
+            <Text style={styles.nextButtonText}>→</Text>
+          </TouchableHighlight>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
+  );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
   container: {
     flex: 1,
-    backgroundColor: "#0FA3E2",
-    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  header: {
+    flex: 1,
     justifyContent: "center",
-    padding: 20,
-  },
-  storiesIllustration: {
-    width: 300,
-    height: 300,
-    resizeMode: "contain",
-  },
-  containerlogo: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    marginTop: 20,
   },
-  titleBienvenido: {
-    fontSize: 32,
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 12,
+  },
+  appName: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  bottomSection: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
     marginBottom: 10,
   },
-  subtitleBienvenido: {
+  subtitle: {
     fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 40,
+    color: "#f2f2f2",
+    lineHeight: 22,
+    marginBottom: 30,
   },
-  brujula: {
-    width: 50,
-    height: 50,
+  dots: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginBottom: 20,
   },
-  arrow: {
-    fontSize: 28,
-    color: "#000",
-    fontWeight: "bold",
-    lineHeight: 28,
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#ccc",
+    marginHorizontal: 6,
   },
-  buttonArrow: {
+  activeDot: {
     backgroundColor: "#fff",
+    width: 16,
+  },
+  nextButton: {
+    backgroundColor: "#FF6B4A",
     padding: 15,
     borderRadius: 32,
     width: 62,
@@ -78,5 +126,11 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     shadowColor: "#000",
     elevation: 5,
+  },
+  nextButtonText: {
+    fontSize: 28,
+    color: "#fff",
+    fontWeight: "bold",
+    lineHeight: 28,
   },
 });

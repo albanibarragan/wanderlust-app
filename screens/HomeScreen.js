@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import {
-  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderWanderlust from "../components/HeaderWanderlust";
@@ -66,6 +65,6 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   feedContainer: {
-    flex: 1, // Muy importante para que ocupe el resto de la pantalla
+    flex: 1, 
   },
 });

@@ -1,134 +1,73 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, SafeAreaView } from "react-native";
-import MasonryList from "react-native-masonry-list";
+import { Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import posts from '../assets/data/Post';
 
-export default function ExploreFeed({ navigation }) {
-  const posts = [
-    {
-      uri: 'https://picsum.photos/300/400',
-      user: 'Bruna S.',
-      avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-      flag: 'https://flagcdn.com/it.png',
-      time: 'Posted 2hr ago',
-    },
-    {
-      uri: 'https://picsum.photos/200/300',
-      user: 'Ana C.',
-      avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-      flag: 'https://flagcdn.com/fr.png',
-      time: 'Posted 1hr ago',
-    },
-    {
-      uri: 'https://picsum.photos/200/300',
-      user: 'Joyce C.',
-      avatar: 'https://randomuser.me/api/portraits/women/3.jpg',
-      flag: 'https://flagcdn.com/br.png',
-      time: 'Posted 2hr ago',
-    },{
-      uri: 'https://picsum.photos/300/400',
-      user: 'Bruna S.',
-      avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-      flag: 'https://flagcdn.com/it.png',
-      time: 'Posted 2hr ago',
-    },
-    {
-      uri: 'https://picsum.photos/200/300',
-      user: 'Ana C.',
-      avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-      flag: 'https://flagcdn.com/fr.png',
-      time: 'Posted 1hr ago',
-    },
-    {
-      uri: 'https://picsum.photos/200/300',
-      user: 'Joyce C.',
-      avatar: 'https://randomuser.me/api/portraits/women/3.jpg',
-      flag: 'https://flagcdn.com/br.png',
-      time: 'Posted 2hr ago',
-    },{
-      uri: 'https://picsum.photos/300/400',
-      user: 'Bruna S.',
-      avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-      flag: 'https://flagcdn.com/it.png',
-      time: 'Posted 2hr ago',
-    },
-    {
-      uri: 'https://picsum.photos/200/300',
-      user: 'Ana C.',
-      avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-      flag: 'https://flagcdn.com/fr.png',
-      time: 'Posted 1hr ago',
-    },
-    {
-      uri: 'https://picsum.photos/200/300',
-      user: 'Joyce C.',
-      avatar: 'https://randomuser.me/api/portraits/women/3.jpg',
-      flag: 'https://flagcdn.com/br.png',
-      time: 'Posted 2hr ago',
-    },
-  ];
+const screenWidth = Dimensions.get('window').width;
+const cardMargin = 8;
+const cardWidth = (screenWidth / 2) - cardMargin * 3;
 
+const PostCard = ({ post }) => (
+  <View style={[styles.card, { width: cardWidth }]}>
+    <View style={styles.header}>
+      <Image source={{ uri: post.avatar }} style={styles.avatar} />
+      <Text style={styles.user}>{post.user}</Text>
+    </View>
+    <Image source={{ uri: post.image }} style={styles.image} resizeMode="cover" />
+    <View style={styles.footer}>
+      <Text>{post.countryFlag}</Text>
+      <Text style={styles.time}>Posted {post.time}</Text>
+    </View>
+  </View>
+);
+
+export default function ExploreScreen (){
   return (
-    <SafeAreaView style={styles.container}>
-      <MasonryList
-        images={posts.map(post => ({
-          uri: post.uri,
-          dimensions: { width: 300, height: 400 }, // evitar error
-          title: (
-            <View style={styles.postInfo}>
-              <View style={styles.userInfo}>
-                <Image source={{ uri: post.avatar }} style={styles.avatar} />
-                <Text style={styles.username}>{post.user}</Text>
-              </View>
-              <Image source={{ uri: post.flag }} style={styles.flag} />
-              <Text style={styles.time}>{post.time}</Text>
-            </View>
-          ),
-        }))}
-        columns={2}
-        spacing={5}
-        imageContainerStyle={styles.imageContainer}
-      />
-    </SafeAreaView>
+    <FlatList
+      data={posts}
+      renderItem={({ item }) => <PostCard post={item} />}
+      keyExtractor={(item, index) => `${item.id}-${index}`}
+      numColumns={2}
+      contentContainerStyle={styles.container}
+      columnWrapperStyle={{ justifyContent: 'space-between' }}
+      showsVerticalScrollIndicator={false}
+    />
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 5,
+    padding: cardMargin,
   },
-  imageContainer: {
+  card: {
+    marginBottom: cardMargin * 2,
+    backgroundColor: '#fff',
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: '#fff',
+    elevation: 2, // Sombra en Android
   },
-  postInfo: {
-    paddingVertical: 8,
-    paddingHorizontal: 6,
-  },
-  userInfo: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    padding: 8,
   },
   avatar: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    marginRight: 5,
+    marginRight: 6,
   },
-  username: {
+  user: {
     fontWeight: '600',
   },
-  flag: {
-    width: 20,
-    height: 15,
-    resizeMode: 'cover',
-    marginVertical: 2,
+  image: {
+    width: '100%',
+    height: 150,
+  },
+  footer: {
+    padding: 8,
   },
   time: {
+    color: '#888',
     fontSize: 12,
-    color: '#666',
   },
 });

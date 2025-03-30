@@ -1,19 +1,19 @@
 "use client";
 
+import { useFonts } from "expo-font";
 import { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
+  Image,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
   ScrollView,
-  Image,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
-import { useFonts } from "expo-font";
-import Input from "../components/Input";
 import Button from "../components/Button";
+import Input from "../components/Input";
 import TextLink from "../components/TextLink";
 
 const Login = ({ navigation }) => {
@@ -33,6 +33,7 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {
     alert("funcion para iniciar sesion");
+    navigation.replace("Main");
   };
 
   const recoverPass = () => {

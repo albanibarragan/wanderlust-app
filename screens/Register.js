@@ -1,22 +1,22 @@
+import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
   ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
 
 // Components
 import BackButton from "../components/BackButton";
+import Button from "../components/Button";
+import Checkbox from "../components/Checkbox";
 import Input from "../components/Input";
 import PhoneInput from "../components/PhoneInput";
-import Checkbox from "../components/Checkbox";
-import Button from "../components/Button";
 
 const Register = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");

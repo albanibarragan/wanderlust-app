@@ -1,62 +1,86 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from "react-native";
-import Brujula from "../assets/brujula-logo.png";
+import { Image, ImageBackground, StyleSheet, Text, TouchableHighlight, View, } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import BackgroundBrazil from "../assets/background-brazil.jpg";
+import BrujulaLogo from "../assets/brujula-logo.png";
 
 export default function OnboardingScreen1({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Image source={Brujula} style={styles.logo} />
-      <Text style={styles.titleBienvenido}>Bienvenido</Text>
-      <Text style={styles.subtitleBienvenido}>
-        Estamos emocionados por que compartas tus experiencias y recuerdos de
-        tus viajes.
-      </Text>
-      <TouchableHighlight
-        style={styles.buttonLetsGo}
-        onPress={() => navigation.navigate("OnboardingScreen2")}
-      >
-        <Text style={styles.textVamos}>Vamos</Text>
-      </TouchableHighlight>
-    </View>
+    <ImageBackground source={BackgroundBrazil} style={styles.background}>
+      <View style={styles.overlay} />
+
+      <SafeAreaView style={styles.container}>
+        {/* Logo */}
+        <Image source={BrujulaLogo} style={styles.logo} />
+
+        {/* Título y subtítulo */}
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>¡Bienvenido!</Text>
+          <Text style={styles.subtitle}>
+            Estamos emocionados de que compartas tus experiencias y recuerdos de tus viajes.
+          </Text>
+        </View>
+
+        {/* Botón */}
+        <TouchableHighlight
+          style={styles.button}
+          underlayColor="#e5e5e5"
+          onPress={() => navigation.navigate("OnboardingScreen2")}
+        >
+          <Text style={styles.buttonText}>Vamos</Text>
+        </TouchableHighlight>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
   container: {
     flex: 1,
-    backgroundColor: "#0FA3E2",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
   },
-  titleBienvenido: {
+  logo: {
+    width: 120,
+    height: 120,
+    marginTop: 60,
+  },
+  textContainer: {
+    alignItems: "center",
+  },
+  title: {
     fontSize: 32,
     fontWeight: "bold",
     color: "#fff",
-    marginBottom: 10,
+    marginBottom: 12,
   },
-  subtitleBienvenido: {
+  subtitle: {
     fontSize: 16,
-    color: "#fff",
+    color: "#f2f2f2",
     textAlign: "center",
-    marginBottom: 40,
+    lineHeight: 22,
   },
-  textVamos: {
+  button: {
+    backgroundColor: "#FF6B4A",
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+    marginTop: 40,
+    elevation: 4,
+  },
+  buttonText: {
     fontSize: 16,
     fontWeight: "bold",
-  },
-  buttonLetsGo: {
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 10,
-    width: 295,
-    height: 52,
-    justifyContent: "center",
-    alignItems: "center",
+    color: "#fff",
   },
 });
