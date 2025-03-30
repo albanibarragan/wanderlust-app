@@ -9,28 +9,22 @@ import Brujula from "../assets/brujula-logo.png";
 import StoriesIllustration from "../assets/stories-illustration.png";
 
 export default function OnboardingScreen2({ navigation }) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.containerlogo}>
-        <Image source={Brujula} style={styles.brujula} />
-        <Text style={styles.titleBienvenido}>Wanderlust</Text>
-      </View>
-      <Image source={StoriesIllustration} style={styles.storiesIllustration} />
-      <Text style={styles.titleBienvenido}>
-        Inspírate con historias de viaje y crea las tuyas
-      </Text>
-      <Text style={styles.subtitleBienvenido}>
-        Únete a una comunidad de viajeros apasionados. Comparte fotos, consejos
-        y anécdotas de tus aventuras.
-      </Text>
-      <TouchableHighlight
-        onPress={() => navigation.navigate("Login")}
-        style={styles.buttonArrow}
-      >
-        <Text style={styles.arrow}>→</Text>
-      </TouchableHighlight>
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <View style={styles.containerlogo}>
+                <Image source={Brujula} style={styles.brujula} />
+                <Text style={styles.titleBienvenido}>Wanderlust</Text>
+            </View>
+            <Image source={StoriesIllustration} style={styles.storiesIllustration} />
+            <Text style={styles.titleBienvenido}>Inspírate con historias de viaje y crea las tuyas</Text>
+            <Text style={styles.subtitleBienvenido}>
+                Únete a una comunidad de viajeros apasionados. Comparte fotos, consejos y anécdotas de tus aventuras.
+            </Text>
+            <TouchableHighlight style={styles.buttonArrow} onPress={() => navigation.replace('Main')}>
+             <Text style={styles.arrow}>→</Text>
+            </TouchableHighlight> 
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
