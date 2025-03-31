@@ -1,33 +1,74 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import CreatePostScreen from "../screens/CreatePostScreen";
+
+
+import { View, StyleSheet, Image, Platform } from 'react-native';
+
 import HomeScreen from "../screens/HomeScreen";
 import LikesScreen from "../screens/LikesScreen";
 import Login from "../screens/Login";
 import OnboardingScreen1 from "../screens/OnboardingScreen1";
-import { default as OnboardingScreen2, default as OnboardingScreen3 } from "../screens/OnboardingScreen2";
+import {
+  default as OnboardingScreen2,
+  default as OnboardingScreen3,
+} from "../screens/OnboardingScreen2";
+import CreatePostScreen from "../screens/CreatePostScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import Recover from "../screens/Recover";
 import RecoverPassword from "../screens/RecoverPassword";
 import Register from "../screens/Register";
 import SearchScreen from "../screens/SearchScreen";
 import Splash from "../screens/SplashScreen";
+import ExploreScreen from "../screens/ExploreFeed";
+
+import { Home, Search, Plus, Heart, User } from "lucide-react-native";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs() {
   return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      screenOptions={{ headerShown: false }}
+    <Tab.Navigator style={styles.tabBarMenu}
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: styles.tabBarMenu,
+      }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Likes" component={LikesScreen} />
-      <Tab.Screen name="Create" component={CreatePostScreen} />
-      <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{
+          tabBarIcon: ({ focused }) => (
+            <Home size={24} color={focused ? "#000" : "#aaa"} />
+          ),
+        }}
+      />
+      <Tab.Screen name="search" component={SearchScreen} options={{
+          tabBarIcon: ({ focused }) => (
+            <Search size={24} color={focused ? "#000" : "#aaa"} />
+          ),
+        }}
+      />
+      <Tab.Screen name="Create" component={CreatePostScreen} options={{
+          tabBarIcon: () => (
+            <View style={styles.createButton}>
+              <Plus size={24} color="#fff" />
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen name="Likes" component={LikesScreen} options={{
+          tabBarIcon: ({ focused }) => (
+            <Heart size={24} color={focused ? "#000" : "#aaa"} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile" component={ProfileScreen} options={{
+          tabBarIcon: ({ focused }) => (
+            <User size={24} color={focused ? "#000" : "#aaa"} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -42,7 +83,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
         <Stack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
-		<Stack.Screen name="OnboardingScreen3" component={OnboardingScreen3} />
+        <Stack.Screen name="OnboardingScreen3" component={OnboardingScreen3} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Recover" component={Recover} />
         <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
@@ -52,3 +93,24 @@ export default function AppNavigator() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBarMenu:{
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowOpacity: 0.08,
+    paddingHorizontal: 15,
+  },
+  createButton: {
+    width: 55,
+    height: 55,
+    borderRadius: 30,
+    backgroundColor: "#000", 
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    elevation: 10,
+  },
+});
