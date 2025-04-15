@@ -20,14 +20,6 @@ const Recover = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const logo = require("../assets/brujula-logo.png");
 
-  const handleBack = () => {
-    if (navigation && navigation.goBack) {
-      navigation.goBack();
-    } else {
-      console.log("Volver atrás");
-    }
-  };
-
   const handleRecover = async () => {
     navigation.navigate("RecoverPassword");
   };
@@ -41,7 +33,7 @@ const Recover = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
             <View style={styles.header}>
-              <BackButton onPress={handleBack} />
+              <BackButton />
             </View>
             <Image source={logo} style={{ width: 100, height: 100 }} />
 
