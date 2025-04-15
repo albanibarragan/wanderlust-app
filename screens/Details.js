@@ -1,31 +1,70 @@
-import React from "react";
-import { ScrollView, StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "../components/BackButton";
 import { useNavigation } from "@react-navigation/native";
-import CommentsScreen from './CommentsScreen';
+import CommentsScreen from "./CommentsScreen";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { Heart, MessageCircle } from "lucide-react-native";
+import { Modal } from "react-native-web";
+import LikeModal from "../components/LikeModal";
+
+const hashtags = [
+  "Recife",
+  "Brasil",
+  "ArteUrbano",
+  "Viajes",
+  "Wanderlust",
+  "Aventura",
+];
+
+
 
 export default function Details({ route }) {
   const { post } = route.params;
   const navigation = useNavigation();
   const bottomSheetRef = useRef(null);
+  const handleBack = () => navigation.goBack();
 
-  const handlePressComment = () => {
-    bottomSheetRef.current?.expand(); 
+  const [liked, setLiked] = useState();
+  const [likeCount, setLikeCount] = useState(3022);
+  const [modalCommentVisible, setModalCommentVisible] = useState(false);
+  const [modalLikeVisible, setModalLikeVisible] = useState(false);
+
+  const countLiked = () => {
+    setLiked((prev) => {
+      const newLiked = !prev;
+      setLikeCount((count) => (newLiked ? count + 1 : count - 1));
+      return newLiked;
+    });
   };
 
-  const handleBack = () => navigation.goBack();
+  const handleCommentPress = () => {
+    setModalCommentVisible(true);
+  };
+
+  const handleLikePress = () => {
+    setModalLikeVisible(true);
+  };
+
+  const handleHashtagPress = (tag) => {
+    console.log('Hashtag presionado:', tag);
+  
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <BackButton onPress={handleBack} />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Imagen */}
         <Image source={{ uri: post.image }} style={styles.image} />
-
-        {/* Usuario + tiempo */}
         <View style={styles.userInfo}>
           <Image source={{ uri: post.avatar }} style={styles.avatar} />
           <View style={styles.userDetails}>
@@ -34,38 +73,51 @@ export default function Details({ route }) {
           </View>
           <Text style={styles.timeAgo}>{post.time}</Text>
         </View>
+        <View style={styles.content}>
+          <Text style={styles.title}>“{post.title}”</Text>
+          <Text style={styles.description}>{post.fullContent}</Text>
+          <View style={styles.hashtagsContainer}>
+            {hashtags.map((tag) => (
+              <TouchableOpacity
+                key={tag}
+                onPress={() => handleHashtagPress(tag)}
+              >
+                <Text style={styles.hashtag}>#{tag}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
 
-        {/* Título */}
-        <Text style={styles.title}>“{post.title}”</Text>
-
-        {/* Contenido */}
-        <Text style={styles.content}>{post.fullContent}</Text>
-
-        {/* Hashtags */}
-        <Text style={styles.hashtags}>
-          #Recife #Brasil #ArteUrbano #Viajes #Wanderlust #Aventura
-        </Text>
-
-        {/* Reacciones */}
         <View style={styles.reactions}>
           <View style={styles.reactionItem}>
-            <Text style={styles.icon}>❤️</Text>
-            <Text style={styles.count}>3,022</Text>
-          </View>
-            <TouchableOpacity style={styles.reactionItem} onPress={handlePressComment}>
-            <Text style={styles.icon}>💬</Text>
-            <Text style={styles.count}>242</Text>
+            <TouchableOpacity style={styles.icon} onPress={countLiked}>
+              <Heart color={liked ? 'red' : 'gray'} fill={liked ? 'red' : 'none'} />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.icon} onPress={handleLikePress}>
+              <Text style={styles.count}>3,022</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.reactionItem}>
+            <TouchableOpacity style={styles.icon} onPress={handleCommentPress}>
+            <MessageCircle color="#555" />
+              <Text style={styles.count}>3,022</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose
-      >
-        <CommentsScreen post={post} />
-      </BottomSheet>
+      <CommentsModal
+        visible={modalCommentVisible}
+        onClose={() => setModalCommentVisible(false)}
+        comments={[
+          { user: "Maria", text: "¡Qué buena foto!" },
+          { user: "Luis", text: "Me encanta este lugar." },
+        ]}
+      />
+      <LikeModal
+        visible={modalLikeVisible}
+        onClose={() => setModalLikeVisible(false)}
+        Likes={[{ user: "Maria" }, { user: "Luis" }]}
+      />
     </SafeAreaView>
   );
 }
@@ -146,5 +198,16 @@ const styles = StyleSheet.create({
   count: {
     marginLeft: 6,
     fontSize: 14,
+  },
+  hashtagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginVertical: 10,
+  },
+  
+  hashtag: {
+    marginRight: 8,
+    color: '#4f4f4f',
+    fontWeight: 'bold',
   },
 });
