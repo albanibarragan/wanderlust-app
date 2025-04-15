@@ -10,8 +10,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "../components/BackButton";
 import { useNavigation } from "@react-navigation/native";
-import CommentsScreen from "./CommentsScreen";
-import BottomSheet from "@gorhom/bottom-sheet";
 import { Heart, MessageCircle } from "lucide-react-native";
 import { Modal } from "react-native-web";
 import LikeModal from "../components/LikeModal";
@@ -24,8 +22,6 @@ const hashtags = [
   "Wanderlust",
   "Aventura",
 ];
-
-
 
 export default function Details({ route }) {
   const { post } = route.params;
@@ -55,8 +51,7 @@ export default function Details({ route }) {
   };
 
   const handleHashtagPress = (tag) => {
-    console.log('Hashtag presionado:', tag);
-  
+    console.log("Hashtag presionado:", tag);
   };
 
   return (
@@ -91,7 +86,10 @@ export default function Details({ route }) {
         <View style={styles.reactions}>
           <View style={styles.reactionItem}>
             <TouchableOpacity style={styles.icon} onPress={countLiked}>
-              <Heart color={liked ? 'red' : 'gray'} fill={liked ? 'red' : 'none'} />
+              <Heart
+                color={liked ? "red" : "gray"}
+                fill={liked ? "red" : "none"}
+              />
             </TouchableOpacity>
             <TouchableOpacity style={styles.icon} onPress={handleLikePress}>
               <Text style={styles.count}>3,022</Text>
@@ -99,7 +97,7 @@ export default function Details({ route }) {
           </View>
           <View style={styles.reactionItem}>
             <TouchableOpacity style={styles.icon} onPress={handleCommentPress}>
-            <MessageCircle color="#555" />
+              <MessageCircle color="#555" />
               <Text style={styles.count}>3,022</Text>
             </TouchableOpacity>
           </View>
@@ -177,7 +175,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   hashtags: {
-    color: "#8b5cf6", // violeta
+    color: "#8b5cf6",
     fontSize: 14,
     paddingHorizontal: 16,
     paddingTop: 12,
@@ -200,14 +198,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   hashtagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginVertical: 10,
   },
-  
+
   hashtag: {
     marginRight: 8,
-    color: '#4f4f4f',
-    fontWeight: 'bold',
+    color: "#4f4f4f",
+    fontWeight: "bold",
   },
 });
