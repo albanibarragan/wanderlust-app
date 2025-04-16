@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 import { ChevronLeft } from "react-native-feather";
 
 
@@ -7,7 +7,7 @@ export default function BackButton ({ title }) {
   const navigation = useNavigation();
 
   const handleBack = () => {
-    if (navi && navigation.goBack) {
+    if (navigation && navigation.goBack) {
       navigation.goBack();
     } else {
       console.log("Volver atrás");
@@ -17,7 +17,7 @@ export default function BackButton ({ title }) {
   return (
     <View style={styles.container}>
     <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-      <ChevronLeft width={24} height={24} stroke={color} strokeWidth={2} />
+      <ChevronLeft width={24} height={24} stroke={"#000"} strokeWidth={2} />
     </TouchableOpacity>
     <Text style={styles.title}>{title}</Text>
   </View>
@@ -25,7 +25,7 @@ export default function BackButton ({ title }) {
 };
 
 const styles = StyleSheet.create({
-  header: {
+  container: {
     height: 56,
     justifyContent: "center",
     alignItems: "center",
@@ -38,12 +38,13 @@ const styles = StyleSheet.create({
     left: 16,
     top: "50%",
     transform: [{ translateY: -12 }],
-    padding: 8,
+    padding: 5,
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "600",
     color: "#000",
+    textAlign: 'center',
   },
 });
 

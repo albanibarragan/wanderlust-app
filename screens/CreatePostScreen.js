@@ -1,14 +1,12 @@
-import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "../components/BackButton";
-import { View } from "lucide-react-native";
-import { TextInput } from "react-native";
+import { TextInput, TouchableOpacity, View, StyleSheet, Text} from "react-native";
 import { useState } from "react";
 import { Image, Smile, Camera, Compass } from "lucide-react-native";
 
 export default function CreatePostScreen({ navigation }) {
   const [text, setText] = useState("");
-  const avatarUrl = "https://i.pravatar.cc/150?img=12";
+  const avatarUrl = 'https://i.pravatar.cc/100?img=2';
 
   return (
     <SafeAreaView style={styles.container}>

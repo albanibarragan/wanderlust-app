@@ -15,8 +15,8 @@ export default function SplashScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image source={Logo} style={styles.logo} />
       <StatusBar style="auto" />
+      <Image source={Logo} style={styles.logo} />
     </View>
   );
 }
