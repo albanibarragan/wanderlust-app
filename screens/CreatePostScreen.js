@@ -1,45 +1,63 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "../components/BackButton";
-import { TextInput, TouchableOpacity, View, StyleSheet, Text} from "react-native";
+import { TextInput, TouchableOpacity, View, StyleSheet, Text, Image, ActivityIndicator, ScrollView} from "react-native";
 import { useState } from "react";
-import { Image, Smile, Camera, Compass } from "lucide-react-native";
+import { Smile, Camera, Compass, ImageIcon } from "lucide-react-native";
 
 export default function CreatePostScreen({ navigation }) {
   const [text, setText] = useState("");
   const avatarUrl = 'https://i.pravatar.cc/100?img=2';
 
+  const [isPublishing, setIsPublishing] = useState(false);
+  const username = "Albani Barragan";
+
+  const handlePublish =() =>{
+    setIsPublishing(true);
+    setTimeout(() =>{
+      setIsPublishing(false);
+      navigation.navigate("Home");
+   }, 2000)
+  }
   return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <SafeAreaView style={styles.container}>
       <BackButton title="Nuevo Post" />
-      <View style={styles.post}>
-        <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+      <View style={styles.header}>
+      <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+      <Text style={styles.username}>{username}</Text>
+      </View>
         <TextInput
           style={styles.textInput}
           placeholder="¿Tienes una experiencia que quieras compartir?"
           multiline
-          numberOfLines={4}
+          numberOfLines={10}
           value={text}
           onChangeText={setText}
         />
-      </View>
+
       <View style={styles.menuAction}>
-        <TouchableOpacity style={styles.iconButton}>
-          <Image size={20} color="#555" />
+        <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+          <ImageIcon size={20} color="#555" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.circleButton}>
-          <Compass size={20} color="#fff" />
+        <TouchableOpacity style={styles.circleButton}activeOpacity={0.7}>
+          <Compass size={20} color="#555" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.circleButton}>
-          <Camera size={20} color="#fff" />
+        <TouchableOpacity style={styles.circleButton}activeOpacity={0.7}>
+          <Camera size={20} color="#555" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.circleButton}>
+        <TouchableOpacity style={styles.circleButton}activeOpacity={0.7}>
           <Smile size={20} color="#555" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.publishButton} onPress={() => navigation.navigate("Home")}>
-          <Text style={styles.publishText}>Publicar</Text>
+        <TouchableOpacity style={styles.publishButton} onPress={handlePublish} activeOpacity={0.7}>
+        {isPublishing ? (
+    <ActivityIndicator color="#000" />
+   ):(
+    <Text style={styles.publishText}>Publicar</Text>
+   )}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
+    </ScrollView>
   );
 }
 
@@ -49,13 +67,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   post: {
-    flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     padding: 20,
-    backgroundColor: "#f9f9f9",
     borderRadius: 10,
     marginVertical: 10,
+
+  },
+  header:{
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 16,
+  },
+  username:{
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
   },
   avatar: {
     width: 40,
@@ -64,14 +90,15 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   textInput: {
-    flex: 1,
     fontSize: 16,
-    paddingHorizontal: 12,
-    paddingTop: 8,
-    minHeight: 80,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    backgroundColor: "#f9f9f9",
     textAlignVertical: "top",
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#ccc",
+    margin: 16,
+    marginTop: 2,
   },
   menuAction: {
     flexDirection: "row",
@@ -90,20 +117,25 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#007bff",
     justifyContent: "center",
+    backgroundColor: "#f9f9f9",
     alignItems: "center",
     marginHorizontal: 4,
   },
   publishButton: {
     backgroundColor: "#4a63f2",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: 25,
+    paddingVertical: 12,
+    borderRadius: 25,
     marginLeft: "auto",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
   },
   publishText: {
     color: "#fff",
-    fontWeight: "600",
+    fontWeight: "bold", 
+    fontSize: 16,
   },
 });

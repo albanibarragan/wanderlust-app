@@ -32,12 +32,13 @@ const styles = StyleSheet.create({
     position: "relative",
     borderBottomWidth: 0.5,
     borderBottomColor: "#e0e0e0",
+    paddingHorizontal: 8,
   },
   backButton: {
     position: "absolute",
     left: 16,
     top: "50%",
-    transform: [{ translateY: -12 }],
+    transform: [{ translateY: -15 }],
     padding: 5,
   },
   title: {
