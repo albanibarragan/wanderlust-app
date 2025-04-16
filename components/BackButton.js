@@ -26,7 +26,7 @@ export default function BackButton ({ title }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 56,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
