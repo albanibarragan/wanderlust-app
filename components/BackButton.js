@@ -1,33 +1,52 @@
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 import { ChevronLeft } from "react-native-feather";
 import { useNavigation } from "@react-navigation/native";
 
-const BackButton = ({ onPress, color = "#000000" }) => {
-  const navigation = useNavigation(); 
+
+export default function BackButton ({ title }) {
+  const navigation = useNavigation();
 
   const handleBack = () => {
-    if (navigation.canGoBack()) {
+    if (navigation && navigation.goBack) {
       navigation.goBack();
     } else {
-      console.log("No hay pantalla anterior para volver");
+      console.log("Volver atrás");
     }
   };
-
+  
   return (
-    <TouchableOpacity style={styles.container} onPress={handleBack}>
-      <ChevronLeft width={24} height={24} stroke={color} strokeWidth={2} />
+    <View style={styles.container}>
+    <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+      <ChevronLeft width={24} height={24} stroke={"#000"} strokeWidth={2} />
     </TouchableOpacity>
+    <Text style={styles.title}>{title}</Text>
+  </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#e0e0e0",
+    paddingHorizontal: 8,
+  },
+  backButton: {
     position: "absolute",
-    left: 0,
-    top: 0,
-    zIndex: 10,
+    left: 16,
+    top: "50%",
+    transform: [{ translateY: -15 }],
+    padding: 5,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#000",
+    textAlign: 'center',
   },
 });
 
-export default BackButton;
