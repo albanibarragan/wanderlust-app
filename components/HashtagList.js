@@ -1,36 +1,31 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-const HashtagList = ({ title, onPress }) => {
+export default function HashtagList({ tags, onPress }) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.iconContainer}>
-        <Feather name="compass" size={16} color="#fff" />
-      </View>
-      <Text style={styles.title}>{title}</Text>
-    </TouchableOpacity>
+    <View style={styles.container}>
+      {tags.map((tag) => (
+        <TouchableOpacity key={tag} onPress={() => onPress(tag)}>
+          <Text style={styles.hashtag}>#{tag}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    flexWrap: "wrap",
+    marginTop: 12,
+    paddingHorizontal: 0,
+    gap: 8,
   },
-  iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#1B72F8",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  title: {
-    fontSize: 16,
-    color: "#000",
+  hashtag: {
+    color: "#4f4f4f",
+    fontWeight: "bold",
+    fontSize: 13,
+    marginRight: 8,
+    marginBottom: 4,
   },
 });
 

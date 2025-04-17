@@ -6,7 +6,7 @@ export default function PhotoCard({ post }) {
       <View style={styles.header}>
         <TouchableOpacity style={styles.userInfo}>
           <Image source={{ uri: post.avatar }} style={styles.avatar} />
-          <Text style={styles.textUser}> {post.user}</Text>
+          <Text style={styles.textUser}> {post.username}</Text>
         </TouchableOpacity>
         <Text style={styles.time}>{post.time}</Text>
       </View>
@@ -37,25 +37,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     backgroundColor: "#f9f9f9",
-  },
-  userInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  avatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 16,
-  },
-  textUser: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  time: {
-    color: "#888",
-    fontSize: 12,
-    fontStyle: "italic",
   },
   image: {
     width: "100%",

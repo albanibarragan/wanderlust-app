@@ -60,13 +60,7 @@ const Register = ({ navigation }) => {
     navigation.navigate("Login");
   };
 
-  const handleBack = () => {
-    if (navigation && navigation.goBack) {
-      navigation.goBack();
-    } else {
-      console.log("Volver atrás");
-    }
-  };
+ 
 
   const termsAndConditionsText = (
     <Text style={styles.termsText}>
@@ -92,7 +86,7 @@ const Register = ({ navigation }) => {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.header}>
-            <BackButton onPress={handleBack} />
+            <BackButton />
             <View style={styles.titleContainer}>
               <Text style={styles.title}>Regístrate</Text>
               <Text style={styles.subtitle}>

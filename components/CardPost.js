@@ -1,29 +1,38 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CardPost({ item }) {
   const { username, avatar, image, time, content } = item;
-
+  const navigation = useNavigation();
   return (
     <View style={styles.card}>
-      {/* Post image */}
+      {/* Imagen principal del post */}
       <View style={styles.imageWrapper}>
         <Image source={{ uri: image }} style={styles.mainImage} />
-        {/* Header */}
+
+        {/* Encabezado: usuario y hora */}
         <View style={styles.header}>
           <TouchableOpacity style={styles.buttonUserInfo}>
             <Image source={{ uri: avatar }} style={styles.avatar} />
-            <Text style={styles.textName}>{username}</Text>
+            <View>
+              <Text style={styles.textName}>{username}</Text>
+              <Text style={styles.time}>{time}</Text>
+            </View>
           </TouchableOpacity>
-          <Text style={styles.time}>{time}</Text>
         </View>
 
-        {/* Post content */}
+        {/* Contenido del post */}
         <View style={styles.content}>
-          <View style={styles.postContent}>
+          <TouchableOpacity
+            style={styles.postContent}
+            onPress={() => navigation.navigate('PostDetail', { post: item })}
+          >
             <Text style={styles.postText} numberOfLines={4}>{content}</Text>
-          </View>
+          </TouchableOpacity>
+
+          {/* Acciones: Me gusta, comentarios, compartir */}
           <View style={styles.actions}>
             <TouchableOpacity style={styles.actionItem}>
               <Text style={styles.icon}>❤️</Text>
