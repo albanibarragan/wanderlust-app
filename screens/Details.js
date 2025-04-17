@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
   View,
   Image,
   Text,
-  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "../components/BackButton";
 import { useNavigation } from "@react-navigation/native";
 import { Heart, MessageCircle } from "lucide-react-native";
 import { Modal } from "react-native-web";
-import LikeModal from "../components/LikeModal";
+import { StatusBar } from "expo-status-bar";
+import UserInfo from "../components/UserInfo";
+import HashtagList from "../components/HashtagList";
+import Reaction from "../components/Reaction";
+import ModalPost from "../components/ModalPost";
+import likes from "../assets/data/likes"
+import comments from "../assets/data/comments"
 
 const hashtags = [
   "Recife",
@@ -31,8 +36,8 @@ export default function Details({ route }) {
 
   const [liked, setLiked] = useState();
   const [likeCount, setLikeCount] = useState(3022);
-  const [modalCommentVisible, setModalCommentVisible] = useState(false);
-  const [modalLikeVisible, setModalLikeVisible] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [showLikes, setShowLikes] = useState(false);
 
   const countLiked = () => {
     setLiked((prev) => {
@@ -43,11 +48,11 @@ export default function Details({ route }) {
   };
 
   const handleCommentPress = () => {
-    setModalCommentVisible(true);
+    setShowComments(true);
   };
 
   const handleLikePress = () => {
-    setModalLikeVisible(true);
+    setShowLikes(true);
   };
 
   const handleHashtagPress = (tag) => {
@@ -56,65 +61,80 @@ export default function Details({ route }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <BackButton onPress={handleBack} />
-
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <BackButton onPress={handleBack} />
         <Image source={{ uri: post.image }} style={styles.image} />
-        <View style={styles.userInfo}>
-          <Image source={{ uri: post.avatar }} style={styles.avatar} />
-          <View style={styles.userDetails}>
-            <Text style={styles.username}>{post.username}</Text>
-            <Text style={styles.location}>{post.location}</Text>
-          </View>
-          <Text style={styles.timeAgo}>{post.time}</Text>
-        </View>
-        <View style={styles.content}>
+        <UserInfo
+          user={{
+            avatar: post.avatar,
+            username: post.username,
+            location: post.location,
+            time: post.time,
+          }}
+        />
+        <View style={styles.postBody}>
           <Text style={styles.title}>“{post.title}”</Text>
           <Text style={styles.description}>{post.fullContent}</Text>
-          <View style={styles.hashtagsContainer}>
-            {hashtags.map((tag) => (
-              <TouchableOpacity
-                key={tag}
-                onPress={() => handleHashtagPress(tag)}
-              >
-                <Text style={styles.hashtag}>#{tag}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <HashtagList tags={hashtags} onPress={handleHashtagPress} />
         </View>
-
+        {/* reacciones  */}
         <View style={styles.reactions}>
-          <View style={styles.reactionItem}>
-            <TouchableOpacity style={styles.icon} onPress={countLiked}>
+          <Reaction
+            icon={
               <Heart
                 color={liked ? "red" : "gray"}
                 fill={liked ? "red" : "none"}
               />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon} onPress={handleLikePress}>
-              <Text style={styles.count}>3,022</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.reactionItem}>
-            <TouchableOpacity style={styles.icon} onPress={handleCommentPress}>
-              <MessageCircle color="#555" />
-              <Text style={styles.count}>3,022</Text>
-            </TouchableOpacity>
-          </View>
+            }
+            count={likeCount}
+            onIconPress={countLiked}
+            onCountPress={handleLikePress}
+          />
+          <Reaction
+            icon={<MessageCircle color="#555" />}
+            count={3022}
+            onIconPress={handleCommentPress}
+            onCountPress={() => {}}
+          />
         </View>
       </ScrollView>
-      <CommentsModal
-        visible={modalCommentVisible}
-        onClose={() => setModalCommentVisible(false)}
-        comments={[
-          { user: "Maria", text: "¡Qué buena foto!" },
-          { user: "Luis", text: "Me encanta este lugar." },
-        ]}
+      {/* Likes Modal */}
+      <ModalPost
+        visible={showLikes}
+        onClose={() => setShowLikes(false)}
+        title="Me gusta"
+        data={likes}
+        renderItem={({ item }) => (
+          <View>
+            <UserInfo
+              user={{
+                username: item.user, 
+                avatar: item.avatar,
+                time: item.time || "hace 1 hora", 
+              }}
+            />
+          </View>
+        )}
       />
-      <LikeModal
-        visible={modalLikeVisible}
-        onClose={() => setModalLikeVisible(false)}
-        Likes={[{ user: "Maria" }, { user: "Luis" }]}
+
+      {/* Comments Modal */}
+      <ModalPost
+        visible={showComments}
+        onClose={() => setShowComments(false)}
+        title="Comentarios"
+        data={comments}
+        renderItem={({ item }) => (
+          <View>
+            <UserInfo
+              user={{
+                username: item.user, 
+                avatar: item.avatar,
+                time: item.time || "hace 1 hora", 
+              }}
+            />
+            <Text style={styles.commentsContent}>{item.text}</Text>
+          </View>
+        )}
       />
     </SafeAreaView>
   );
@@ -124,6 +144,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingTop: StatusBar.currentHeight,
   },
   scrollContent: {
     paddingBottom: 32,
@@ -133,79 +154,34 @@ const styles = StyleSheet.create({
     height: 450,
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
+    resizeMode: "cover",
   },
-  userInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 16,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  userDetails: {
-    marginLeft: 10,
-  },
-  username: {
-    fontWeight: "bold",
-    fontSize: 15,
-  },
-  location: {
-    color: "gray",
-    fontSize: 13,
-  },
-  timeAgo: {
-    marginLeft: "auto",
-    fontSize: 12,
-    color: "gray",
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: 17,
-    marginTop: 16,
-    paddingHorizontal: 16,
-  },
-  content: {
-    fontSize: 15,
-    lineHeight: 22,
+  postBody: {
     paddingHorizontal: 16,
     paddingTop: 10,
-    color: "#333",
   },
-  hashtags: {
-    color: "#8b5cf6",
-    fontSize: 14,
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 16,
+    marginBottom: 8,
     paddingHorizontal: 16,
-    paddingTop: 12,
+    color: "#111",
+  },
+  description: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: "#444",
   },
   reactions: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 20,
-    gap: 30,
-  },
-  reactionItem: {
-    flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
-  icon: {
-    fontSize: 18,
-  },
-  count: {
-    marginLeft: 6,
-    fontSize: 14,
-  },
-  hashtagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginVertical: 10,
-  },
-
-  hashtag: {
-    marginRight: 8,
-    color: "#4f4f4f",
-    fontWeight: "bold",
+  commentsContent: {
+    paddingHorizontal: 16,
+    marginBottom: 12,
   },
 });

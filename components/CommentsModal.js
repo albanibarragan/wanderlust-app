@@ -19,7 +19,7 @@ export default function CommentsModal({ visible, onClose, comments }) {
           <Text style={styles.title}>Comentarios</Text>
           <FlatList
             data={comments}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.comment}>
                 <Text style={styles.commentText}>{item.text}</Text>
