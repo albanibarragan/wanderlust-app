@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 
 const Logo = require("../assets/logo-app-movil.png");
 
@@ -16,7 +16,8 @@ export default function SplashScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Image source={Logo} style={styles.logo} />
-      <StatusBar style="auto" />
+      <ActivityIndicator />
+        <StatusBar style="auto" />
     </View>
   );
 }
