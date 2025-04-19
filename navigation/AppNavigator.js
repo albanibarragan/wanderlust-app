@@ -1,18 +1,11 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-
 import { View, StyleSheet, Image, Platform } from 'react-native';
-
 import HomeScreen from "../screens/HomeScreen";
-import LikesScreen from "../screens/LikesScreen";
 import Login from "../screens/Login";
 import OnboardingScreen1 from "../screens/OnboardingScreen1";
-import {
-  default as OnboardingScreen2,
-  default as OnboardingScreen3,
-} from "../screens/OnboardingScreen2";
+import  OnboardingScreen2 from "../screens/OnboardingScreen2";
 import CreatePostScreen from "../screens/CreatePostScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import Recover from "../screens/Recover";
@@ -20,10 +13,8 @@ import RecoverPassword from "../screens/RecoverPassword";
 import Register from "../screens/Register";
 import SearchScreen from "../screens/SearchScreen";
 import Splash from "../screens/SplashScreen";
-
 import { Home, Search, Plus, Heart, User } from "lucide-react-native";
 import Details from "../screens/Details";
-import CommentsScreen from "../screens/CommentsScreen";
 import FavoriteScreen from "../screens/FavoriteScreen";
 
 
@@ -86,7 +77,6 @@ export default function AppNavigator() {
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
         <Stack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
-        <Stack.Screen name="OnboardingScreen3" component={OnboardingScreen3} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Recover" component={Recover} />
         <Stack.Screen name="RecoverPassword" component={RecoverPassword} />

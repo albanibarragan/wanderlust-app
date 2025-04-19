@@ -1,4 +1,11 @@
-import { Image, ImageBackground, StyleSheet, Text, TouchableHighlight, View, } from "react-native";
+import {
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackgroundBrazil from "../assets/background-brazil.jpg";
 import BrujulaLogo from "../assets/brujula-logo.png";
@@ -7,26 +14,21 @@ export default function OnboardingScreen1({ navigation }) {
   return (
     <ImageBackground source={BackgroundBrazil} style={styles.background}>
       <View style={styles.overlay} />
-
       <SafeAreaView style={styles.container}>
-        {/* Logo */}
         <Image source={BrujulaLogo} style={styles.logo} />
-
-        {/* Título y subtítulo */}
         <View style={styles.textContainer}>
           <Text style={styles.title}>¡Bienvenido!</Text>
           <Text style={styles.subtitle}>
-            Estamos emocionados de que compartas tus experiencias y recuerdos de tus viajes.
+            Estamos emocionados de que compartas tus experiencias y recuerdos de
+            tus viajes.
           </Text>
         </View>
-
-        {/* Botón */}
         <TouchableHighlight
           style={styles.button}
           underlayColor="#e5e5e5"
           onPress={() => navigation.navigate("OnboardingScreen2")}
         >
-          <Text style={styles.buttonText}>Vamos</Text>
+          <Text style={styles.buttonText}>Comencemos</Text>
         </TouchableHighlight>
       </SafeAreaView>
     </ImageBackground>
@@ -39,7 +41,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
   container: {
@@ -64,7 +70,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#f2f2f2",
+    color: "#fff",
     textAlign: "center",
     lineHeight: 22,
   },

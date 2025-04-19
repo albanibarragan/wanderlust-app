@@ -1,5 +1,5 @@
 import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
-import posts from '../assets/data/Post';
+import posts from '../assets/data/Mocks';
 import PhotoCard from "../components/PhotoCard"; 
 
 const screenWidth = Dimensions.get('window').width;

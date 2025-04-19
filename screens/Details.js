@@ -16,8 +16,8 @@ import UserInfo from "../components/UserInfo";
 import HashtagList from "../components/HashtagList";
 import Reaction from "../components/Reaction";
 import ModalPost from "../components/ModalPost";
-import likes from "../assets/data/likes"
-import comments from "../assets/data/comments"
+import likes from "../assets/data/Mocks"
+import comments from "../assets/data/Mocks"
 
 const hashtags = [
   "Recife",

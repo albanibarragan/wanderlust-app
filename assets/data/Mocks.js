@@ -27,7 +27,7 @@ export const currentUser = {
       posts: 18,
       location: 'Buenos Aires, Argentina',
       website: 'https://carlosviaja.com',
-      isFollowing: true, // <- Esto indica si tú lo sigues o no
+      isFollowing: true, 
     },
     {
       id: 'u2',
@@ -45,4 +45,122 @@ export const currentUser = {
   ];
 
 
+  export const posts = [
+    {
+      id: '1',
+      username: 'BrunaS',
+      name: 'Bruna Silva',
+      avatar: 'https://i.pravatar.cc/100?img=5',
+      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=60',
+      country: 'Italia',
+      countryFlag: '🇮🇹',
+      location: 'Roma',
+      time: '1h ago',
+      title: 'Descubriendo el Coliseo',
+      content: 'Una experiencia mágica en una ciudad llena de historia.',
+      likes: 245,
+      isFavorite: true,
+    },
+    {
+      id: '2',
+      username: 'CarlosM',
+      name: 'Carlos Mendoza',
+      avatar: 'https://i.pravatar.cc/100?img=6',
+      image: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=500&q=60',
+      country: 'España',
+      countryFlag: '🇪🇸',
+      location: 'Barcelona',
+      time: '3h ago',
+      title: 'Arte y arquitectura',
+      content: 'La Sagrada Familia es impresionante.',
+      likes: 310,
+      isFavorite: true,
+    },
+    {
+      id: '3',
+      username: 'NaomiW',
+      name: 'Naomi Williams',
+      avatar: 'https://i.pravatar.cc/100?img=7',
+      image: 'https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef?auto=format&fit=crop&w=500&q=60',
+      country: 'Japón',
+      countryFlag: '🇯🇵',
+      location: 'Kioto',
+      time: '5h ago',
+      title: 'Entre templos y cerezos',
+      content: 'La primavera en Japón no tiene comparación.',
+      likes: 412,
+      isFavorite: true,
+    },
+  ];
+
+  export const likes = [
+    {
+      id: 'like1',
+      postId: '1',
+      userId: '101',
+      username: 'BrunaS',
+      avatar: 'https://i.pravatar.cc/100?img=5',
+    },
+    {
+      id: 'like2',
+      postId: '2',
+      userId: '102',
+      username: 'CarlosM',
+      avatar: 'https://i.pravatar.cc/100?img=6',
+    },
+    {
+      id: 'like3',
+      postId: '3',
+      userId: '103',
+      username: 'NaomiW',
+      avatar: 'https://i.pravatar.cc/100?img=7',
+    },
+    {
+      id: 'like4',
+      postId: '1',
+      userId: '104',
+      username: 'LucasScott',
+      avatar: 'https://i.pravatar.cc/100?img=8',
+    },
+  ];
+  
+
+  export const comments = [
+    {
+      id: 'comment1',
+      postId: '1',
+      userId: '201',
+      username: 'TravelerJoe',
+      avatar: 'https://i.pravatar.cc/100?img=9',
+      comment: '¡Qué hermoso lugar! 😍',
+      time: '2h ago',
+    },
+    {
+      id: 'comment2',
+      postId: '2',
+      userId: '202',
+      username: 'AnnaG',
+      avatar: 'https://i.pravatar.cc/100?img=10',
+      comment: 'Barcelona es simplemente mágica.',
+      time: '3h ago',
+    },
+    {
+      id: 'comment3',
+      postId: '1',
+      userId: '203',
+      username: 'LeoM',
+      avatar: 'https://i.pravatar.cc/100?img=11',
+      comment: '¿Visitaste también el Foro Romano?',
+      time: '1h ago',
+    },
+    {
+      id: 'comment4',
+      postId: '3',
+      userId: '204',
+      username: 'SakuraFan',
+      avatar: 'https://i.pravatar.cc/100?img=12',
+      comment: 'La primavera japonesa es un sueño ✨',
+      time: '4h ago',
+    },
+  ];
   

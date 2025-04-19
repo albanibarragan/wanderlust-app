@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import CardPost from "../components/CardPost";
-import posts from "../assets/data/Post";
+import posts from "../assets/data/Mocks";
 
 export default function FavoriteScreen() {
   return (
