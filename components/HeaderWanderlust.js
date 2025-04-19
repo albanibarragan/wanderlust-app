@@ -16,25 +16,20 @@ export default function HeaderWanderlust() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    padding: 10,
   },
   left: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   brujula: {
-    width: 38,
-    height: 38,
-    marginRight: 10,
+    width: 55,
+    height: 55,
   },
   title: {
-    fontSize: 22,
-    color: '#000',
+    fontSize: 20,
+    color: "#0FA3E2",
+    fontWeight: 'bold',
   },
 });
 
