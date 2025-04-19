@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 import { ChevronLeft } from "react-native-feather";
 import { useNavigation } from "@react-navigation/native";
@@ -27,7 +26,7 @@ export default function BackButton ({ title }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 40,
+    height: 44,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",

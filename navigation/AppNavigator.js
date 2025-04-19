@@ -20,11 +20,9 @@ import RecoverPassword from "../screens/RecoverPassword";
 import Register from "../screens/Register";
 import SearchScreen from "../screens/SearchScreen";
 import Splash from "../screens/SplashScreen";
-import ExploreScreen from "../screens/ExploreFeed";
 
 import { Home, Search, Plus, Heart, User } from "lucide-react-native";
 import Details from "../screens/Details";
-import CommentsScreen from "../screens/CommentsScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -102,13 +100,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     shadowOpacity: 0.08,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   },
   createButton: {
     width: 55,
     height: 55,
     borderRadius: 30,
-    backgroundColor: "#000", 
+    backgroundColor: "#FF6B4A", 
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",

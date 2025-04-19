@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderWanderlust from "../components/HeaderWanderlust";
-import ExploreFeed from "./ExploreFeed";
-import FollowingFeed from "./FollowingFeed";
+import ExploreFeed from "../components/ExploreFeed";
+import FollowingFeed from "../components/FollowingFeed";
 
 export default function HomeScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("explore");
@@ -16,21 +11,23 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <HeaderWanderlust />
-      <View style={styles.tabs}>
-        <TouchableOpacity onPress={() => setActiveTab("explore")}>
-          <Text
-            style={[styles.tab, activeTab === "explore" && styles.activeTab]}
-          >
-            Explore
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveTab("following")}>
-          <Text
-            style={[styles.tab, activeTab === "following" && styles.activeTab]}
-          >
-            Following
-          </Text>
-        </TouchableOpacity>
+      <View style={styles.containertabs}>
+      <TouchableOpacity
+        style={[styles.tab, activeTab === "explore" && styles.activeTab]}
+        onPress={() => setActiveTab("explore")}
+      >
+        <Text style={[styles.tabText, activeTab === "explore" && styles.activeTabText]}>
+          Explore
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.tab, activeTab === "following" && styles.activeTab]}
+        onPress={() => setActiveTab("following")}
+      >
+        <Text style={[styles.tabText, activeTab === "following" && styles.activeTabText]}>
+        Following
+        </Text>
+      </TouchableOpacity>
       </View>
       <View style={styles.feedContainer}>
         {activeTab === "explore" ? <ExploreFeed /> : <FollowingFeed />}
@@ -44,25 +41,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  tabs: {
+  containertabs: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 5,
-    borderBottomWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#888",
-    paddingBottom: 4,
+    backgroundColor: "#f2f2f2",  
+    borderRadius: 30,             
+    padding: 4,                   
+    margin: 10,
   },
   tab: {
-    fontSize: 16,
+    flex: 1,
+    paddingVertical: 10,
     color: "#888",
+    alignItems: "center",
+    borderRadius: 20,  
   },
   activeTab: {
+    backgroundColor: "#fff",
+  },
+  tabText:{
+    color: "#888", 
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  activeTabText: {
+    color: "#000",               
     fontWeight: "bold",
-    color: "#000",
-    borderBottomWidth: 1,
-    borderColor: "#000",
-    paddingBottom: 4,
   },
   feedContainer: {
     flex: 1, 

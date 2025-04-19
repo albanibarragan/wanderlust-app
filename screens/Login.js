@@ -32,18 +32,15 @@ const Login = ({ navigation }) => {
   }
 
   const handleLogin = async () => {
-    alert("funcion para iniciar sesion");
     navigation.replace("Main");
   };
 
   const recoverPass = () => {
     navigation.navigate("Recover");
-    //console.log("Navegar a recuperar contraseña");
   };
 
   const registerUser = () => {
     navigation.navigate("Register");
-    //console.log("Navegar a registro");
   };
 
   return (

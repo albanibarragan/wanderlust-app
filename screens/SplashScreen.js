@@ -17,7 +17,7 @@ export default function SplashScreen({ navigation }) {
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Image source={Logo} style={styles.logo} />
-      <ActivityIndicator />
+      <ActivityIndicator size="large" color="#bb5533" style={styles.indicator} />
     </View>
   );
 }
@@ -34,4 +34,7 @@ const styles = StyleSheet.create({
     height: 128,
     resizeMode: "contain",
   },
+  indicator: {
+    marginTop: 100
+  }
 });

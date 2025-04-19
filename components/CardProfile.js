@@ -35,6 +35,11 @@ export default function CardProfile({
             <Text style={styles.settings}>Settings</Text>
           </View>
         )}
+        {follow && (
+           <TouchableOpacity style={styles.followButton}>
+           <Text style={styles.buttonText}>Seguir</Text>
+         </TouchableOpacity>
+        )}
       </View>
     </View>
   );

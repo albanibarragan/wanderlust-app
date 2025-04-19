@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderTopColor: "#ddd",
   },
   publishButton: {
-    backgroundColor: "#4a63f2",
+    backgroundColor:  "#FF6B4A",
     paddingVertical: 10,
     paddingHorizontal: 24,
     borderRadius: 20,
