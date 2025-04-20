@@ -17,6 +17,7 @@ import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
 import Input from "../components/Input";
 import PhoneInput from "../components/PhoneInput";
+import Modal from "../components/Modal";
 
 const Register = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
@@ -29,6 +30,7 @@ const Register = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false); 
 
   const handleRegister = async () => {
     if (
@@ -48,19 +50,20 @@ const Register = ({ navigation }) => {
       return;
     }
 
-    alert("Registro exitoso");
-  };
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setIsModalVisible(true); 
+    }, 1500);
+  }
 
   const handleCountryCodePress = () => {
-    // Aquí se abriría un selector de código de país
     console.log("Abrir selector de código de país");
   };
 
   const handleLogin = () => {
     navigation.navigate("Login");
   };
-
- 
 
   const termsAndConditionsText = (
     <Text style={styles.termsText}>
@@ -84,32 +87,21 @@ const Register = ({ navigation }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.header}>
             <BackButton />
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Regístrate</Text>
-              <Text style={styles.subtitle}>
-                Ingresa tus datos para crear una cuenta
-              </Text>
-            </View>
+            <Text style={styles.title}>Regístrate</Text>
+            <Text style={styles.subtitle}>
+              Ingresa tus datos para crear una cuenta
+            </Text>
           </View>
 
           <View style={styles.form}>
-            <Input
-              label="Nombre"
-              placeholder="John"
-              value={firstName}
-              onChangeText={setFirstName}
-            />
-
-            <Input
-              label="Apellido"
-              placeholder="Doe"
-              value={lastName}
-              onChangeText={setLastName}
-            />
-
+            <Input label="Nombre" placeholder="John" value={firstName} onChangeText={setFirstName} />
+            <Input label="Apellido" placeholder="Doe" value={lastName} onChangeText={setLastName} />
             <PhoneInput
               label="Número de teléfono"
               countryCode={countryCode}
@@ -133,7 +125,7 @@ const Register = ({ navigation }) => {
                 <DateTimePicker
                   testID="dateTimePicker"
                   value={birthDate}
-                  mode={"date"}
+                  mode="date"
                   is24Hour={true}
                   display="default"
                   onChange={handleDateChange}
@@ -164,7 +156,7 @@ const Register = ({ navigation }) => {
             />
 
             <Button
-              title="Registrar"
+              title={loading ? "Registrando..." : "Registrar"}
               onPress={handleRegister}
               disabled={loading}
             />
@@ -177,6 +169,18 @@ const Register = ({ navigation }) => {
             </View>
           </View>
         </ScrollView>
+
+        <Modal
+          visible={isModalVisible}
+          title="¡Registro exitoso!"
+          message="Tu cuenta ha sido creada correctamente."
+          buttonText="Iniciar sesión"
+          onButtonPress={() => {
+            setIsModalVisible(false);
+            navigation.navigate("Login");
+          }}
+          onClose={() => setIsModalVisible(false)}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -185,7 +189,7 @@ const Register = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#fff",
   },
   container: {
     flex: 1,
@@ -198,23 +202,23 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 24,
     paddingTop: 10,
-  },
-  titleContainer: {
-    marginTop: 20,
+    alignItems: "center",
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#000000",
+    color: "#000",
   },
   subtitle: {
     fontSize: 16,
-    color: "#666666",
+    color: "#666",
     marginTop: 8,
+    textAlign: "center",
   },
   form: {
     width: "100%",
     maxWidth: 350,
+    alignSelf: "center",
   },
   termsText: {
     fontSize: 14,
@@ -232,18 +236,23 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: "#666666",
+    color: "#666",
   },
   dateInputContainer: {
     borderWidth: 1,
     borderColor: "#E1E1E1",
     borderRadius: 8,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#fff",
     padding: 16,
     marginBottom: 16,
   },
   dateInputText: {
     fontSize: 16,
+  },
+  label: {
+    fontSize: 14,
+    color: "#333",
+    marginBottom: 8,
   },
 });
 

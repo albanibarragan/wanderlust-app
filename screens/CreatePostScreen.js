@@ -1,7 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "../components/BackButton";
 import {
-  TextInput,
   TouchableOpacity,
   View,
   StyleSheet,
@@ -9,24 +8,24 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
-  Alert,
 } from "react-native";
 import { useState } from "react";
 import { Smile, Camera, Compass, ImageIcon } from "lucide-react-native";
-import { currentUser } from "../assets/data/Mocks";
 import HeaderCreatePost from "../components/HeaderCreatePost";
+import Modal from "../components/Modal";
+import { useNavigation } from "@react-navigation/native";
 
-export default function CreatePostScreen({ navigation}) {
+export default function CreatePostScreen() {
+  const navigation = useNavigation();
   const [text, setText] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
-  
+  const [isModalVisible, setIsModalVisible] = useState(false); 
 
   const handlePublish = () => {
     setIsPublishing(true);
     setTimeout(() => {
       setIsPublishing(false);
-      Alert.alert("¡Publicado!", "Tu post ha sido compartido");
-      navigation.navigate("Home");
+      setIsModalVisible(true); 
     }, 2000);
   };
   return (
@@ -51,17 +50,28 @@ export default function CreatePostScreen({ navigation}) {
             </TouchableOpacity>
           </View>
           {isPublishing ? (
-              <ActivityIndicator color="#000" />
-            ) : (
-              <TouchableOpacity
-            style={styles.publishButton}
-            onPress={handlePublish}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.publishText}>Publicar</Text>
-          </TouchableOpacity>
-            )}
-          
+            <ActivityIndicator color="#000" />
+          ) : (
+            <TouchableOpacity
+              style={styles.publishButton}
+              onPress={handlePublish}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.publishText}>Publicar</Text>
+            </TouchableOpacity>
+          )}
+
+          <Modal
+            visible={isModalVisible}
+            title="¡Publicado!"
+            message="Tu post ha sido compartido"
+            buttonText="Ir al inicio"
+            onButtonPress={() => {
+              setIsModalVisible(false); 
+              navigation.navigate("Home"); 
+            }}
+            onClose={() => setIsModalVisible(false)} 
+          />
         </View>
       </SafeAreaView>
     </ScrollView>
@@ -123,7 +133,7 @@ const styles = StyleSheet.create({
     borderTopColor: "#ddd",
   },
   publishButton: {
-    backgroundColor:  "#FF6B4A",
+    backgroundColor: "#FF6B4A",
     paddingVertical: 10,
     paddingHorizontal: 24,
     borderRadius: 20,
@@ -136,4 +146,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-

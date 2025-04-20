@@ -139,16 +139,16 @@ const styles = StyleSheet.create({
     maxWidth: 350,
   },
   footer: {
-    flexDirection: "row", // Asegura que los elementos estén en fila
+    flexDirection: "row", 
     marginTop: 24,
-    alignItems: "center", // Alinea verticalmente los elementos
-    justifyContent: "center", // Centra los elementos horizontalmente
+    alignItems: "center", 
+    justifyContent: "center", 
     fontWeight: "bold",
   },
   registerLink: {
-    fontSize: 12, // Ajusta el tamaño del texto si es necesario
-    color: "#0FA3E2", // Color del enlace (ajústalo según tu tema)
-    fontWeight: "bold", // Opcional: texto en negrita
+    fontSize: 12,
+    color: "#0FA3E2", 
+    fontWeight: "bold", 
   },
 });
 

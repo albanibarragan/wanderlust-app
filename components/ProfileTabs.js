@@ -1,7 +1,12 @@
 import { BookmarkIcon, ImageIcon, Settings,  } from "lucide-react-native";
 import { StyleSheet, TouchableOpacity, View} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ProfileTabs() {
+  const navigate = useNavigation();
+    const handleSettings = () => {
+      navigate.navigate("Settings");
+    };
   return (
     <View style={styles.containerTabs}>
       <TouchableOpacity >
@@ -12,7 +17,7 @@ export default function ProfileTabs() {
         <BookmarkIcon size={24} color= "#000" 
         />
       </TouchableOpacity>
-      <TouchableOpacity >
+      <TouchableOpacity  onPress={handleSettings}>
         <Settings size={24} color= "#000" 
         />
       </TouchableOpacity>

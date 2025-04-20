@@ -1,14 +1,11 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import UserHeader from "./UserHeader";
 
-const UserList = ({ name, onPress }) => {
+const UserList = ({ user }) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.iconContainer}>
-        <Feather name="user" size={16} color="#74BBFC" />
-      </View>
-      <Text style={styles.name}>{name}</Text>
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <UserHeader userId={user.id} />
+    </View>
   );
 };
 

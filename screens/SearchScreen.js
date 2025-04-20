@@ -5,33 +5,21 @@ import { View, FlatList, StyleSheet, SafeAreaView, Text } from "react-native";
 import HeaderWanderlust from "../components/HeaderWanderlust";
 import SearchBar from "../components/SearchBar";
 import TabSelector from "../components/TabSelector";
-import UserList from "../components/UserList";
 import HashtagList from "../components/HashtagList";
+import {users, posts} from "../assets/data/Mocks"
+import UserHeader from "../components/UserHeader";
+import CardPost from "../components/CardPost";
 
 const SearchScreen = () => {
-  const [searchQuery, setSearchQuery] = useState("Br");
-  const [selectedTab, setSelectedTab] = useState(2); // Hashtags tab selected by default
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTab, setSelectedTab] = useState(0);
   const [filteredResults, setFilteredResults] = useState([]);
 
   const tabs = ["Usuarios", "Posts", "Hashtags"];
-
-  // Datos de ejemplo para los resultados
   const hashtagResults = [
     { id: "1", title: "Brazil" },
-    { id: "2", title: "Brazil" },
-    { id: "3", title: "Brazil" },
-  ];
-
-  // Datos de ejemplo para usuarios
-  const userResults = [
-    { id: "1", name: "Juan Pérez" },
-    { id: "2", name: "María García" },
-    { id: "3", name: "Carlos Rodríguez" },
-    { id: "4", name: "Ana Martínez" },
-    { id: "5", name: "Pedro Sánchez" },
-    { id: "6", name: "Laura López" },
-    { id: "7", name: "Bruno Díaz" },
-    { id: "8", name: "Brenda Torres" },
+    { id: "2", title: "Uruguay" },
+    { id: "3", title: "Francia" },
   ];
 
   useEffect(() => {
@@ -40,17 +28,20 @@ const SearchScreen = () => {
 
   const filterResults = () => {
     if (selectedTab === 0) {
-      // Usuarios tab
-      const filtered = userResults.filter((user) =>
+      const filtered = users.filter((user) =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredResults(filtered);
     } else if (selectedTab === 1) {
-      // Posts tab
-      setFilteredResults([]); // No mostrar nada en Posts
+      const filtered = posts.filter((post) =>
+        post.country.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredResults(filtered);
     } else if (selectedTab === 2) {
-      // Hashtags tab
-      setFilteredResults(hashtagResults);
+      const filtered = hashtagResults.filter((hashtag) =>
+        hashtag.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredResults(filtered);
     }
   };
 
@@ -64,17 +55,26 @@ const SearchScreen = () => {
 
   const handleResultPress = (item) => {
     console.log("Selected item:", item);
-    // mostrar mensaje de que se selecciono el item
   };
 
   const renderItem = ({ item }) => {
     if (selectedTab === 0) {
-      // Usuarios tab
       return (
-        <UserList name={item.name} onPress={() => handleResultPress(item)} />
+        <View style={styles.userCard}>
+          <UserHeader
+            userId={item.id}
+            textColor="#000"
+          />
+        </View>
       );
-    } else if (selectedTab === 2) {
-      // Hashtags tab
+    } else if (selectedTab === 1) {
+      return (
+        <CardPost
+          item ={item}
+        />
+      );
+    }
+    else if (selectedTab === 2) {
       return (
         <HashtagList
           title={item.title}
@@ -131,6 +131,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
     textAlign: "center",
+  },
+  userCard: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
 });
 

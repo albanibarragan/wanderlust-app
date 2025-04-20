@@ -8,10 +8,11 @@ export default function CardProfile({
   name,
   username,
   bio,
-  stats = { posts: 0, followers: 0, following: 0 },
+  stats = { posts: 0, followers: 0, following: 0 } ,
   showSettings = false,
   isMyProfile = true,
 }) {
+
   return (
     <View style={styles.container}>
       <Image source={{ uri: avatar }} style={styles.avatar} />
@@ -21,21 +22,23 @@ export default function CardProfile({
         {bio && <Text style={styles.bio}>{bio}</Text>}
       </View>
       {isMyProfile || (
-          <View style={styles.followButton}>
-            <Button title={"Seguir"} />
-          </View>
-        )}
+        <View style={styles.followButton}>
+          <Button title={"Seguir"} />
+        </View>
+      )}
       <View style={styles.extraContent}>
         <StatsProfile
           posts={stats.posts}
           followers={stats.followers}
           following={stats.following}
         />
-        
-        {isMyProfile && <ProfileTabs />}
+
+        {isMyProfile && !showSettings && <ProfileTabs />}
         {showSettings && (
           <View style={styles.section}>
-            <Text style={styles.settings}>Settings</Text>
+            <Text style={styles.settings} >
+              Settings
+            </Text>
           </View>
         )}
       </View>
@@ -92,11 +95,10 @@ const styles = StyleSheet.create({
     color: "#007aff",
   },
   followButton: {
-    alignSelf: "center",       
-    marginTop: 8,              
-    width: 150,                 
-    height: 40,                 
-    justifyContent: "center",   
+    alignSelf: "center",
+    marginTop: 8,
+    width: 150,
+    height: 40,
+    justifyContent: "center",
   },
-  
 });

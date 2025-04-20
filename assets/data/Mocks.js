@@ -5,13 +5,17 @@ export const currentUser = {
   avatar: 'https://i.pravatar.cc/100?img=5',
   bio: 'Desarrollador, viajero y amante del café ☕🌍',
   location: 'Caracas, Venezuela',
+  title: 'Desarrollador Frontend',
+  email: 'gustavolozada@example.com',
+  phone: '+58 412-1234567',
+  password: '********', // Representamos la contraseña oculta
   stats: {
     posts: 25,
     followers: 320,
     following: 180,
   },
 };
-// USERS
+
 export const users = [
   {
     id: 'u1',

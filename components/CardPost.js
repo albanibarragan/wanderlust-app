@@ -6,8 +6,9 @@ import Reaction from "./Reaction";
 import { BookMarkedIcon, BookmarkIcon, Heart } from "lucide-react-native";
 import { MessageCircle } from "react-native-feather";
 import { users } from "../assets/data/Mocks";
+
 export default function CardPost({ item }) {
-  const { username, avatar, image, time, content, location, id } = item;
+  const { username, avatar, image, time, content, location, id, country } = item;
   const navigation = useNavigation();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(3022);
@@ -27,12 +28,9 @@ export default function CardPost({ item }) {
         <Image source={{ uri: image }} style={styles.mainImage} />
         <View style={styles.userInfoWrapper}>
           <UserHeader
-            user={{
-              ...user,
-              location: item.location, 
-              time: item.time,
-            }}
+           userId={item.userId}
             textColor = "#fff"
+            time={item.time}
           />
         </View>
         <View style={styles.content}>
@@ -42,6 +40,9 @@ export default function CardPost({ item }) {
           >
             <Text style={styles.postText} numberOfLines={4}>
               {content}
+            </Text>
+            <Text style={styles.postText} numberOfLines={4}>
+              {location}, {country}
             </Text>
           </TouchableOpacity>
 

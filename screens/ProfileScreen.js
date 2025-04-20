@@ -38,7 +38,7 @@ export default function ProfileScreen() {
         avatar={user.avatar}
         name={user.name}
         username={user.username}
-        bio={isMyProfile ? user.bio : null}
+        bio={user.bio}
         stats={user.stats || { posts: 0, followers: 0, following: 0 }}
         isMyProfile={isMyProfile}
       />

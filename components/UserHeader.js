@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import { users, currentUser } from "../assets/data/Mocks";
 
-export default function UserHeader({ userId, showCommentBox = false, subText = "", textColor = "#000", onCloseModal, time }) {
+export default function UserHeader({ userId, showCommentBox = false, subText = "", textColor = "#000", onCloseModal, time, location }) {
   const navigation = useNavigation();
 
   const user = users.find((u) => u.id === userId);

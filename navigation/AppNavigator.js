@@ -16,6 +16,7 @@ import Splash from "../screens/SplashScreen";
 import { Home, Search, Plus, Heart, User } from "lucide-react-native";
 import Details from "../screens/Details";
 import FavoriteScreen from "../screens/FavoriteScreen";
+import SettingScreen from "../screens/SettingScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -100,6 +101,7 @@ export default function AppNavigator() {
         <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
         <Stack.Screen name="PostDetail" component={Details} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Settings" component={SettingScreen} />
         <Stack.Screen
           name="OtherProfile"
           component={ProfileScreen}

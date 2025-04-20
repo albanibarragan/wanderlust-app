@@ -18,6 +18,8 @@ const Modal = ({
   buttonText = "Continuar",
   onButtonPress,
 }) => {
+
+  
   return (
     <RNModal
       animationType="fade"
