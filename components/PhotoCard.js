@@ -58,6 +58,7 @@ export default function PhotoCard({ post, cardWidth }) {
                 />
               }
               count={likeCount}
+              countColor ={"#fff"}
               onIconPress={countLiked}
             />
             <TouchableOpacity style={styles.seeMoreButton} onPress={handlePost}>

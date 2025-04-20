@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import UserHeader from "./UserHeader";
 import Reaction from "./Reaction";
-import { Heart } from "lucide-react-native";
+import { BookMarkedIcon, BookmarkIcon, Heart } from "lucide-react-native";
 import { MessageCircle } from "react-native-feather";
 import { users } from "../assets/data/Mocks";
 export default function CardPost({ item }) {
@@ -49,6 +49,7 @@ export default function CardPost({ item }) {
             <Reaction
               icon={
                 <Heart
+                size={20}
                   color={liked ? "red" : "#fff"}
                   fill={liked ? "red" : "none"}
                 />
@@ -61,6 +62,12 @@ export default function CardPost({ item }) {
               icon={<MessageCircle color="#fff" />}
               count={3022}
               countColor="#fff"
+              size={20}
+            />
+            <Reaction
+              icon={<BookmarkIcon color="#fff" />}
+              countColor="#fff"
+              size={20}
             />
           </View>
         </View>
@@ -71,7 +78,7 @@ export default function CardPost({ item }) {
 
 const styles = StyleSheet.create({
   card: {
-    margin: 10,
+    margin: 7,
     borderRadius: 20,
     overflow: "hidden",
     elevation: 4,
@@ -101,14 +108,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 12,
+    padding: 8,
+    paddingTop: 15,
     backgroundColor: "rgba(0, 0, 0, 0.35)",
+    
   },
   postContent: {
     flex: 1,
-    paddingRight: 8,
   },
   postText: {
     color: "#fff",
@@ -118,16 +125,15 @@ const styles = StyleSheet.create({
   },
   actions: {
     flexDirection: "row",
-    alignItems: "center",
-    flexShrink: 0,
     backgroundColor: "rgba(0, 0, 0, 0.35)",
     borderRadius: 20,
-    paddingHorizontal: 6,
+    paddingHorizontal: 2,
+
   },
   actionItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 8,
+    marginLeft: 5,
   },
   icon: {
     fontSize: 18,

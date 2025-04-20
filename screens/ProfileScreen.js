@@ -5,26 +5,24 @@ import CardProfile from "../components/CardProfile";
 import { useState } from "react";
 import BackButton from "../components/BackButton";
 import { useRoute } from "@react-navigation/native";
+import { currentUser, users } from "../assets/data/Mocks";
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileScreen() {
   const route = useRoute();
   const params = route?.params || {};
-  const userId = params.userId || null;
-  const isMyProfile = params.isMyProfile ?? false;
+  const { userId, isMyProfile = false } = route.params || {};
 
-  // Datos de prueba (mock mientras conectas la API)
-  const user = {
-    avatar: "https://randomuser.me/api/portraits/men/75.jpg",
-    name: "Lucas Scott",
-    username: "lucasscott3",
-    bio: "Amante de los viajes y la fotografía.",
-    stats: {
-      posts: 12,
-      followers: 340,
-      following: 180,
-    },
-  };
+  const user = isMyProfile
+  ? currentUser
+  : users.find((u) => u.id === userId);
 
+  if (!user) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>Usuario no encontrado</Text>
+      </SafeAreaView>
+    );
+  }
   const postsUser = [
     { id: "1", image: "https://picsum.photos/id/1015/400/400" },
     { id: "2", image: "https://picsum.photos/id/1016/400/400" },
@@ -38,12 +36,11 @@ export default function ProfileScreen({ navigation }) {
 
       <CardProfile
         avatar={user.avatar}
-        name={user?.name || "Nombre no disponible"}
+        name={user.name}
         username={user.username}
-        bio={isMyProfile ? user.bio : null} 
-        stats={user.stats}
-        showTabs={isMyProfile}
-        showBio={isMyProfile} 
+        bio={isMyProfile ? user.bio : null}
+        stats={user.stats || { posts: 0, followers: 0, following: 0 }}
+        isMyProfile={isMyProfile}
       />
 
       <View style={styles.content}>

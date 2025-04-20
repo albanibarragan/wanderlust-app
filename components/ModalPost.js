@@ -1,23 +1,40 @@
 import { SendIcon } from "lucide-react-native";
 import { useState } from "react";
-import { StyleSheet, Modal, TextInput, TouchableWithoutFeedback, Text,  FlatList, Image, TouchableOpacity , View} from "react-native";
+import {
+  StyleSheet,
+  Modal,
+  TextInput,
+  TouchableWithoutFeedback,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-export default function ModalPost({ visible, onClose, title, data, renderItem, isComment = false,
+export default function ModalPost({
+  visible,
+  onClose,
+  title,
+  data,
+  renderItem,
+  isComment = false,
 }) {
-    const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState("");
 
-    const handleSendComment = () => {
-        if (!commentText.trim()) return;
-        console.log("Comentario enviado:", commentText);
-        setCommentText("");
-      };
+  const handleSendComment = () => {
+    if (!commentText.trim()) return;
+    console.log("Comentario enviado:", commentText);
+    setCommentText("");
+  };
   return (
     <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
+    animationType="slide"
+    transparent={true}
+    visible={visible}
+    onRequestClose={onClose}
+    onDismiss={onClose} 
+  >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay} />
       </TouchableWithoutFeedback>
@@ -28,6 +45,7 @@ export default function ModalPost({ visible, onClose, title, data, renderItem, i
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
+          listKey={title}
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
@@ -49,12 +67,10 @@ export default function ModalPost({ visible, onClose, title, data, renderItem, i
             style={styles.commentInput}
           />
           <TouchableOpacity onPress={handleSendComment}>
-             <SendIcon size={24} color="#007aff" />
+            <SendIcon size={24} color="#007aff" />
           </TouchableOpacity>
         </View>
       )}
-
-
     </Modal>
   );
 }

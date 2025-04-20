@@ -100,7 +100,14 @@ export default function AppNavigator() {
         <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
         <Stack.Screen name="PostDetail" component={Details} />
         <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="OtherProfile" component={ProfileScreen} />
+        <Stack.Screen
+          name="OtherProfile"
+          component={ProfileScreen}
+          initialParams={{
+            userId: null,
+            isMyProfile: false,
+          }}
+        />
         <Stack.Screen name="Main" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>

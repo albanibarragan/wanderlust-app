@@ -1,30 +1,32 @@
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput } from "react-native";
-import { currentUser } from "../assets/data/Mocks";
+import { users, currentUser } from "../assets/data/Mocks";
 
-export default function UserHeader({ user, showCommentBox = false, subText = "", textColor = "#000" }) {
+export default function UserHeader({ userId, showCommentBox = false, subText = "", textColor = "#000", onCloseModal, time }) {
   const navigation = useNavigation();
 
+  const user = users.find((u) => u.id === userId);
+
+  if (!user) return null;
+
   const handlePress = () => {
+    onCloseModal?.();
     if (user?.id === currentUser.id) {
       navigation.navigate("Profile");
     } else {
-      navigation.navigate("OtherProfile", { userId: user.id });
+      navigation.push("OtherProfile", {
+        userId: user.id,
+        isMyProfile: false,
+      });
     }
   };
 
-  if (!user) {
-    return null;
-  }
-
   return (
     <View style={styles.container}>
-      {/* Avatar */}
       <TouchableOpacity onPress={handlePress}>
         <Image source={{ uri: user.avatar }} style={styles.avatar} />
       </TouchableOpacity>
 
-      {/* Info derecha */}
       {showCommentBox ? (
         <TextInput
           placeholder="¿Qué hay de nuevo?"
@@ -37,14 +39,13 @@ export default function UserHeader({ user, showCommentBox = false, subText = "",
             <Text style={[styles.username, { color: textColor }]} numberOfLines={1}>
               {user.username}
             </Text>
-            {user.time && (
+            {time && (
               <Text style={[styles.time, { color: textColor, opacity: 0.7 }]}>
-                {user.time}
+                {time}
               </Text>
             )}
           </View>
 
-          {/* location o subText debajo */}
           {user.location && (
             <Text style={[styles.location, { color: textColor, opacity: 0.7 }]}>
               {user.location}
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: "bold",
     fontSize: 15,
-    maxWidth: "70%", 
+    maxWidth: "70%",
   },
   time: {
     fontSize: 12,
@@ -106,3 +107,4 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
+

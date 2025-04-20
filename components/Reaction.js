@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 16,     
+    marginRight: 2,     
   },
   count: {
     marginLeft: 6,

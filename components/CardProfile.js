@@ -1,35 +1,38 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import StatsProfile from "./StatsProfile";
 import ProfileTabs from "./ProfileTabs";
+import Button from "./Button";
 
 export default function CardProfile({
   avatar,
   name,
   username,
   bio,
-  showStats = false,
-  showTabs = false,
+  stats = { posts: 0, followers: 0, following: 0 },
   showSettings = false,
+  isMyProfile = true,
 }) {
   return (
     <View style={styles.container}>
-      {/* Perfil básico */}
       <Image source={{ uri: avatar }} style={styles.avatar} />
-
       <View style={styles.containerUser}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.username}>@{username}</Text>
-
-        {/* Biografía */}
-        {bio !== "" && (
-          <Text style={styles.bio}>{bio}</Text>
-        )}
+        {bio && <Text style={styles.bio}>{bio}</Text>}
       </View>
-
-      {/* Sección de contenido extra */}
+      {isMyProfile || (
+          <View style={styles.followButton}>
+            <Button title={"Seguir"} />
+          </View>
+        )}
       <View style={styles.extraContent}>
-        {showStats && <StatsProfile />}
-        {showTabs && <ProfileTabs />}
+        <StatsProfile
+          posts={stats.posts}
+          followers={stats.followers}
+          following={stats.following}
+        />
+        
+        {isMyProfile && <ProfileTabs />}
         {showSettings && (
           <View style={styles.section}>
             <Text style={styles.settings}>Settings</Text>
@@ -88,4 +91,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#007aff",
   },
+  followButton: {
+    alignSelf: "center",       
+    marginTop: 8,              
+    width: 150,                 
+    height: 40,                 
+    justifyContent: "center",   
+  },
+  
 });

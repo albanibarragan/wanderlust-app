@@ -10,11 +10,10 @@ import Reaction from "../components/Reaction";
 import ModalPost from "../components/ModalPost";
 import { users, likes, comments } from "../assets/data/Mocks";
 
-
 export default function Details({ route }) {
   const { post } = route.params;
   const navigation = useNavigation();
-  const user = users.find((u) => u.id === post.userId);
+  const user = users.find((u) => u.id === post.userId); // 🔥 CORREGIDO
 
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes || 0);
@@ -31,29 +30,25 @@ export default function Details({ route }) {
     });
   };
 
+  const openComments = () => {
+    setShowComments(false);
+    setTimeout(() => setShowComments(true), 10); // 🔥 truco para forzar refresco
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-      <BackButton onPress={handleBack} title={"Post"} />
+        <BackButton onPress={handleBack} title="Post" />
         <Image source={{ uri: post.image }} style={styles.image} />
-
-        {/* Usuario Header */}
         <UserHeader
-          user={{
-            avatar: user?.avatar,
-            username: user?.username,
-            location: post.location,
-            time: post.time,
-          }}
+          userId={post.userId}
+          time={post.time}
         />
-
-        {/* Post contenido */}
         <View style={styles.postBody}>
           <Text style={styles.title}>“{post.title}”</Text>
           <Text style={styles.description}>{post.content}</Text>
         </View>
 
-        {/* Reacciones */}
         <View style={styles.reactions}>
           <Reaction
             icon={
@@ -69,26 +64,25 @@ export default function Details({ route }) {
           <Reaction
             icon={<MessageCircle color="#888" />}
             count={comments.length}
-            onIconPress={() => setShowComments(true)}
+            onIconPress={openComments}
             onCountPress={() => {}}
           />
         </View>
       </ScrollView>
 
-      {/* Modal Me gusta */}
+      {/* Modal Likes */}
       <ModalPost
         visible={showLikes}
         onClose={() => setShowLikes(false)}
         title="Me gusta"
         data={likes}
         renderItem={({ item }) => (
-          <UserHeader
-            user={{
-              username: item.user,
-              avatar: item.avatar,
-              time: item.time || "hace 1 hora",
-            }}
-          />
+          <View style={styles.commentItem}>
+            <UserHeader
+              userId={item.userId} // 🔥 PASA SOLO userId aquí también
+              onCloseModal={() => setShowLikes(false)}
+            />
+          </View>
         )}
       />
 
@@ -98,16 +92,15 @@ export default function Details({ route }) {
         onClose={() => setShowComments(false)}
         title="Comentarios"
         data={comments}
+        isComment={true}
         renderItem={({ item }) => (
           <View style={styles.commentItem}>
             <UserHeader
-              user={{
-                username: item.user,
-                avatar: item.avatar,
-                time: item.time || "hace 1 hora",
-              }}
+              userId={item.userId}
+              time={item.time}
+              onCloseModal={() => setShowComments(false)}
             />
-            <Text style={styles.commentText}>{item.text}</Text>
+            <Text style={styles.commentText}>{item.comment}</Text>
           </View>
         )}
       />
@@ -155,8 +148,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  commentsContent: {
-    paddingHorizontal: 16,
+  commentItem: {
     marginBottom: 12,
+  },
+  commentText: {
+    paddingHorizontal: 16,
+    fontSize: 14,
+    color: "#333",
+    marginTop: 4,
   },
 });
