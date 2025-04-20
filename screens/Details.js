@@ -32,7 +32,7 @@ export default function Details({ route }) {
 
   const openComments = () => {
     setShowComments(false);
-    setTimeout(() => setShowComments(true), 10); // 🔥 truco para forzar refresco
+    setTimeout(() => setShowComments(true), 10);
   };
 
   return (
@@ -70,7 +70,6 @@ export default function Details({ route }) {
         </View>
       </ScrollView>
 
-      {/* Modal Likes */}
       <ModalPost
         visible={showLikes}
         onClose={() => setShowLikes(false)}
@@ -79,14 +78,13 @@ export default function Details({ route }) {
         renderItem={({ item }) => (
           <View style={styles.commentItem}>
             <UserHeader
-              userId={item.userId} // 🔥 PASA SOLO userId aquí también
+              userId={item.userId}
               onCloseModal={() => setShowLikes(false)}
             />
           </View>
         )}
       />
 
-      {/* Modal Comentarios */}
       <ModalPost
         visible={showComments}
         onClose={() => setShowComments(false)}

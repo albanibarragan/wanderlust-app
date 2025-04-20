@@ -13,13 +13,13 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { Smile, Camera, Compass, ImageIcon } from "lucide-react-native";
+import { currentUser } from "../assets/data/Mocks";
+import HeaderCreatePost from "../components/HeaderCreatePost";
 
-export default function CreatePostScreen({ navigation }) {
+export default function CreatePostScreen({ navigation}) {
   const [text, setText] = useState("");
-  const avatarUrl = "https://i.pravatar.cc/100?img=2";
-
   const [isPublishing, setIsPublishing] = useState(false);
-  const username = "Albani Barragan";
+  
 
   const handlePublish = () => {
     setIsPublishing(true);
@@ -33,18 +33,7 @@ export default function CreatePostScreen({ navigation }) {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <SafeAreaView style={styles.container}>
         <BackButton title="Nuevo Post" />
-        <View style={styles.header}>
-          <Image source={{ uri: avatarUrl }} style={styles.avatar} />
-          <Text style={styles.username}>{username}</Text>
-        </View>
-        <TextInput
-          style={styles.textInput}
-          placeholder="¿Tienes una experiencia que quieras compartir?"
-          multiline
-          numberOfLines={10}
-          value={text}
-          onChangeText={setText}
-        />
+        <HeaderCreatePost text={text} setText={setText} />
 
         <View style={styles.menuAction}>
           <View style={styles.iconRow}>
