@@ -7,6 +7,7 @@ const cardMargin = 4;
 const cardWidth = (screenWidth / 2) - 20;
 
 export default function ExploreFeed() {
+  
   return (
     <View style={styles.container}>
       {posts.length > 0 ? (

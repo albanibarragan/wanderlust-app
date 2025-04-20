@@ -1,6 +1,6 @@
-import { SendIcon, View } from "lucide-react-native";
+import { SendIcon } from "lucide-react-native";
 import { useState } from "react";
-import { StyleSheet, Modal, TextInput, TouchableWithoutFeedback, Text, ViewComponent, FlatList, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Modal, TextInput, TouchableWithoutFeedback, Text,  FlatList, Image, TouchableOpacity , View} from "react-native";
 
 export default function ModalPost({ visible, onClose, title, data, renderItem, isComment = false,
 }) {
@@ -23,7 +23,7 @@ export default function ModalPost({ visible, onClose, title, data, renderItem, i
       </TouchableWithoutFeedback>
 
       <View style={[styles.modal, isComment && { paddingBottom: 70 }]}>
-        <ViewComponent style={styles.handle} />
+        <View style={styles.handle} />
         <Text style={styles.title}>{title}</Text>
         <FlatList
           data={data}

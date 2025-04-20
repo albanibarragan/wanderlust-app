@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
-export default function Reaction({ icon, count, onIconPress, onCountPress }) {
+export default function Reaction({ icon, count, onIconPress, onCountPress, countColor  }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={onIconPress}>
@@ -9,7 +9,7 @@ export default function Reaction({ icon, count, onIconPress, onCountPress }) {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={onCountPress}> 
-        <Text style={styles.count}>{count}</Text>
+        <Text style={[styles.count, { color: countColor }]}>{count}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -24,6 +24,5 @@ const styles = StyleSheet.create({
   count: {
     marginLeft: 6,
     fontSize: 14,
-    color: "#333",
   },
 });

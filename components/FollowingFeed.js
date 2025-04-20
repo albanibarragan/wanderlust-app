@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
 import CardPost from "./CardPost";
-import posts from "../assets/data/Mocks"; 
+import {posts} from "../assets/data/Mocks"; 
 
 export default function FollowingFeed() {
   return (

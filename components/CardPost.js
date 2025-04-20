@@ -1,52 +1,67 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
+import UserHeader from "./UserHeader";
+import Reaction from "./Reaction";
+import { Heart } from "lucide-react-native";
+import { MessageCircle } from "react-native-feather";
+import { users } from "../assets/data/Mocks";
 export default function CardPost({ item }) {
-  const { username, avatar, image, time, content } = item;
+  const { username, avatar, image, time, content, location, id } = item;
   const navigation = useNavigation();
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(3022);
+  const user = users.find((u) => u.id === item.userId);
+
+  const countLiked = () => {
+    setLiked((prev) => {
+      const newLiked = !prev;
+      setLikeCount((count) => (newLiked ? count + 1 : count - 1));
+      return newLiked;
+    });
+  };
+
   return (
     <View style={styles.card}>
-      {/* Imagen principal del post */}
       <View style={styles.imageWrapper}>
         <Image source={{ uri: image }} style={styles.mainImage} />
-
-        {/* Encabezado: usuario y hora */}
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.buttonUserInfo}>
-            <Image source={{ uri: avatar }} style={styles.avatar} />
-            <View>
-              <Text style={styles.textName}>{username}</Text>
-              <Text style={styles.time}>{time}</Text>
-            </View>
-          </TouchableOpacity>
+        <View style={styles.userInfoWrapper}>
+          <UserHeader
+            user={{
+              ...user,
+              location: item.location, 
+              time: item.time,
+            }}
+            textColor = "#fff"
+          />
         </View>
-
-        {/* Contenido del post */}
         <View style={styles.content}>
           <TouchableOpacity
             style={styles.postContent}
-            onPress={() => navigation.navigate('PostDetail', { post: item })}
+            onPress={() => navigation.navigate("PostDetail", { post: item })}
           >
-            <Text style={styles.postText} numberOfLines={4}>{content}</Text>
+            <Text style={styles.postText} numberOfLines={4}>
+              {content}
+            </Text>
           </TouchableOpacity>
 
-          {/* Acciones: Me gusta, comentarios, compartir */}
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.actionItem}>
-              <Text style={styles.icon}>❤️</Text>
-              <Text style={styles.count}>20</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.actionItem}>
-              <Text style={styles.icon}>💬</Text>
-              <Text style={styles.count}>100</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.actionItem}>
-              <Text style={styles.icon}>✈️</Text>
-            </TouchableOpacity>
+            <Reaction
+              icon={
+                <Heart
+                  color={liked ? "red" : "#fff"}
+                  fill={liked ? "red" : "none"}
+                />
+              }
+              count={likeCount}
+              countColor="#fff"
+              onIconPress={countLiked}
+            />
+            <Reaction
+              icon={<MessageCircle color="#fff" />}
+              count={3022}
+              countColor="#fff"
+            />
           </View>
         </View>
       </View>
@@ -61,47 +76,19 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     elevation: 4,
   },
-  header: {
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
-    zIndex: 1,
-  },
-  buttonUserInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  textName: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  time: {
-    color: "#eee",
-    fontSize: 12,
-    marginLeft: "auto",
-  },
   imageWrapper: {
     position: "relative",
-    borderRadius: 16,
-    overflow: "hidden",
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOpacity: 0.9,
-    shadowRadius: 10,
-    elevation: 4,
+    borderRadius: 20,
+    overflow: "hidden"
+  },
+  userInfoWrapper: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    right: 10,
+    zIndex: 2,
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
+    borderRadius: 20,
   },
   mainImage: {
     width: "100%",
@@ -118,8 +105,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 12,
     backgroundColor: "rgba(0, 0, 0, 0.35)",
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
   },
   postContent: {
     flex: 1,
@@ -129,27 +114,28 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     lineHeight: 18,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flexShrink: 0,
-    backgroundColor:'rgba(0, 0, 0, 0.35)',
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
     borderRadius: 20,
+    paddingHorizontal: 6,
   },
   actionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginLeft: 8,
   },
   icon: {
     fontSize: 18,
-    color: '#fff',
+    color: "#fff",
     marginRight: 4,
   },
   count: {
     fontSize: 14,
-    color: '#fff'
-  }
+    color: "#fff",
+  },
 });

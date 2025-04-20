@@ -27,26 +27,24 @@ export default function BackButton ({ title }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 44,
+    height: 56,
+    backgroundColor: "transparent", // tu barra roja
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between", 
+    paddingHorizontal: 16,
+  },
+  leftButton: {
+    width: 40, // tamaño fijo
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#e0e0e0",
-    paddingHorizontal: 8,
-  },
-  backButton: {
-    position: "absolute",
-    left: 16,
-    top: "50%",
-    transform: [{ translateY: -15 }],
-    padding: 5,
   },
   title: {
     fontSize: 20,
-    fontWeight: "600",
-    color: "#000",
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
+    flex: 1,
   },
 });
 

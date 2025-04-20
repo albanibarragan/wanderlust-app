@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Heart } from "lucide-react-native";
 import { useState } from "react";
+import { users } from "../assets/data/Mocks";
 import {
   View,
   StyleSheet,
@@ -14,6 +15,7 @@ export default function PhotoCard({ post, cardWidth }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes);
   const navigation = useNavigation();
+  const user = users.find((u) => u.id === post.userId);
 
   const countLiked = () => {
     setLiked((prev) => {
@@ -44,7 +46,7 @@ export default function PhotoCard({ post, cardWidth }) {
 
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{post.title}</Text>
-          <Text style={styles.username}>@{post.username}</Text>
+          <Text style={styles.username}>@{user.username}</Text>
 
           <View style={styles.bottomRow}>
             <Reaction

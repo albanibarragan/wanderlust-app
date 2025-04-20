@@ -17,12 +17,12 @@ export default function CardProfile({
       <Image source={{ uri: avatar }} style={styles.avatar} />
 
       <View style={styles.containerUser}>
-        <Text style={styles.name}>{name.trim()}</Text>
-        <Text style={styles.username}>@{username.trim()}</Text>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.username}>@{username}</Text>
 
         {/* Biografía */}
-        {bio?.trim() !== "" && (
-          <Text style={styles.bio}>{bio.trim()}</Text>
+        {bio !== "" && (
+          <Text style={styles.bio}>{bio}</Text>
         )}
       </View>
 
@@ -34,11 +34,6 @@ export default function CardProfile({
           <View style={styles.section}>
             <Text style={styles.settings}>Settings</Text>
           </View>
-        )}
-        {follow && (
-           <TouchableOpacity style={styles.followButton}>
-           <Text style={styles.buttonText}>Seguir</Text>
-         </TouchableOpacity>
         )}
       </View>
     </View>
