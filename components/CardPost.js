@@ -1,18 +1,20 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground } from "react-native";
 import UserHeader from "./UserHeader";
 import Reaction from "./Reaction";
-import { BookMarkedIcon, BookmarkIcon, Heart } from "lucide-react-native";
+import { BookmarkIcon, Heart } from "lucide-react-native";
 import { MessageCircle } from "react-native-feather";
-import { users } from "../assets/data/Mocks";
+import { users, currentUser } from "../assets/data/Mocks";
 
 export default function CardPost({ item }) {
-  const { username, avatar, image, time, content, location, id, country } = item;
   const navigation = useNavigation();
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(3022);
-  const user = users.find((u) => u.id === item.userId);
+  const [likeCount, setLikeCount] = useState(item.likes || 0);
+
+  const user = item.userId === currentUser.id
+    ? currentUser
+    : users.find((u) => u.id === item.userId) || null;
 
   const countLiked = () => {
     setLiked((prev) => {
@@ -22,35 +24,41 @@ export default function CardPost({ item }) {
     });
   };
 
+  const handlePostPress = () => {
+    navigation.navigate("PostDetail", { post: item, user });
+  };
+
+
   return (
     <View style={styles.card}>
       <View style={styles.imageWrapper}>
-        <Image source={{ uri: image }} style={styles.mainImage} />
-        <View style={styles.userInfoWrapper}>
-          <UserHeader
-           userId={item.userId}
-            textColor = "#fff"
-            time={item.time}
-          />
-        </View>
+        <ImageBackground source={{ uri: item.image }} style={styles.mainImage} imageStyle={styles.imageStyle}>
+          {user && (
+            <TouchableOpacity style={styles.userInfoWrapper}>
+              <View style={styles.userInfo}>
+                <Image source={{ uri: user.avatar }} style={styles.avatar} />
+                <View>
+                  <Text style={styles.username}>
+                    {user.id === "me" ? "Tú" : `@${user.username}`}
+                  </Text>
+                  <Text style={styles.time}>{item.time}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        </ImageBackground>
         <View style={styles.content}>
-          <TouchableOpacity
-            style={styles.postContent}
-            onPress={() => navigation.navigate("PostDetail", { post: item })}
-          >
-            <Text style={styles.postText} numberOfLines={4}>
-              {content}
-            </Text>
-            <Text style={styles.postText} numberOfLines={4}>
-              {location}, {country}
+          <TouchableOpacity style={styles.postContent} onPress={handlePostPress}>
+            <Text style={styles.postText} numberOfLines={3}>{item.content}</Text>
+            <Text style={styles.postText} numberOfLines={1}>
+              {item.location}, {item.country}
             </Text>
           </TouchableOpacity>
-
           <View style={styles.actions}>
             <Reaction
               icon={
                 <Heart
-                size={20}
+                  size={20}
                   color={liked ? "red" : "#fff"}
                   fill={liked ? "red" : "none"}
                 />
@@ -82,38 +90,57 @@ const styles = StyleSheet.create({
     margin: 7,
     borderRadius: 20,
     overflow: "hidden",
+    backgroundColor: "#fff",
     elevation: 4,
   },
   imageWrapper: {
     position: "relative",
     borderRadius: 20,
-    overflow: "hidden"
-  },
-  userInfoWrapper: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    right: 10,
-    zIndex: 2,
-    backgroundColor: "rgba(0, 0, 0, 0.35)",
-    borderRadius: 20,
+    overflow: "hidden",
   },
   mainImage: {
     width: "100%",
     aspectRatio: 4 / 5,
-    resizeMode: "cover",
+    justifyContent: "space-between",
+  },
+  imageStyle: {
+    borderRadius: 20,
+  },
+  userInfoWrapper: {
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 8,
+    margin: 8,
+    borderRadius: 20,
+    alignSelf: "flex-start",
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  username: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  time: {
+    color: "#ccc",
+    fontSize: 12,
   },
   content: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
+    padding: 8,
     flexDirection: "row",
     alignItems: "center",
-    padding: 8,
-    paddingTop: 15,
-    backgroundColor: "rgba(0, 0, 0, 0.35)",
-    
   },
   postContent: {
     flex: 1,
@@ -121,28 +148,11 @@ const styles = StyleSheet.create({
   postText: {
     color: "#fff",
     fontSize: 14,
-    lineHeight: 18,
-    flexWrap: "wrap",
+    marginBottom: 4,
   },
   actions: {
     flexDirection: "row",
-    backgroundColor: "rgba(0, 0, 0, 0.35)",
-    borderRadius: 20,
-    paddingHorizontal: 2,
-
-  },
-  actionItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: 5,
-  },
-  icon: {
-    fontSize: 18,
-    color: "#fff",
-    marginRight: 4,
-  },
-  count: {
-    fontSize: 14,
-    color: "#fff",
+    marginLeft: 8,
+    gap: 6,
   },
 });

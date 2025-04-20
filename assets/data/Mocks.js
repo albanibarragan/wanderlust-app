@@ -63,11 +63,12 @@ export const users = [
   },
 ];
 
+
 // POSTS
 export const posts = [
   {
     id: 'post1',
-    userId: 'u1',
+    userId: 'me',
     image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=60',
     country: 'Italia',
     countryFlag: '🇮🇹',

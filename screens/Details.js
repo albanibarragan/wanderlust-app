@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, StyleSheet, View, Image, Text } from "react-native";
+import { ScrollView, StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { Heart, MessageCircle } from "lucide-react-native";
@@ -8,19 +8,37 @@ import BackButton from "../components/BackButton";
 import UserHeader from "../components/UserHeader";
 import Reaction from "../components/Reaction";
 import ModalPost from "../components/ModalPost";
-import { users, likes, comments } from "../assets/data/Mocks";
+import { users, likes, comments, currentUser } from "../assets/data/Mocks";
+import ModalDelete from "../components/ModalDelete";
 
 export default function Details({ route }) {
-  const { post } = route.params;
+  const { post, user: passedUser } = route.params;
   const navigation = useNavigation();
-  const user = users.find((u) => u.id === post.userId); // 🔥 CORREGIDO
+
+  // 🔥 Combinar passedUser y fallback de búsqueda
+  const user = passedUser 
+    || (post.userId === currentUser.id ? currentUser : users.find((u) => u.id === post.userId))
+    || null;
+
+  const isOwner = post.userId === currentUser.id;
 
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [showComments, setShowComments] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleBack = () => navigation.goBack();
+
+  const handleDeletePost = () => {
+    console.log("Publicación eliminada:", post.id);
+    setShowDeleteModal(false);
+    navigation.goBack();
+  };
+  
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+  };
 
   const toggleLike = () => {
     setLiked((prev) => {
@@ -35,28 +53,37 @@ export default function Details({ route }) {
     setTimeout(() => setShowComments(true), 10);
   };
 
+  const getUserById = (userId) => {
+    if (userId === currentUser.id) return currentUser;
+    return users.find((u) => u.id === userId) || null;
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <BackButton onPress={handleBack} title="Post" />
         <Image source={{ uri: post.image }} style={styles.image} />
-        <UserHeader
-          userId={post.userId}
-          time={post.time}
-        />
+        
+        <UserHeader user={user} time={post.time} />
+        
         <View style={styles.postBody}>
           <Text style={styles.title}>“{post.title}”</Text>
           <Text style={styles.description}>{post.content}</Text>
+          {isOwner && (
+            <View style={styles.ownerActions}>
+              <TouchableOpacity onPress={() => console.log("Editar post", post.id)}>
+                <Text style={styles.ownerActionText}>Editar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowDeleteModal(true)}>
+                <Text style={styles.ownerActionText}>Eliminar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <View style={styles.reactions}>
           <Reaction
-            icon={
-              <Heart
-                color={liked ? "red" : "#888"}
-                fill={liked ? "red" : "none"}
-              />
-            }
+            icon={<Heart color={liked ? "red" : "#888"} fill={liked ? "red" : "none"} />}
             count={likeCount}
             onIconPress={toggleLike}
             onCountPress={() => setShowLikes(true)}
@@ -70,42 +97,49 @@ export default function Details({ route }) {
         </View>
       </ScrollView>
 
+      {/* Modal Likes */}
       <ModalPost
         visible={showLikes}
         onClose={() => setShowLikes(false)}
         title="Me gusta"
         data={likes}
-        renderItem={({ item }) => (
-          <View style={styles.commentItem}>
-            <UserHeader
-              userId={item.userId}
-              onCloseModal={() => setShowLikes(false)}
-            />
-          </View>
-        )}
+        renderItem={({ item }) => {
+          const likeUser = getUserById(item.userId);
+          return (
+            <View style={styles.commentItem}>
+              <UserHeader user={likeUser} onCloseModal={() => setShowLikes(false)} />
+            </View>
+          );
+        }}
       />
 
+      {/* Modal Comments */}
       <ModalPost
         visible={showComments}
         onClose={() => setShowComments(false)}
         title="Comentarios"
         data={comments}
         isComment={true}
-        renderItem={({ item }) => (
-          <View style={styles.commentItem}>
-            <UserHeader
-              userId={item.userId}
-              time={item.time}
-              onCloseModal={() => setShowComments(false)}
-            />
-            <Text style={styles.commentText}>{item.comment}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => {
+          const commentUser = getUserById(item.userId);
+          return (
+            <View style={styles.commentItem}>
+              <UserHeader user={commentUser} time={item.time} onCloseModal={() => setShowComments(false)} />
+              <Text style={styles.commentText}>{item.comment}</Text>
+            </View>
+          );
+        }}
       />
+
+      {showDeleteModal && (
+        <ModalDelete
+          onCancel={handleCancelDelete}
+          onDelete={handleDeletePost}
+        />
+      )}
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -154,5 +188,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#333",
     marginTop: 4,
+  },
+  ownerActions: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+    gap: 20,
+  },
+  ownerActionText: {
+    fontSize: 16,
+    color: "#0099ff",
+    fontWeight: "bold",
   },
 });

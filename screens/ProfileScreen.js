@@ -1,20 +1,27 @@
-import { FlatList, StyleSheet, Text, View, Image } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderWanderlust from "../components/HeaderWanderlust";
 import CardProfile from "../components/CardProfile";
-import { useState } from "react";
 import BackButton from "../components/BackButton";
 import { useRoute } from "@react-navigation/native";
-import { currentUser, users } from "../assets/data/Mocks";
+import { currentUser, users, posts } from "../assets/data/Mocks";
+import PhotoCard from "../components/PhotoCard";
+
+const windowWidth = Dimensions.get("window").width;
 
 export default function ProfileScreen() {
   const route = useRoute();
   const params = route?.params || {};
   const { userId, isMyProfile = false } = route.params || {};
 
-  const user = isMyProfile
-  ? currentUser
-  : users.find((u) => u.id === userId);
+  const user = isMyProfile ? currentUser : users.find((u) => u.id === userId);
 
   if (!user) {
     return (
@@ -23,12 +30,7 @@ export default function ProfileScreen() {
       </SafeAreaView>
     );
   }
-  const postsUser = [
-    { id: "1", image: "https://picsum.photos/id/1015/400/400" },
-    { id: "2", image: "https://picsum.photos/id/1016/400/400" },
-    { id: "3", image: "https://picsum.photos/id/1018/400/400" },
-    { id: "4", image: "https://picsum.photos/id/1020/400/400" },
-  ];
+  const postsUser = posts.filter((post) => post.userId === user.id);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,7 +52,7 @@ export default function ProfileScreen() {
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <Image source={{ uri: item.image }} style={styles.postImage} />
+            <PhotoCard post={item} cardWidth={windowWidth / 2 - 24} />
           )}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
