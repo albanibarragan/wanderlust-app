@@ -17,6 +17,7 @@ import { Home, Search, Plus, Heart, User } from "lucide-react-native";
 import Details from "../screens/Details";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import SettingScreen from "../screens/SettingScreen";
+import { Bookmark } from "react-native-feather";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,11 +62,11 @@ function MainTabs() {
         }}
       />
       <Tab.Screen
-        name="Likes"
+        name="Bookmark"
         component={FavoriteScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Heart size={24} color={focused ? "#000" : "#aaa"} />
+            <Bookmark size={24} color={focused ? "#000" : "#aaa"} />
           ),
         }}
       />

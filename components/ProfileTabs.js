@@ -13,10 +13,7 @@ export default function ProfileTabs() {
         <ImageIcon size={24} color= "#000"
         />
       </TouchableOpacity>
-      <TouchableOpacity >
-        <BookmarkIcon size={24} color= "#000" 
-        />
-      </TouchableOpacity>
+      
       <TouchableOpacity  onPress={handleSettings}>
         <Settings size={24} color= "#000" 
         />
