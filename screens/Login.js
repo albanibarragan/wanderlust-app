@@ -1,7 +1,7 @@
 "use client";
 
 import { useFonts } from "expo-font";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -11,21 +11,43 @@ import {
   StyleSheet,
   Text,
   View,
+  BackHandler,
 } from "react-native";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
+import Modal from "../components/Modal";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showExitModal, setShowExitModal] = useState(false);
   const logo = require("../assets/brujula-logo.png");
 
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
   });
+
+  const handleBackPress = () => {
+    setShowExitModal(true);
+    return true;
+  };
+
+  const handleExitApp = () => {
+    setShowExitModal(false);
+    BackHandler.exitApp();
+  };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   if (!fontsLoaded) {
     return null;
@@ -98,6 +120,16 @@ const Login = ({ navigation }) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Modal
+        visible={showExitModal}
+        onClose={() => setShowExitModal(false)}
+        title="Salir de la aplicación"
+        message="¿Estás seguro que deseas salir de la aplicación?"
+        buttonText="Sí, salir"
+        onButtonPress={handleExitApp}
+        showSecondaryButton={true}
+        secondaryButtonText="Cancelar"
+      />
     </SafeAreaView>
   );
 };

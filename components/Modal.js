@@ -17,6 +17,8 @@ const Modal = ({
   message,
   buttonText = "Continuar",
   onButtonPress,
+  showSecondaryButton = false,
+  secondaryButtonText = "Cancelar",
 }) => {
 
   
@@ -34,11 +36,21 @@ const Modal = ({
               <View style={styles.modalContent}>
                 <Text style={styles.title}>{title}</Text>
                 <Text style={styles.message}>{message}</Text>
-                <Button
-                  title={buttonText}
-                  onPress={onButtonPress}
-                  style={styles.button}
-                />
+                <View style={styles.buttonContainer}>
+                  {showSecondaryButton && (
+                    <Button
+                      title={secondaryButtonText}
+                      onPress={onClose}
+                      style={[styles.button, styles.secondaryButton]}
+                      textStyle={styles.secondaryButtonText}
+                    />
+                  )}
+                  <Button
+                    title={buttonText}
+                    onPress={onButtonPress}
+                    style={[styles.button, showSecondaryButton && styles.primaryButton]}
+                  />
+                </View>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -84,8 +96,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 20,
   },
+  buttonContainer: {
+    width: "100%",
+    flexDirection: "column",
+    gap: 8,
+  },
   button: {
     width: "100%",
+  },
+  secondaryButton: {
+    backgroundColor: "#f2f2f2",
+  },
+  secondaryButtonText: {
+    color: "#666",
+  },
+  primaryButton: {
+    backgroundColor: "#FF5C5C",
   },
 });
 
