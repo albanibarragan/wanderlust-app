@@ -19,19 +19,19 @@ export default function CreatePostScreen() {
   const navigation = useNavigation();
   const [text, setText] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handlePublish = () => {
     setIsPublishing(true);
     setTimeout(() => {
       setIsPublishing(false);
-      setIsModalVisible(true); 
+      setIsModalVisible(true);
     }, 2000);
   };
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <SafeAreaView style={styles.container}>
-        <BackButton title="Nuevo Post" />
+        <BackButton title="Nueva Publicación" />
         <HeaderCreatePost text={text} setText={setText} />
 
         <View style={styles.menuAction}>
@@ -67,10 +67,10 @@ export default function CreatePostScreen() {
             message="Tu post ha sido compartido"
             buttonText="Ir al inicio"
             onButtonPress={() => {
-              setIsModalVisible(false); 
-              navigation.navigate("Home"); 
+              setIsModalVisible(false);
+              navigation.navigate("Home");
             }}
-            onClose={() => setIsModalVisible(false)} 
+            onClose={() => setIsModalVisible(false)}
           />
         </View>
       </SafeAreaView>

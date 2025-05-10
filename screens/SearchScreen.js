@@ -6,7 +6,7 @@ import HeaderWanderlust from "../components/HeaderWanderlust";
 import SearchBar from "../components/SearchBar";
 import TabSelector from "../components/TabSelector";
 import HashtagList from "../components/HashtagList";
-import {users, posts} from "../assets/data/Mocks"
+import { users, posts } from "../assets/data/Mocks";
 import UserHeader from "../components/UserHeader";
 import CardPost from "../components/CardPost";
 
@@ -15,7 +15,7 @@ const SearchScreen = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [filteredResults, setFilteredResults] = useState([]);
 
-  const tabs = ["Usuarios", "Posts", "Hashtags"];
+  const tabs = ["Usuarios", "Publicaciones", "Etiquetas"];
   const hashtagResults = [
     { id: "1", title: "Brazil" },
     { id: "2", title: "Uruguay" },
@@ -61,20 +61,12 @@ const SearchScreen = () => {
     if (selectedTab === 0) {
       return (
         <View style={styles.userCard}>
-          <UserHeader
-            userId={item.id}
-            textColor="#000"
-          />
+          <UserHeader userId={item.id} textColor="#000" />
         </View>
       );
     } else if (selectedTab === 1) {
-      return (
-        <CardPost
-          item ={item}
-        />
-      );
-    }
-    else if (selectedTab === 2) {
+      return <CardPost item={item} />;
+    } else if (selectedTab === 2) {
       return (
         <HashtagList
           title={item.title}
