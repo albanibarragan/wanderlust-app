@@ -1,7 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
-import { Heart } from "lucide-react-native";
 import { useState } from "react";
-import { users, currentUser } from "../assets/data/Mocks";
 import {
   View,
   StyleSheet,
@@ -9,13 +6,19 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
-import Reaction from "./Reaction"; 
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Feather";
+
+import { users, currentUser } from "../assets/data/Mocks";
+import Reaction from "./Reaction";
 
 export default function PhotoCard({ post, cardWidth }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes);
   const navigation = useNavigation();
-  const user = users.find((u) => u.id === post.userId) || (post.userId === 'me' ? currentUser : null);
+  const user =
+    users.find((u) => u.id === post.userId) ||
+    (post.userId === "me" ? currentUser : null);
   const username = user?.username || "usuario";
 
   const countLiked = () => {
@@ -27,39 +30,41 @@ export default function PhotoCard({ post, cardWidth }) {
   };
 
   const handlePost = () => {
-    navigation.navigate('PostDetail', { post });
+    navigation.navigate("PostDetail", { post });
   };
 
   return (
-    <TouchableOpacity style={[styles.card, { width: cardWidth }]} >
+    <TouchableOpacity style={[styles.card, { width: cardWidth }]}>
       <ImageBackground
         source={{ uri: post.image }}
         style={styles.imageBackground}
         imageStyle={styles.image}
       >
         <TouchableOpacity style={styles.favoriteButton} onPress={countLiked}>
-          <Heart
-            color={liked ? "red" : "white"}
-            fill={liked ? "red" : "none"}
+          <Icon
+            name="heart"
             size={20}
+            color={liked ? "red" : "white"}
+            solid={liked}
           />
         </TouchableOpacity>
 
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{post.title}</Text>
+          <Text style={styles.title}>“{post.title}”</Text>
           <Text style={styles.username}>@{username}</Text>
 
           <View style={styles.bottomRow}>
             <Reaction
               icon={
-                <Heart
-                  color={liked ? "red" : "#fff"}
-                  fill={liked ? "red" : "none"}
+                <Icon
+                  name="heart"
                   size={18}
+                  color={liked ? "red" : "#fff"}
+                  solid={liked}
                 />
               }
               count={likeCount}
-              countColor ={"#fff"}
+              countColor={"#fff"}
               onIconPress={countLiked}
             />
             <TouchableOpacity style={styles.seeMoreButton} onPress={handlePost}>

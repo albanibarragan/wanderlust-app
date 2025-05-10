@@ -1,148 +1,147 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import BackButton from "../components/BackButton";
+import  useState  from 'react';
 import {
-  TouchableOpacity,
   View,
-  StyleSheet,
   Text,
-  Image,
-  ActivityIndicator,
-  ScrollView,
-} from "react-native";
-import { useState } from "react";
-import { Smile, Camera, Compass, ImageIcon } from "lucide-react-native";
-import HeaderCreatePost from "../components/HeaderCreatePost";
-import Modal from "../components/Modal";
-import { useNavigation } from "@react-navigation/native";
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import { AntDesign, Ionicons, Entypo, MaterialIcons } from '@expo/vector-icons';
+import BackButton from '../components/BackButton';
 
-export default function CreatePostScreen() {
-  const navigation = useNavigation();
-  const [text, setText] = useState("");
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+export default function CreateTravelPostScreen() {
+  const [showTitle, setShowTitle] = useState(false);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
 
-  const handlePublish = () => {
-    setIsPublishing(true);
-    setTimeout(() => {
-      setIsPublishing(false);
-      setIsModalVisible(true); 
-    }, 2000);
+  const handlePost = () => {
+    if (!content.trim()) {
+      alert('Por favor, escribe algo sobre tu experiencia.');
+      return;
+    }
+
+    console.log('📍 Post:', {
+      título: title || '(Sin título)',
+      contenido: content,
+    });
+
+    setTitle('');
+    setContent('');
+    setShowTitle(false);
+    Keyboard.dismiss();
   };
+
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <SafeAreaView style={styles.container}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
         <BackButton title="Nuevo Post" />
-        <HeaderCreatePost text={text} setText={setText} />
 
-        <View style={styles.menuAction}>
-          <View style={styles.iconRow}>
-            <TouchableOpacity style={styles.iconButton}>
-              <ImageIcon size={23} color="#555" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
-              <Compass size={23} color="#555" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
-              <Camera size={23} color="#555" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
-              <Smile size={23} color="#555" />
-            </TouchableOpacity>
-          </View>
-          {isPublishing ? (
-            <ActivityIndicator color="#000" />
-          ) : (
-            <TouchableOpacity
-              style={styles.publishButton}
-              onPress={handlePublish}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.publishText}>Publicar</Text>
-            </TouchableOpacity>
-          )}
+        {!showTitle && (
+          <TouchableOpacity
+            onPress={() => setShowTitle(true)}
+            style={styles.addTitleButton}
+          >
+            <AntDesign name="pluscircleo" size={20} color="#555" />
+            <Text style={styles.addTitleText}>Agregar título</Text>
+          </TouchableOpacity>
+        )}
 
-          <Modal
-            visible={isModalVisible}
-            title="¡Publicado!"
-            message="Tu post ha sido compartido"
-            buttonText="Ir al inicio"
-            onButtonPress={() => {
-              setIsModalVisible(false); 
-              navigation.navigate("Home"); 
-            }}
-            onClose={() => setIsModalVisible(false)} 
+        {showTitle && (
+          <TextInput
+            style={styles.titleInput}
+            placeholder="Título (opcional)"
+            value={title}
+            onChangeText={setTitle}
+            placeholderTextColor="#aaa"
           />
+        )}
+
+        <TextInput
+          style={styles.contentInput}
+          placeholder="Escribe sobre tu viaje..."
+          value={content}
+          onChangeText={setContent}
+          multiline
+          placeholderTextColor="#999"
+        />
+
+        {/* Opciones multimedia */}
+        <View style={styles.optionsRow}>
+          <TouchableOpacity style={styles.optionIcon}>
+            <Ionicons name="image-outline" size={24} color="#555" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.optionIcon}>
+            <Ionicons name="videocam-outline" size={24} color="#555" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.optionIcon}>
+            <Entypo name="location-pin" size={24} color="#555" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.optionIcon}>
+            <MaterialIcons name="emoji-emotions" size={24} color="#555" />
+          </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </ScrollView>
+
+        <TouchableOpacity style={styles.postButton} onPress={handlePost}>
+          <Text style={styles.postButtonText}>Publicar</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: 16,
-    paddingHorizontal: 16,
+    padding: 16,
+    backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    margin: 10,
-    marginBottom: 16,
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
-  username: {
-    fontWeight: "bold",
-    fontSize: 17,
-    color: "#111",
-  },
-  textInput: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    backgroundColor: "#fafafa",
-    borderRadius: 12,
-    textAlignVertical: "top",
-    minHeight: 120,
-  },
-  iconRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-    marginTop: 10,
+  addTitleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 12,
   },
-  iconButton: {
-    padding: 10,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
+  addTitleText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#555',
   },
-  menuAction: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 12,
-    borderTopWidth: 0.5,
-    borderTopColor: "#ddd",
+  titleInput: {
+    fontSize: 18,
+    fontWeight: '600',
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+    paddingVertical: 8,
+    marginBottom: 16,
   },
-  publishButton: {
-    backgroundColor: "#FF6B4A",
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
+  contentInput: {
+    fontSize: 16,
+    textAlignVertical: 'top',
+    height: 180,
+    borderWidth: 1,
+    borderColor: '#eee',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 20,
   },
-  publishText: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "600",
+  optionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  optionIcon: {
+    padding: 8,
+  },
+  postButton: {
+    backgroundColor: '#ff5a3d',
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  postButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });

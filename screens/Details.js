@@ -1,9 +1,17 @@
 import { useState } from "react";
-import { ScrollView, StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { Heart, MessageCircle } from "lucide-react-native";
 import { StatusBar } from "expo-status-bar";
+import Icon from "react-native-vector-icons/Feather";
+
 import BackButton from "../components/BackButton";
 import UserHeader from "../components/UserHeader";
 import Reaction from "../components/Reaction";
@@ -15,10 +23,12 @@ export default function Details({ route }) {
   const { post, user: passedUser } = route.params;
   const navigation = useNavigation();
 
-  // 🔥 Combinar passedUser y fallback de búsqueda
-  const user = passedUser 
-    || (post.userId === currentUser.id ? currentUser : users.find((u) => u.id === post.userId))
-    || null;
+  const user =
+    passedUser ||
+    (post.userId === currentUser.id
+      ? currentUser
+      : users.find((u) => u.id === post.userId)) ||
+    null;
 
   const isOwner = post.userId === currentUser.id;
 
@@ -35,7 +45,7 @@ export default function Details({ route }) {
     setShowDeleteModal(false);
     navigation.goBack();
   };
-  
+
   const handleCancelDelete = () => {
     setShowDeleteModal(false);
   };
@@ -63,9 +73,9 @@ export default function Details({ route }) {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <BackButton onPress={handleBack} title="Post" />
         <Image source={{ uri: post.image }} style={styles.image} />
-        
+
         <UserHeader user={user} time={post.time} />
-        
+
         <View style={styles.postBody}>
           <Text style={styles.title}>“{post.title}”</Text>
           <Text style={styles.description}>{post.content}</Text>
@@ -83,13 +93,20 @@ export default function Details({ route }) {
 
         <View style={styles.reactions}>
           <Reaction
-            icon={<Heart color={liked ? "red" : "#888"} fill={liked ? "red" : "none"} />}
+            icon={
+              <Icon
+                name="heart"
+                size={22}
+                color={liked ? "red" : "#888"}
+                solid={liked}
+              />
+            }
             count={likeCount}
             onIconPress={toggleLike}
             onCountPress={() => setShowLikes(true)}
           />
           <Reaction
-            icon={<MessageCircle color="#888" />}
+            icon={<Icon name="message-circle" size={22} color="#888" />}
             count={comments.length}
             onIconPress={openComments}
             onCountPress={() => {}}
@@ -97,7 +114,6 @@ export default function Details({ route }) {
         </View>
       </ScrollView>
 
-      {/* Modal Likes */}
       <ModalPost
         visible={showLikes}
         onClose={() => setShowLikes(false)}
@@ -113,7 +129,6 @@ export default function Details({ route }) {
         }}
       />
 
-      {/* Modal Comments */}
       <ModalPost
         visible={showComments}
         onClose={() => setShowComments(false)}
@@ -140,6 +155,7 @@ export default function Details({ route }) {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
