@@ -18,6 +18,7 @@ import Details from "../screens/Details";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import SettingScreen from "../screens/SettingScreen";
 import { Bookmark } from "react-native-feather";
+import ValidateEmail from "../screens/ValidateEmail";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -111,6 +112,7 @@ export default function AppNavigator() {
             isMyProfile: false,
           }}
         />
+        <Stack.Screen name="ValidateEmail" component={ValidateEmail} />
         <Stack.Screen name="Main" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>
