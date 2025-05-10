@@ -1,7 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, StyleSheet, Image, Platform } from "react-native";
+import { View, StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/Feather";
+
 import HomeScreen from "../screens/HomeScreen";
 import Login from "../screens/Login";
 import OnboardingScreen1 from "../screens/OnboardingScreen1";
@@ -13,19 +15,17 @@ import RecoverPassword from "../screens/RecoverPassword";
 import Register from "../screens/Register";
 import SearchScreen from "../screens/SearchScreen";
 import Splash from "../screens/SplashScreen";
-import { Home, Search, Plus, Heart, User } from "lucide-react-native";
 import Details from "../screens/Details";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import SettingScreen from "../screens/SettingScreen";
-import { Bookmark } from "react-native-feather";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+
 function MainTabs() {
   return (
     <Tab.Navigator
-      style={styles.tabBarMenu}
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
@@ -37,7 +37,7 @@ function MainTabs() {
         component={HomeScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Home size={24} color={focused ? "#000" : "#aaa"} />
+            <Icon name="home" size={24} color={focused ? "#000" : "#aaa"} />
           ),
         }}
       />
@@ -46,7 +46,7 @@ function MainTabs() {
         component={SearchScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Search size={24} color={focused ? "#000" : "#aaa"} />
+            <Icon name="search" size={24} color={focused ? "#000" : "#aaa"} />
           ),
         }}
       />
@@ -56,7 +56,7 @@ function MainTabs() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.createButton}>
-              <Plus size={24} color={focused ? "#fff" : "#fff"} />
+              <Icon name="plus" size={24} color="#fff" />
             </View>
           ),
         }}
@@ -66,20 +66,17 @@ function MainTabs() {
         component={FavoriteScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Bookmark size={24} color={focused ? "#000" : "#aaa"} />
+            <Icon name="bookmark" size={24} color={focused ? "#000" : "#aaa"} />
           ),
         }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        initialParams={{
-          userId: null,
-          isMyProfile: true,
-        }}
+        initialParams={{ userId: null, isMyProfile: true }}
         options={{
           tabBarIcon: ({ focused }) => (
-            <User size={24} color={focused ? "#000" : "#aaa"} />
+            <Icon name="user" size={24} color={focused ? "#000" : "#aaa"} />
           ),
         }}
       />
@@ -106,16 +103,14 @@ export default function AppNavigator() {
         <Stack.Screen
           name="OtherProfile"
           component={ProfileScreen}
-          initialParams={{
-            userId: null,
-            isMyProfile: false,
-          }}
+          initialParams={{ userId: null, isMyProfile: false }}
         />
         <Stack.Screen name="Main" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
 
 const styles = StyleSheet.create({
   tabBarMenu: {

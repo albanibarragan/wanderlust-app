@@ -1,22 +1,22 @@
-import { BookmarkIcon, ImageIcon, Settings,  } from "lucide-react-native";
-import { StyleSheet, TouchableOpacity, View} from "react-native";
+import Icon from "react-native-vector-icons/Feather";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ProfileTabs() {
   const navigate = useNavigation();
-    const handleSettings = () => {
-      navigate.navigate("Settings");
-    };
+
+  const handleSettings = () => {
+    navigate.navigate("Settings");
+  };
+
   return (
     <View style={styles.containerTabs}>
-      <TouchableOpacity >
-        <ImageIcon size={24} color= "#000"
-        />
+      <TouchableOpacity>
+        <Icon name="image" size={24} color="#000" />
       </TouchableOpacity>
-      
-      <TouchableOpacity  onPress={handleSettings}>
-        <Settings size={24} color= "#000" 
-        />
+
+      <TouchableOpacity onPress={handleSettings}>
+        <Icon name="settings" size={24} color="#000" />
       </TouchableOpacity>
     </View>
   );
@@ -24,11 +24,11 @@ export default function ProfileTabs() {
 
 const styles = StyleSheet.create({
   containerTabs: {
-    flexDirection: "row",     
+    flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "center",           
-    backgroundColor: "#ffff",      
-    paddingVertical: 10,           
-    width: '100%'          
+    alignItems: "center",
+    backgroundColor: "#fff",
+    paddingVertical: 10,
+    width: "100%",
   },
 });

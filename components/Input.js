@@ -1,6 +1,12 @@
 import { useState } from "react";
-import { View, TextInput, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Eye, EyeOff } from "lucide-react-native"; // 👈 ahora usas lucide, no react-native-feather
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import Icon from "react-native-vector-icons/Feather";
 
 const Input = ({
   label,
@@ -23,7 +29,7 @@ const Input = ({
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
 
-      <View style={styles.inputContainer}>
+      <View style={styles.inputWrapper}>
         <TextInput
           style={styles.input}
           placeholder={placeholder}
@@ -36,12 +42,12 @@ const Input = ({
         />
 
         {secureTextEntry && (
-          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
-            {isPasswordVisible ? (
-              <Eye size={20} color="#999" />
-            ) : (
-              <EyeOff size={20} color="#999" />
-            )}
+          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
+            <Icon
+              name={isPasswordVisible ? "eye" : "eye-off"}
+              size={20}
+              color="#999"
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -56,25 +62,25 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    marginBottom: 8,
     color: "#333",
+    marginBottom: 8,
   },
-  inputContainer: {
+  inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: "#E1E1E1",
-    borderRadius: 10,
-    backgroundColor: "#FFFFFF",
-    height: 50,
     paddingHorizontal: 12,
+    height: 50,
   },
   input: {
     flex: 1,
     fontSize: 16,
     color: "#000",
   },
-  eyeIcon: {
+  iconContainer: {
     paddingLeft: 10,
   },
 });

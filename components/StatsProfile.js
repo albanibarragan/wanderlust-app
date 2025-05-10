@@ -1,4 +1,3 @@
-import { BookmarkIcon, ImageIcon, Settings,  } from "lucide-react-native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function StatsProfile({ posts = 0, followers = 0, following = 0 }) {
@@ -22,22 +21,22 @@ export default function StatsProfile({ posts = 0, followers = 0, following = 0 }
 
 const styles = StyleSheet.create({
   containerTabs: {
-    flexDirection: "row",     
+    flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "center",           
-    backgroundColor: "#ffff",      
-    paddingVertical: 10,           
-    width: '100%' 
-  },
-  statItem:{
     alignItems: "center",
-  }, 
+    backgroundColor: "#ffff",
+    paddingVertical: 10,
+    width: "100%",
+  },
+  statItem: {
+    alignItems: "center",
+  },
   statNumber: {
     fontWeight: "bold",
     fontSize: 20,
-  }, 
+  },
   statLabel: {
     fontSize: 16,
     color: "#888",
-  }, 
+  },
 });

@@ -1,4 +1,4 @@
-import { SendIcon } from "lucide-react-native";
+import Icon from "react-native-vector-icons/Feather";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -27,14 +27,15 @@ export default function ModalPost({
     console.log("Comentario enviado:", commentText);
     setCommentText("");
   };
+
   return (
     <Modal
-    animationType="slide"
-    transparent={true}
-    visible={visible}
-    onRequestClose={onClose}
-    onDismiss={onClose} 
-  >
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+      onDismiss={onClose}
+    >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay} />
       </TouchableWithoutFeedback>
@@ -55,9 +56,7 @@ export default function ModalPost({
       {isComment && (
         <View style={styles.commentInputBar}>
           <Image
-            source={{
-              uri: "https://randomuser.me/api/portraits/men/75.jpg",
-            }}
+            source={{ uri: "https://randomuser.me/api/portraits/men/75.jpg" }}
             style={styles.commentAvatar}
           />
           <TextInput
@@ -67,7 +66,7 @@ export default function ModalPost({
             style={styles.commentInput}
           />
           <TouchableOpacity onPress={handleSendComment}>
-            <SendIcon size={24} color="#007aff" />
+            <Icon name="send" size={22} color="#007aff" />
           </TouchableOpacity>
         </View>
       )}
