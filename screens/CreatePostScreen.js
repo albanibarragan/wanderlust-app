@@ -1,4 +1,4 @@
-import  useState  from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,35 +7,45 @@ import {
   StyleSheet,
   Keyboard,
   TouchableWithoutFeedback,
-} from 'react-native';
-import { AntDesign, Ionicons, Entypo, MaterialIcons } from '@expo/vector-icons';
-import BackButton from '../components/BackButton';
+  ScrollView,
+} from "react-native";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
+import BackButton from "../components/BackButton";
+import CameraPicker from "../components/CameraPicker";
+import MediaPicker from "../components/MediaPicker";
+import MediaPreview from "../components/MediaPreview";
 
-export default function CreateTravelPostScreen() {
+export default function CreatePostScreen() {
   const [showTitle, setShowTitle] = useState(false);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [mediaFiles, setMediaFiles] = useState([]);
 
   const handlePost = () => {
     if (!content.trim()) {
-      alert('Por favor, escribe algo sobre tu experiencia.');
+      alert("Por favor, escribe algo sobre tu experiencia.");
       return;
     }
 
-    console.log('📍 Post:', {
-      título: title || '(Sin título)',
+    console.log("📍 Post:", {
+      título: title || "(Sin título)",
       contenido: content,
+      media: mediaFiles,
     });
 
-    setTitle('');
-    setContent('');
+    setTitle("");
+    setContent("");
     setShowTitle(false);
+    setMediaFiles([]);
     Keyboard.dismiss();
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
         <BackButton title="Nuevo Post" />
 
         {!showTitle && (
@@ -67,81 +77,84 @@ export default function CreateTravelPostScreen() {
           placeholderTextColor="#999"
         />
 
-        {/* Opciones multimedia */}
-        <View style={styles.optionsRow}>
-          <TouchableOpacity style={styles.optionIcon}>
-            <Ionicons name="image-outline" size={24} color="#555" />
+        <MediaPreview mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
+
+        <View style={styles.actionsRow}>
+          <MediaPicker mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
+          <CameraPicker mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
+          <TouchableOpacity style={styles.iconButton}>
+            <Entypo name="location-pin" size={24} color="#000" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.optionIcon}>
-            <Ionicons name="videocam-outline" size={24} color="#555" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionIcon}>
-            <Entypo name="location-pin" size={24} color="#555" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionIcon}>
-            <MaterialIcons name="emoji-emotions" size={24} color="#555" />
+          <TouchableOpacity style={styles.iconButton}>
+            <MaterialIcons name="emoji-emotions" size={24} color="#000" />
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.postButton} onPress={handlePost}>
           <Text style={styles.postButtonText}>Publicar</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   addTitleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
   addTitleText: {
     marginLeft: 8,
     fontSize: 16,
-    color: '#555',
+    color: "#555",
   },
   titleInput: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     borderBottomWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     paddingVertical: 8,
     marginBottom: 16,
   },
   contentInput: {
     fontSize: 16,
-    textAlignVertical: 'top',
-    height: 180,
+    textAlignVertical: "top",
+    height: 120,
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#ccc",
     padding: 12,
-    borderRadius: 8,
-    marginBottom: 20,
+    borderRadius: 12,
+    marginBottom: 16,
+    backgroundColor: "#fafafa",
   },
-  optionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
+  actionsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
   },
-  optionIcon: {
-    padding: 8,
+  iconButton: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
   },
   postButton: {
-    backgroundColor: '#ff5a3d',
+    backgroundColor: "#ff5a3d",
     paddingVertical: 12,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
+    marginTop: 16,
   },
   postButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
   },
 });
