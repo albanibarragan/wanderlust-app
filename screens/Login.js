@@ -1,6 +1,6 @@
+import { useFonts } from "expo-font";
 import { useState } from "react";
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -9,32 +9,47 @@ import {
   StyleSheet,
   Text,
   View,
-  BackHandler,
+  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
-import Modal from "../components/Modal";
-import { login } from "../assets/api/auth";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import API from "../assets/services/api";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showExitModal, setShowExitModal] = useState(false);
   const logo = require("../assets/brujula-logo.png");
-  
- const handleLogin = async () => {
-    navigation.replace("Main");
-  };
 
-  const recoverPass = () => {
-    navigation.navigate("Recover");
-  };
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Todos los campos son obligatorios.");
+      return;
+    }
 
-  const registerUser = () => {
-    navigation.navigate("Register");
+    setLoading(true);
+
+    try {
+      const res = await API.post("/auth/login", {
+        email,
+        password,
+      });
+
+      const { token, user } = res.data;
+
+      await AsyncStorage.setItem("token", token);
+      console.log("Login exitoso:", user);
+
+      navigation.navigate("Main");
+    } catch (err) {
+      const msg = err?.response?.data?.msg || "Error al iniciar sesión";
+      Alert.alert("Error", msg);
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,12 +86,12 @@ const Login = ({ navigation }) => {
 
               <TextLink
                 text="¿Olvidaste tu contraseña?"
-                onPress={recoverPass}
+                onPress={() => navigation.navigate("Recover")}
                 textAlign="right"
               />
 
               <Button
-                title="Iniciar sesión"
+                title={loading ? "Cargando..." : "Iniciar sesión"}
                 onPress={handleLogin}
                 disabled={loading}
               />
@@ -85,23 +100,13 @@ const Login = ({ navigation }) => {
             <View style={styles.footer}>
               <TextLink
                 style={styles.footerText}
-                onPress={registerUser}
+                onPress={() => navigation.navigate("Register")}
                 text="¿No tienes una cuenta? Crea una aquí"
               />
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <Modal
-        visible={showExitModal}
-        onClose={() => setShowExitModal(false)}
-        title="Salir de la aplicación"
-        message="¿Estás seguro que deseas salir de la aplicación?"
-        buttonText="Sí, salir"
-        onButtonPress={handleExitApp}
-        showSecondaryButton={true}
-        secondaryButtonText="Cancelar"
-      />
     </SafeAreaView>
   );
 };
