@@ -1,5 +1,6 @@
 import { Text } from "react-native";
 import AppNavigator from "./navigation/AppNavigator";
+import { useFonts } from "expo-font";
 
 export default function App() {
 

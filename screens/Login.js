@@ -1,5 +1,3 @@
-import { useFonts } from "expo-font";
-import { useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -15,7 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
-import API from "../assets/services/api";
+import API from "../assets/api/api";
+import { useState } from "react";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");

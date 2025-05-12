@@ -1,18 +1,15 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// Dirección del servidor
-const BASE_URL = "";
+import { API_URL } from '@env';
 
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 5000,
 });
 
-// Token JWT
 api.interceptors.request.use(async (config) => {
   const token = await AsyncStorage.getItem('jwt');
   if (token) {
