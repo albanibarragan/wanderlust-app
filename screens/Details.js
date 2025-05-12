@@ -23,6 +23,7 @@ export default function Details({ route }) {
   const { post, user: passedUser } = route.params;
   const navigation = useNavigation();
 
+  // 🔥 Combinar passedUser y fallback de búsqueda
   const user =
     passedUser ||
     (post.userId === currentUser.id
@@ -71,7 +72,7 @@ export default function Details({ route }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <BackButton onPress={handleBack} title="Post" />
+        <BackButton onPress={handleBack} title="Publicación" />
         <Image source={{ uri: post.image }} style={styles.image} />
 
         <UserHeader user={user} time={post.time} />
@@ -81,7 +82,9 @@ export default function Details({ route }) {
           <Text style={styles.description}>{post.content}</Text>
           {isOwner && (
             <View style={styles.ownerActions}>
-              <TouchableOpacity onPress={() => console.log("Editar post", post.id)}>
+              <TouchableOpacity
+                onPress={() => console.log("Editar Publicación", post.id)}
+              >
                 <Text style={styles.ownerActionText}>Editar</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowDeleteModal(true)}>
@@ -123,7 +126,10 @@ export default function Details({ route }) {
           const likeUser = getUserById(item.userId);
           return (
             <View style={styles.commentItem}>
-              <UserHeader user={likeUser} onCloseModal={() => setShowLikes(false)} />
+              <UserHeader
+                user={likeUser}
+                onCloseModal={() => setShowLikes(false)}
+              />
             </View>
           );
         }}
@@ -139,7 +145,11 @@ export default function Details({ route }) {
           const commentUser = getUserById(item.userId);
           return (
             <View style={styles.commentItem}>
-              <UserHeader user={commentUser} time={item.time} onCloseModal={() => setShowComments(false)} />
+              <UserHeader
+                user={commentUser}
+                time={item.time}
+                onCloseModal={() => setShowComments(false)}
+              />
               <Text style={styles.commentText}>{item.comment}</Text>
             </View>
           );

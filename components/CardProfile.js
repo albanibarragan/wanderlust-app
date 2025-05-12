@@ -8,11 +8,10 @@ export default function CardProfile({
   name,
   username,
   bio,
-  stats = { posts: 0, followers: 0, following: 0 } ,
+  stats = { posts: 0, followers: 0, following: 0 },
   showSettings = false,
   isMyProfile = true,
 }) {
-
   return (
     <View style={styles.container}>
       <Image source={{ uri: avatar }} style={styles.avatar} />
@@ -36,9 +35,7 @@ export default function CardProfile({
         {isMyProfile && !showSettings && <ProfileTabs />}
         {showSettings && (
           <View style={styles.section}>
-            <Text style={styles.settings} >
-              Settings
-            </Text>
+            <Text style={styles.settings}>Ajustes</Text>
           </View>
         )}
       </View>

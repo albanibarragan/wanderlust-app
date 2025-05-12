@@ -9,10 +9,12 @@ import {
   StyleSheet,
   Text,
   View,
+  BackHandler,
 } from "react-native";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
+import Modal from "../components/Modal";
 import { login } from "../assets/api/auth";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,32 +22,13 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showExitModal, setShowExitModal] = useState(false);
   const logo = require("../assets/brujula-logo.png");
-
+  
  const handleLogin = async () => {
     navigation.replace("Main");
   };
-/*
-const handleLogin = async () => {
-  if (!email || !password) {
-    return Alert.alert('Completa todos los campos');
-  }
 
-  try {
-    setLoading(true);
-    const { token } = await login(email, password);
-    await AsyncStorage.setItem('jwt', token); 
-
-    Alert.alert('Inicio de sesión exitoso');
-    navigation.replace("Splash"); 
-  } catch (error) {
-    console.error(error.response?.data || error.message);
-    Alert.alert('Error', 'Correo o contraseña incorrectos');
-  } finally {
-    setLoading(false);
-  }
-};
-*/
   const recoverPass = () => {
     navigation.navigate("Recover");
   };
@@ -109,6 +92,16 @@ const handleLogin = async () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Modal
+        visible={showExitModal}
+        onClose={() => setShowExitModal(false)}
+        title="Salir de la aplicación"
+        message="¿Estás seguro que deseas salir de la aplicación?"
+        buttonText="Sí, salir"
+        onButtonPress={handleExitApp}
+        showSecondaryButton={true}
+        secondaryButtonText="Cancelar"
+      />
     </SafeAreaView>
   );
 };

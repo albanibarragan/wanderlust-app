@@ -18,6 +18,7 @@ import Splash from "../screens/SplashScreen";
 import Details from "../screens/Details";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import SettingScreen from "../screens/SettingScreen";
+import ValidateEmail from "../screens/ValidateEmail";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -105,6 +106,7 @@ export default function AppNavigator() {
           component={ProfileScreen}
           initialParams={{ userId: null, isMyProfile: false }}
         />
+        <Stack.Screen name="ValidateEmail" component={ValidateEmail} />
         <Stack.Screen name="Main" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>

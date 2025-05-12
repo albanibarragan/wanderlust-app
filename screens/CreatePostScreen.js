@@ -48,6 +48,7 @@ export default function CreatePostScreen() {
       >
         <BackButton title="Nuevo Post" />
 
+
         {!showTitle && (
           <TouchableOpacity
             onPress={() => setShowTitle(true)}
@@ -57,7 +58,7 @@ export default function CreatePostScreen() {
             <Text style={styles.addTitleText}>Agregar título</Text>
           </TouchableOpacity>
         )}
-
+        
         {showTitle && (
           <TextInput
             style={styles.titleInput}

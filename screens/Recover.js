@@ -21,7 +21,7 @@ const Recover = ({ navigation }) => {
   const logo = require("../assets/brujula-logo.png");
 
   const handleRecover = async () => {
-    navigation.navigate("RecoverPassword");
+    navigation.navigate("ValidateEmail");
   };
 
   return (
@@ -51,7 +51,7 @@ const Recover = ({ navigation }) => {
                 keyboardType="email-address"
               />
 
-              <Button title="Crear nueva contraseña" onPress={handleRecover} />
+              <Button title="Siguiente" onPress={handleRecover} />
             </View>
           </View>
         </ScrollView>
