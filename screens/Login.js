@@ -1,8 +1,6 @@
-"use client";
-
-import { useFonts } from "expo-font";
 import { useState } from "react";
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -15,6 +13,8 @@ import {
 import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
+import { login } from "../assets/api/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -22,19 +22,30 @@ const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const logo = require("../assets/brujula-logo.png");
 
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const handleLogin = async () => {
+ const handleLogin = async () => {
     navigation.replace("Main");
   };
+/*
+const handleLogin = async () => {
+  if (!email || !password) {
+    return Alert.alert('Completa todos los campos');
+  }
 
+  try {
+    setLoading(true);
+    const { token } = await login(email, password);
+    await AsyncStorage.setItem('jwt', token); 
+
+    Alert.alert('Inicio de sesión exitoso');
+    navigation.replace("Splash"); 
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+    Alert.alert('Error', 'Correo o contraseña incorrectos');
+  } finally {
+    setLoading(false);
+  }
+};
+*/
   const recoverPass = () => {
     navigation.navigate("Recover");
   };
