@@ -1,10 +1,15 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground } from "react-native";
-import UserHeader from "./UserHeader";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
+import Icon from "react-native-vector-icons/Feather";
 import Reaction from "./Reaction";
-import { BookmarkIcon, Heart } from "lucide-react-native";
-import { MessageCircle } from "react-native-feather";
 import { users, currentUser } from "../assets/data/Mocks";
 
 export default function CardPost({ item }) {
@@ -12,9 +17,10 @@ export default function CardPost({ item }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likes || 0);
 
-  const user = item.userId === currentUser.id
-    ? currentUser
-    : users.find((u) => u.id === item.userId) || null;
+  const user =
+    item.userId === currentUser.id
+      ? currentUser
+      : users.find((u) => u.id === item.userId) || null;
 
   const countLiked = () => {
     setLiked((prev) => {
@@ -28,25 +34,32 @@ export default function CardPost({ item }) {
     navigation.navigate("PostDetail", { post: item, user });
   };
 
-
   return (
     <View style={styles.card}>
       <View style={styles.imageWrapper}>
-        <ImageBackground source={{ uri: item.image }} style={styles.mainImage} imageStyle={styles.imageStyle}>
+        <ImageBackground
+          source={{ uri: item.image }}
+          style={styles.mainImage}
+          imageStyle={styles.imageStyle}
+        >
           {user && (
-            <TouchableOpacity style={styles.userInfoWrapper}>
+            <View style={styles.userHeaderWrapper}>
               <View style={styles.userInfo}>
                 <Image source={{ uri: user.avatar }} style={styles.avatar} />
-                <View>
+                <View style={styles.userText}>
                   <Text style={styles.username}>
                     {user.id === "me" ? "Tú" : `@${user.username}`}
                   </Text>
                   <Text style={styles.time}>{item.time}</Text>
                 </View>
               </View>
-            </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon name="more-vertical" size={20} color="#fff" />
+              </TouchableOpacity>
+            </View>
           )}
         </ImageBackground>
+
         <View style={styles.content}>
           <TouchableOpacity style={styles.postContent} onPress={handlePostPress}>
             <Text style={styles.postText} numberOfLines={3}>{item.content}</Text>
@@ -54,13 +67,14 @@ export default function CardPost({ item }) {
               {item.location}, {item.country}
             </Text>
           </TouchableOpacity>
+
           <View style={styles.actions}>
             <Reaction
               icon={
-                <Heart
+                <Icon
+                  name="heart"
                   size={20}
                   color={liked ? "red" : "#fff"}
-                  fill={liked ? "red" : "none"}
                 />
               }
               count={likeCount}
@@ -68,15 +82,13 @@ export default function CardPost({ item }) {
               onIconPress={countLiked}
             />
             <Reaction
-              icon={<MessageCircle color="#fff" />}
+              icon={<Icon name="message-circle" size={20} color="#fff" />}
               count={3022}
               countColor="#fff"
-              size={20}
             />
             <Reaction
-              icon={<BookmarkIcon color="#fff" />}
+              icon={<Icon name="bookmark" size={20} color="#fff" />}
               countColor="#fff"
-              size={20}
             />
           </View>
         </View>
@@ -106,16 +118,21 @@ const styles = StyleSheet.create({
   imageStyle: {
     borderRadius: 20,
   },
-  userInfoWrapper: {
+  userHeaderWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "rgba(0,0,0,0.5)",
-    padding: 8,
+    padding: 10,
     margin: 8,
-    borderRadius: 20,
-    alignSelf: "flex-start",
+    borderRadius: 16,
   },
   userInfo: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  userText: {
+    justifyContent: "center",
   },
   avatar: {
     width: 32,

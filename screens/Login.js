@@ -1,8 +1,6 @@
-"use client";
-
-import { useFonts } from "expo-font";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -17,6 +15,8 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
 import Modal from "../components/Modal";
+import { login } from "../assets/api/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -24,36 +24,8 @@ const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
   const logo = require("../assets/brujula-logo.png");
-
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
-  });
-
-  const handleBackPress = () => {
-    setShowExitModal(true);
-    return true;
-  };
-
-  const handleExitApp = () => {
-    setShowExitModal(false);
-    BackHandler.exitApp();
-  };
-
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleBackPress
-    );
-
-    return () => backHandler.remove();
-  }, []);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const handleLogin = async () => {
+  
+ const handleLogin = async () => {
     navigation.replace("Main");
   };
 

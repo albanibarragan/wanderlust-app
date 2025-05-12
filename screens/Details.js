@@ -9,8 +9,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { Heart, MessageCircle } from "lucide-react-native";
 import { StatusBar } from "expo-status-bar";
+import Icon from "react-native-vector-icons/Feather";
+
 import BackButton from "../components/BackButton";
 import UserHeader from "../components/UserHeader";
 import Reaction from "../components/Reaction";
@@ -96,9 +97,11 @@ export default function Details({ route }) {
         <View style={styles.reactions}>
           <Reaction
             icon={
-              <Heart
+              <Icon
+                name="heart"
+                size={22}
                 color={liked ? "red" : "#888"}
-                fill={liked ? "red" : "none"}
+                solid={liked}
               />
             }
             count={likeCount}
@@ -106,7 +109,7 @@ export default function Details({ route }) {
             onCountPress={() => setShowLikes(true)}
           />
           <Reaction
-            icon={<MessageCircle color="#888" />}
+            icon={<Icon name="message-circle" size={22} color="#888" />}
             count={comments.length}
             onIconPress={openComments}
             onCountPress={() => {}}
@@ -114,7 +117,6 @@ export default function Details({ route }) {
         </View>
       </ScrollView>
 
-      {/* Modal Likes */}
       <ModalPost
         visible={showLikes}
         onClose={() => setShowLikes(false)}
@@ -133,7 +135,6 @@ export default function Details({ route }) {
         }}
       />
 
-      {/* Modal Comments */}
       <ModalPost
         visible={showComments}
         onClose={() => setShowComments(false)}
@@ -164,6 +165,7 @@ export default function Details({ route }) {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

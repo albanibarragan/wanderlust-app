@@ -5,7 +5,7 @@ import CardProfile from "../components/CardProfile";
 import SettingsItem from "../components/SettingsItem";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import { currentUser } from "../assets/data/Mocks";
-import { User, Info, Mail, Lock, Phone, LogOut } from "lucide-react-native";
+import Icon from "react-native-vector-icons/Feather";
 import BackButton from "../components/BackButton";
 import ChangeUsernameForm from "../components/ChangeUsernameForm";
 import ChangeNameForm from "../components/ChangeNameForm";
@@ -41,37 +41,37 @@ export default function SettingScreen() {
         {activeSetting === null && (
           <View style={styles.settingsList}>
             <SettingsItem
-              Icon={User}
+              Icon={() => <Icon name="user" size={20} color="#555" />}
               title="Usuario"
               subtitle={currentUser.username}
               onPress={() => setActiveSetting("username")}
             />
             <SettingsItem
-              Icon={Info}
+              Icon={() => <Icon name="info" size={20} color="#555" />}
               title="Nombre"
               subtitle={currentUser.name}
               onPress={() => setActiveSetting("name")}
             />
             <SettingsItem
-              Icon={Mail}
+              Icon={() => <Icon name="mail" size={20} color="#555" />}
               title="Correo electrónico"
               subtitle={currentUser.email}
               onPress={() => setActiveSetting("email")}
             />
             <SettingsItem
-              Icon={Lock}
+              Icon={() => <Icon name="lock" size={20} color="#555" />}
               title="Contraseña"
               subtitle="********"
               onPress={() => setActiveSetting("password")}
             />
             <SettingsItem
-              Icon={Phone}
+              Icon={() => <Icon name="phone" size={20} color="#555" />}
               title="Número de teléfono"
               subtitle={currentUser.phone}
               onPress={() => setActiveSetting("phone")}
             />
             <SettingsItem
-              Icon={LogOut}
+              Icon={() => <Icon name="log-out" size={20} color="#e33" />}
               title="Cerrar sesión"
               onPress={handleLogout}
               isLogout
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   scrollContainer: {
-    flexGrow: 1, // Ensure the content can grow to allow scrolling
+    flexGrow: 1,
   },
   settingsList: {
     backgroundColor: "#f9f9f9",
