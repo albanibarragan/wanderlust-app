@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import HomeScreen from "../screens/HomeScreen";
 import Login from "../screens/Login";
@@ -20,11 +20,10 @@ import Details from "../screens/Details";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import SettingScreen from "../screens/SettingScreen";
 import ValidateEmail from "../screens/ValidateEmail";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
 
 function MainTabs() {
   return (
@@ -90,7 +89,7 @@ function MainTabs() {
 export default function AppNavigator() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
- useEffect(() => {
+  useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
       setIsAuthenticated(!!token);
@@ -109,21 +108,17 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isAuthenticated ? "Main" : "Splash"}
+        initialRouteName="Splash"
         screenOptions={{ headerShown: false }}
       >
-        {!isAuthenticated && (
-          <>
-            <Stack.Screen name="Splash" component={Splash} />
-            <Stack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
-            <Stack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name="Recover" component={Recover} />
-            <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
-            <Stack.Screen name="ValidateEmail" component={ValidateEmail} />
-          </>
-        )}
+        <Stack.Screen name="Splash" component={Splash} />
+        <Stack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
+        <Stack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Recover" component={Recover} />
+        <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
+        <Stack.Screen name="ValidateEmail" component={ValidateEmail} />
 
         {isAuthenticated && (
           <>
@@ -141,7 +136,6 @@ export default function AppNavigator() {
     </NavigationContainer>
   );
 }
-
 
 const styles = StyleSheet.create({
   tabBarMenu: {

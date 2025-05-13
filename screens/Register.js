@@ -1,5 +1,5 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -18,6 +18,8 @@ import Checkbox from "../components/Checkbox";
 import Input from "../components/Input";
 import PhoneInput from "../components/PhoneInput";
 import Modal from "../components/Modal";
+import { register } from "../assets/api/auth";
+
 
 const Register = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
@@ -34,70 +36,54 @@ const Register = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [username, setUsername] = useState("");
 
-  const handleRegister = async () => {
-    if (
-      !firstName ||
-      !lastName ||
-      !username ||
-      !phoneNumber ||
-      !birthDate ||
-      !email ||
-      !password
-    ) {
-      alert("Por favor, completa todos los campos");
-      return;
-    }
+ const handleRegister = async () => {
+  if (
+    !firstName ||
+    !lastName ||
+    !username ||
+    !phoneNumber ||
+    !birthDate ||
+    !email ||
+    !password ||
+    !confirmPassword
+  ) {
+    Alert.alert("Error", "Por favor, completa todos los campos");
+    return;
+  }
 
-    if (username.includes(" ")) {
-      alert("El nombre de usuario no debe contener espacios");
-      return;
-    }
+  if (password !== confirmPassword) {
+    Alert.alert("Error", "Las contraseñas no coinciden");
+    return;
+  }
 
-    if (!email.includes("@") || !email.includes(".")) {
-      alert("Correo electrónico no válido");
-      return;
-    }
+  if (!acceptTerms) {
+    Alert.alert("Términos", "Debes aceptar los términos y condiciones");
+    return;
+  }
 
-    if (password.length < 6) {
-      alert("La contraseña debe tener al menos 6 caracteres");
-      return;
-    }
+  setLoading(true);
 
-    if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden");
-      return;
-    }
+  try {
+    const result = await register({
+      firstName,
+      lastName,
+      username,
+      email,
+      password,
+      phone: `${countryCode}${phoneNumber}`,
+      birthday: birthDate.toISOString().split("T")[0],
+    });
 
-    if (!acceptTerms) {
-      alert("Debes aceptar los términos y condiciones");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const res = await API.post("/auth/register", {
-        firstName,
-        lastName,
-        email,
-        password,
-        phone: `${countryCode}${phoneNumber}`,
-        birthday: birthDate.toISOString().split("T")[0],
-        username,
-      });
-
-      console.log("Registro exitoso:", res.data);
-      setIsModalVisible(true);
-      await AsyncStorage.setItem("token", token);
-      navigation.replace("Main");
-    } catch (err) {
-      const msg = err?.response?.data?.msg || "Error al registrar usuario";
-      alert(msg);
-      console.error("Register error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    console.log("Registro exitoso:", result);
+    setIsModalVisible(true); 
+  } catch (err) {
+    const msg = err?.msg || "Error al registrar usuario";
+    Alert.alert("Error", msg);
+    console.error("Register error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleCountryCodePress = () => {
     console.log("Abrir selector de código de país");
