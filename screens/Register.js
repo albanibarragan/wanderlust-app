@@ -88,6 +88,8 @@ const Register = ({ navigation }) => {
 
       console.log("Registro exitoso:", res.data);
       setIsModalVisible(true);
+      await AsyncStorage.setItem("token", token);
+      navigation.replace("Main");
     } catch (err) {
       const msg = err?.response?.data?.msg || "Error al registrar usuario";
       alert(msg);
