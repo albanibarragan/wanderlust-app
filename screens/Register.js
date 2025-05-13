@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import API from "../assets/api/api";
 
 // Components
 import BackButton from "../components/BackButton";
@@ -18,6 +19,7 @@ import Checkbox from "../components/Checkbox";
 import Input from "../components/Input";
 import PhoneInput from "../components/PhoneInput";
 import Modal from "../components/Modal";
+import { register } from "../assets/api/auth";
 
 const Register = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
@@ -33,6 +35,10 @@ const Register = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const [successMessage, setSuccessMessage] = useState(
+    "Tu cuenta ha sido creada correctamente."
+  );
 
   const handleRegister = async () => {
     if (
@@ -42,56 +48,52 @@ const Register = ({ navigation }) => {
       !phoneNumber ||
       !birthDate ||
       !email ||
-      !password
+      !password ||
+      !confirmPassword
     ) {
-      alert("Por favor, completa todos los campos");
-      return;
-    }
-
-    if (username.includes(" ")) {
-      alert("El nombre de usuario no debe contener espacios");
-      return;
-    }
-
-    if (!email.includes("@") || !email.includes(".")) {
-      alert("Correo electrónico no válido");
-      return;
-    }
-
-    if (password.length < 6) {
-      alert("La contraseña debe tener al menos 6 caracteres");
+      Alert.alert("Error", "Por favor, completa todos los campos");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden");
+      Alert.alert("Error", "Las contraseñas no coinciden");
       return;
     }
 
     if (!acceptTerms) {
-      alert("Debes aceptar los términos y condiciones");
+      Alert.alert("Términos", "Debes aceptar los términos y condiciones");
       return;
     }
 
     setLoading(true);
 
     try {
-      const res = await API.post("/auth/register", {
+      const payload = {
         firstName,
         lastName,
+        username,
         email,
         password,
         phone: `${countryCode}${phoneNumber}`,
         birthday: birthDate.toISOString().split("T")[0],
-        username,
-      });
+        bio,
+      };
 
-      console.log("Registro exitoso:", res.data);
+      console.log("Payload a enviar:", payload); // 👀 Verifica aquí
+      const result = await register(payload);
+
+      console.log("Respuesta del backend:", result);
+      setSuccessMessage(
+        result?.msg || "Tu cuenta ha sido creada correctamente."
+      );
       setIsModalVisible(true);
     } catch (err) {
-      const msg = err?.response?.data?.msg || "Error al registrar usuario";
-      alert(msg);
-      console.error("Register error:", err);
+      console.error("🔥 Error completo:", err); 
+      console.error("🔥 Error response data:", err?.response?.data);
+
+      const msg = err?.response?.data?.msg || err?.message ||"Error al registrar usuario";
+
+      Alert.alert("Error", msg);
     } finally {
       setLoading(false);
     }
@@ -113,7 +115,7 @@ const Register = ({ navigation }) => {
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || birthDate;
-    setShowDatePicker(Platform.OS === "ios"); // iOS only
+    setShowDatePicker(Platform.OS === "ios");
     setBirthDate(currentDate);
   };
 
@@ -159,6 +161,13 @@ const Register = ({ navigation }) => {
               placeholder="johndoe123"
               value={username}
               onChangeText={setUsername}
+            />
+
+            <Input
+              label="Biografía"
+              placeholder="Cuéntanos algo sobre ti..."
+              value={bio}
+              onChangeText={setBio}
             />
 
             <PhoneInput
@@ -239,7 +248,7 @@ const Register = ({ navigation }) => {
         <Modal
           visible={isModalVisible}
           title="¡Registro exitoso!"
-          message="Tu cuenta ha sido creada correctamente."
+          message={successMessage}
           buttonText="Iniciar sesión"
           onButtonPress={() => {
             setIsModalVisible(false);
