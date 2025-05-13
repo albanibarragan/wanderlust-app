@@ -28,14 +28,17 @@ const Register = ({ navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [username, setUsername] = useState("");
 
   const handleRegister = async () => {
     if (
       !firstName ||
       !lastName ||
+      !username ||
       !phoneNumber ||
       !birthDate ||
       !email ||
@@ -45,17 +48,54 @@ const Register = ({ navigation }) => {
       return;
     }
 
+    if (username.includes(" ")) {
+      alert("El nombre de usuario no debe contener espacios");
+      return;
+    }
+
+    if (!email.includes("@") || !email.includes(".")) {
+      alert("Correo electrónico no válido");
+      return;
+    }
+
+    if (password.length < 6) {
+      alert("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
+
     if (!acceptTerms) {
       alert("Debes aceptar los términos y condiciones");
       return;
     }
 
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const res = await API.post("/auth/register", {
+        firstName,
+        lastName,
+        email,
+        password,
+        phone: `${countryCode}${phoneNumber}`,
+        birthday: birthDate.toISOString().split("T")[0],
+        username,
+      });
+
+      console.log("Registro exitoso:", res.data);
+      setIsModalVisible(true);
+    } catch (err) {
+      const msg = err?.response?.data?.msg || "Error al registrar usuario";
+      alert(msg);
+      console.error("Register error:", err);
+    } finally {
       setLoading(false);
-      setIsModalVisible(true); 
-    }, 1500);
-  }
+    }
+  };
 
   const handleCountryCodePress = () => {
     console.log("Abrir selector de código de país");
@@ -100,8 +140,27 @@ const Register = ({ navigation }) => {
           </View>
 
           <View style={styles.form}>
-            <Input label="Nombre" placeholder="John" value={firstName} onChangeText={setFirstName} />
-            <Input label="Apellido" placeholder="Doe" value={lastName} onChangeText={setLastName} />
+            <Input
+              label="Nombre"
+              placeholder="John"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+
+            <Input
+              label="Apellido"
+              placeholder="Doe"
+              value={lastName}
+              onChangeText={setLastName}
+            />
+
+            <Input
+              label="Nombre de usuario"
+              placeholder="johndoe123"
+              value={username}
+              onChangeText={setUsername}
+            />
+
             <PhoneInput
               label="Número de teléfono"
               countryCode={countryCode}
@@ -134,7 +193,7 @@ const Register = ({ navigation }) => {
             </View>
 
             <Input
-              label="Email"
+              label="Correo electrónico"
               placeholder="johnn.n@gmail.com"
               value={email}
               onChangeText={setEmail}
@@ -149,6 +208,14 @@ const Register = ({ navigation }) => {
               secureTextEntry={true}
             />
 
+            <Input
+              label="Confirmar contraseña"
+              placeholder="********"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry={true}
+            />
+
             <Checkbox
               checked={acceptTerms}
               onToggle={() => setAcceptTerms(!acceptTerms)}
@@ -160,7 +227,6 @@ const Register = ({ navigation }) => {
               onPress={handleRegister}
               disabled={loading}
             />
-
             <View style={styles.footer}>
               <Text onPress={handleLogin} style={styles.footerText}>
                 ¿Ya tienes una cuenta?{" "}
