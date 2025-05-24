@@ -8,16 +8,14 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
-  Alert
+  Alert,
 } from "react-native";
 import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import BackButton from "../components/BackButton";
 import CameraPicker from "../components/CameraPicker";
 import MediaPicker from "../components/MediaPicker";
 import MediaPreview from "../components/MediaPreview";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { API_URLL } from '@env';
+import { createPost } from "../assets/api/PostService";
 
 const CreatePostScreen = ({ navigation }) => {
   const [showTitle, setShowTitle] = useState(false);
@@ -25,6 +23,12 @@ const CreatePostScreen = ({ navigation }) => {
   const [content, setContent] = useState("");
   const [mediaFiles, setMediaFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [tags, setTags] = useState(""); // input como "paisaje,globos"
+  const [location, setLocation] = useState({
+    description: "",
+    latitude: "",
+    longitude: "",
+  });
 
   const handlePost = async () => {
     if (!content.trim()) {
@@ -35,58 +39,27 @@ const CreatePostScreen = ({ navigation }) => {
     setIsLoading(true);
 
     try {
-      const wanderlust_token = await AsyncStorage.getItem('token');
-      if (!wanderlust_token) {
-        Alert.alert("Error", "No has iniciado sesión");
-        setIsLoading(false);
-        return;
-      }
+      const result = await createPost({
+        title,
+        description: content,
+        mediaFiles,
+        tags: tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+        location,
+      });
 
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('description', content);
-      
-      // Agregar imagen si existe
-      if (mediaFiles.length > 0) {
-        const imageUri = mediaFiles[0].uri;
-        const filename = imageUri.split('/').pop();
-        const match = /\.(\w+)$/.exec(filename);
-        const type = match ? `image/${match[1]}` : 'image';
-        
-        formData.append('image', {
-          uri: imageUri,
-          name: filename,
-          type
-        });
-      }
-      
-      // Usar la URL de la variable de entorno correctamente
-      const apiUrl = API_URLL || 'http://192.168.20.119:8080/api';
-      const response = await axios.post(
-        `${apiUrl}/post`,
-        formData,
-        {
-          headers: { 
-            wanderlust_token, 
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-
-      console.log("Respuesta del servidor:", response.data);
       Alert.alert("Éxito", "Tu publicación ha sido creada");
-      
-      // Limpiar el formulario
       setTitle("");
       setContent("");
       setShowTitle(false);
       setMediaFiles([]);
-      
-      // Navegar de vuelta a la pantalla principal o feed
       navigation.goBack();
     } catch (err) {
-      console.error("Error al crear la publicación:", err);
-      const msg = err?.response?.data?.msg || "Error al crear la publicación. Intenta de nuevo.";
+      console.error("Error al crear publicación:", err);
+      const msg =
+        err?.response?.data?.msg || err?.message || "Error desconocido";
       Alert.alert("Error", msg);
     } finally {
       setIsLoading(false);
@@ -131,6 +104,49 @@ const CreatePostScreen = ({ navigation }) => {
           placeholderTextColor="#999"
         />
 
+        <Text style={styles.label}>Etiquetas (separadas por coma)</Text>
+        <TextInput
+          style={styles.contentInput}
+          placeholder="Ej: paisaje,globos"
+          value={tags}
+          onChangeText={setTags}
+          placeholderTextColor="#999"
+        />
+
+        <Text style={styles.label}>Ubicación</Text>
+        <TextInput
+          style={styles.contentInput}
+          placeholder="Descripción (ej. Barquisimeto)"
+          value={location.description}
+          onChangeText={(value) =>
+            setLocation((prev) => ({ ...prev, description: value }))
+          }
+          placeholderTextColor="#999"
+        />
+
+        <View style={{ flexDirection: "row", gap: 12 }}>
+          <TextInput
+            style={[styles.contentInput, { flex: 1 }]}
+            placeholder="Latitud"
+            value={location.latitude}
+            onChangeText={(value) =>
+              setLocation((prev) => ({ ...prev, latitude: value }))
+            }
+            keyboardType="numeric"
+            placeholderTextColor="#999"
+          />
+          <TextInput
+            style={[styles.contentInput, { flex: 1 }]}
+            placeholder="Longitud"
+            value={location.longitude}
+            onChangeText={(value) =>
+              setLocation((prev) => ({ ...prev, longitude: value }))
+            }
+            keyboardType="numeric"
+            placeholderTextColor="#999"
+          />
+        </View>
+
         <MediaPreview mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
 
         <View style={styles.actionsRow}>
@@ -144,8 +160,8 @@ const CreatePostScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity 
-          style={[styles.postButton, isLoading && styles.disabledButton]} 
+        <TouchableOpacity
+          style={[styles.postButton, isLoading && styles.disabledButton]}
           onPress={handlePost}
           disabled={isLoading}
         >
@@ -156,7 +172,7 @@ const CreatePostScreen = ({ navigation }) => {
       </ScrollView>
     </TouchableWithoutFeedback>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -220,7 +236,13 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     backgroundColor: "#ffaa99",
-  }
+  },
+  label: {
+    fontWeight: "bold",
+    marginBottom: 6,
+    fontSize: 16,
+    color: "#333",
+  },
 });
 
 export default CreatePostScreen;

@@ -8,18 +8,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
-
-import { users, currentUser } from "../assets/data/Mocks";
 import Reaction from "./Reaction";
 
 export default function PhotoCard({ post, cardWidth }) {
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.likes);
+  const [likeCount, setLikeCount] = useState(post.likes || 0);
   const navigation = useNavigation();
-  const user =
-    users.find((u) => u.id === post.userId) ||
-    (post.userId === "me" ? currentUser : null);
-  const username = user?.username || "usuario";
 
   const countLiked = () => {
     setLiked((prev) => {
@@ -33,10 +27,13 @@ export default function PhotoCard({ post, cardWidth }) {
     navigation.navigate("PostDetail", { post });
   };
 
+  const username = post.userId?.username || "usuario";
+  const imageUrl = post.image || post.media?.[0]?.url || null;
+
   return (
-    <TouchableOpacity style={[styles.card, { width: cardWidth }]}>
+    <TouchableOpacity style={[styles.card, { width: cardWidth }]} onPress={handlePost}>
       <ImageBackground
-        source={{ uri: post.image }}
+        source={imageUrl ? { uri: imageUrl } : require("../assets/placeholder.jpg")}
         style={styles.imageBackground}
         imageStyle={styles.image}
       >
