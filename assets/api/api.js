@@ -3,19 +3,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URLL } from '@env';
 
 const API = axios.create({
-  baseURL: "http://192.168.250.7:8080/api",
+   baseURL: API_URLL,  // Usa la variable de entorno
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 5000,
 });
 
-// API.interceptors.request.use(async (config) => {
-//   const token = await AsyncStorage.getItem('token');
-//   if (token) {
-//     config.headers.Authorization = `${token}`;
-//   }
-//   return config;
-// });
+API.interceptors.request.use(async (config) => {
+  const token = await AsyncStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export default API;
