@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,17 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import { getPostsWithMedia } from "../assets/api/PostService";
 import { Dimensions } from "react-native";
 import PhotoCard from "../components/PhotoCard";
+import { useFocusEffect } from "@react-navigation/native";
 
 const numColumns = 2;
 const cardMargin = 8;
-const cardWidth = (Dimensions.get("window").width - cardMargin * (numColumns + 1)) / numColumns;
+const cardWidth =
+  (Dimensions.get("window").width - cardMargin * (numColumns + 1)) / numColumns;
 
 const ExploreFeed = () => {
   const [posts, setPosts] = useState([]);
@@ -22,7 +24,7 @@ const ExploreFeed = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-const fetchPosts = async () => {
+  const fetchPosts = async () => {
     try {
       setError(null);
       const data = await getPostsWithMedia();
@@ -40,8 +42,19 @@ const fetchPosts = async () => {
     fetchPosts();
   }, []);
 
-if (loading) {
-    return <ActivityIndicator size="large" color="#FF5C5C" style={{ marginTop: 50 }} />;
+  useFocusEffect(
+  useCallback(() => {
+    fetchPosts(); 
+  }, [])
+);
+  if (loading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color="#FF5C5C"
+        style={{ marginTop: 50 }}
+      />
+    );
   }
 
   if (error) {
@@ -59,12 +72,17 @@ if (loading) {
     setRefreshing(true);
     await fetchPosts();
   };
-    return (
+  return (
     <FlatList
       data={posts}
       numColumns={numColumns}
-      keyExtractor={(item, index) => item.post?._id?.toString() || index.toString()}
-      columnWrapperStyle={{ justifyContent: "space-between", paddingHorizontal: cardMargin }}
+      keyExtractor={(item, index) =>
+        item.post?._id?.toString() || index.toString()
+      }
+      columnWrapperStyle={{
+        justifyContent: "space-between",
+        paddingHorizontal: cardMargin,
+      }}
       contentContainerStyle={{ padding: cardMargin }}
       refreshControl={
         <RefreshControl
@@ -76,7 +94,10 @@ if (loading) {
       }
       renderItem={({ item }) => (
         <PhotoCard
-          post={{ ...item, image: item.media?.[0]?.url || null }}
+          post={{
+            ...item.post,
+            image: item.media?.[0]?.url || null,
+          }}
           cardWidth={cardWidth}
         />
       )}

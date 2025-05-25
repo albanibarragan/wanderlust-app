@@ -12,7 +12,7 @@ import Reaction from "./Reaction";
 
 export default function PhotoCard({ post, cardWidth }) {
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.likes || 0);
+  const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
   const navigation = useNavigation();
 
   const countLiked = () => {
@@ -28,12 +28,16 @@ export default function PhotoCard({ post, cardWidth }) {
   };
 
   const username = post.userId?.username || "usuario";
+  const title = post.title?.trim() ? post.title : "Sin título";
   const imageUrl = post.image || post.media?.[0]?.url || null;
 
   return (
-    <TouchableOpacity style={[styles.card, { width: cardWidth }]} onPress={handlePost}>
+    <TouchableOpacity
+      style={[styles.card, { width: cardWidth }]}
+      onPress={handlePost}
+    >
       <ImageBackground
-        source={{ uri: imageUrl } }
+        source={{ uri: imageUrl }}
         style={styles.imageBackground}
         imageStyle={styles.image}
       >
@@ -47,7 +51,7 @@ export default function PhotoCard({ post, cardWidth }) {
         </TouchableOpacity>
 
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>“{post.title}”</Text>
+          <Text style={styles.title}>“{title}”</Text>
           <Text style={styles.username}>@{username}</Text>
 
           <View style={styles.bottomRow}>
@@ -64,6 +68,7 @@ export default function PhotoCard({ post, cardWidth }) {
               countColor={"#fff"}
               onIconPress={countLiked}
             />
+
             <TouchableOpacity style={styles.seeMoreButton} onPress={handlePost}>
               <Text style={styles.seeMoreText}>Más</Text>
             </TouchableOpacity>

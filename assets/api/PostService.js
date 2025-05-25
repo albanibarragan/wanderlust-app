@@ -31,15 +31,16 @@ export const createPost = async ({
   title,
   description,
   mediaFiles,
-  tags,
-  location,
+  tags = [],
+  location = null,
 }) => {
   const formData = new FormData();
-  formData.append("title", title);
-  formData.append("description", description);
 
-  if (tags && tags.length > 0) {
-    formData.append("tags", tags.join(","));
+  formData.append("title", title || "");
+  formData.append("description", description || "");
+
+  if (tags.length > 0) {
+    formData.append("tags", tags.join(",")); // Backend espera string, no array
   }
 
   if (location) {
@@ -48,24 +49,26 @@ export const createPost = async ({
     formData.append("locationLongitude", location.longitude?.toString() || "");
   }
 
-  if (mediaFiles?.length > 0) {
-    const file = mediaFiles[0];
-    const filename = file.uri.split("/").pop();
+  if (mediaFiles.length > 0) {
+    const file = mediaFiles[0]; // SOLO UNA IMAGEN
+
+    const uri = file.uri;
+    const filename = uri.split("/").pop();
     const ext = /\.(\w+)$/.exec(filename)?.[1];
-    const type = ext ? `image/${ext}` : "image";
+    const type = ext ? `image/${ext}` : "image/jpeg";
 
     formData.append("image", {
-      uri: file.uri,
+      uri,
       name: filename,
       type,
     });
   }
 
- const response = await API.post("/post", formData, {
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-});
+  const response = await API.post("/post", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
   console.log("✅ Respuesta del servidor:", response.data);
   return response.data;
