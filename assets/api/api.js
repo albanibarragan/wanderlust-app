@@ -12,12 +12,10 @@ const API = axios.create({
 
 API.interceptors.request.use(async (config) => {
   const token = await AsyncStorage.getItem('token');
-  console.log("Token:", token);
   if (token) {
     config.headers.wanderlust_token = token;
   }
 
-  console.log("Configuración de la solicitud:", config);
   return config;
 });
 

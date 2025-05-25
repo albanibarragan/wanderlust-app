@@ -23,19 +23,18 @@ const ExploreFeed = () => {
   const [error, setError] = useState(null);
 
 const fetchPosts = async () => {
-  try {
-    setError(null);
-    const data = await getPostsWithMedia(); 
-    console.log("📦 Datos recibidos:", data);
-    setPosts(data);
-  } catch (err) {
-    console.error("❌ Error al cargar publicaciones:", err);
-    setError("No se pudieron cargar las publicaciones.");
-  } finally {
-    setLoading(false);
-    setRefreshing(false);
-  }
-};
+    try {
+      setError(null);
+      const data = await getPostsWithMedia();
+      setPosts(data);
+    } catch (err) {
+      console.error("❌ Error al cargar publicaciones:", err);
+      setError("No se pudieron cargar las publicaciones.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     fetchPosts();
@@ -64,7 +63,7 @@ if (loading) {
     <FlatList
       data={posts}
       numColumns={numColumns}
-      keyExtractor={(item) => item._id}
+      keyExtractor={(item, index) => item.post?._id?.toString() || index.toString()}
       columnWrapperStyle={{ justifyContent: "space-between", paddingHorizontal: cardMargin }}
       contentContainerStyle={{ padding: cardMargin }}
       refreshControl={

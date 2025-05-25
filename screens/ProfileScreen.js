@@ -3,50 +3,53 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import HeaderWanderlust from "../components/HeaderWanderlust";
 import CardProfile from "../components/CardProfile";
 import BackButton from "../components/BackButton";
 import { useRoute } from "@react-navigation/native";
-import { currentUser, users, posts } from "../assets/data/Mocks";
 import PhotoCard from "../components/PhotoCard";
 import { useEffect, useState } from "react";
-import { getMyProfile } from "../assets/api/UserService";
+import { getCurrentUserId } from "../assets/api/auth";
+import { getUserById } from "../assets/api/UserService";
 
 const windowWidth = Dimensions.get("window").width;
 
 export default function ProfileScreen() {
   const route = useRoute();
-  const params = route?.params || {};
-  const { userId, isMyProfile = false } = route.params || {};
+  const { userId: paramUserId, isMyProfile = false } = route.params || {};
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // conexion a la api
-  useEffect (() => {
-     if (isMyProfile) {
-      (async () => {
-        try {
-          const data = await getMyProfile();
-          setUser(data);
-        } catch (error) {
-          console.error("Error al obtener perfil:", error);
-        } finally {
-          setLoading(false);
-        }
-      })();
-    } else {
-      //otros perfiles
-      const foundUser = users.find((u) => u.id === userId);
-      setUser(foundUser);
-      setLoading(false);
-    }
-  }, [isMyProfile]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        let idToFetch = paramUserId;
 
+        if (isMyProfile) {
+          idToFetch = await getCurrentUserId();
+        }
+
+        if (!idToFetch) {
+          throw new Error("No se pudo obtener el ID del usuario.");
+        }
+
+        console.log("🔍 ID a buscar:", idToFetch);
+
+        const userData = await getUserById(idToFetch);
+        setUser(userData);
+      } catch (error) {
+        console.error("❌ Error al obtener perfil:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [isMyProfile, paramUserId]);
 
   if (loading) {
     return (
@@ -64,8 +67,26 @@ export default function ProfileScreen() {
     );
   }
 
-  const postsUser = posts.filter((post) => post.userId === user.id);
-
+  const postsUser = [
+  {
+    id: "1",
+    image: "https://picsum.photos/seed/1/600",
+    title: "Post 1",
+    userId: user._id || user.id,
+  },
+  {
+    id: "2",
+    image: "https://picsum.photos/seed/2/600",
+    title: "Post 2",
+    userId: user._id || user.id,
+  },
+  {
+    id: "3",
+    image: "https://picsum.photos/seed/3/600",
+    title: "Post 3",
+    userId: user._id || user.id,
+  },
+];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -73,10 +94,10 @@ export default function ProfileScreen() {
 
       <CardProfile
         avatar={user.avatar}
-        name={user.firstName + " " + user.lastName}
+        name={`${user.firstName} ${user.lastName}`}
         username={user.username}
         bio={user.bio}
-        stats={{ posts: postsUser.length, followers: 0, following: 0 }}
+        stats={{ posts: 0, followers: 0, following: 0 }} 
         isMyProfile={isMyProfile}
       />
 

@@ -13,8 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
-import API from "../assets/api/api"; 
 import { useState } from "react";
+import { login } from "../assets/api/auth";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -31,18 +31,10 @@ const Login = ({ navigation }) => {
     setLoading(true);
 
     try {
-      // Usar API centralizada (axios + @env + token interceptor)
-      const res = await API.post("/auth/login", {
-        email,
-        password,
-      });
+      const res = await login({ email, password }); // ✅ Usa tu función que guarda token + userId
+      console.log("✅ Login completo:", res);
 
-      const { token, user } = res.data;
-
-      await AsyncStorage.setItem("token", token);
-      console.log("Login exitoso:", user);
-
-      navigation.navigate("Main");
+      navigation.navigate("Main"); // redirige si todo va bien
     } catch (err) {
       const msg = err?.response?.data?.msg || "Error al iniciar sesión";
       Alert.alert("Error", msg);
