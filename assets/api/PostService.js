@@ -1,47 +1,45 @@
-// src/services/PostService.js
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API from "./api";
 
 // Obtener todos los posts
 export const getAllPosts = async () => {
-  const response = await API.get("/post");
+  const token = await AsyncStorage.getItem("jwt");
+  const response = await API.get("/post", {
+    headers: {
+      wanderlust_token: token,
+    },
+  });
   return response.data.posts;
 };
 
-// Obtener media de un post
 export const getMediaByPostId = async (postId) => {
-  const response = await API.get(`/media/post/${postId}`);
+  const token = await AsyncStorage.getItem("jwt");
+  const response = await API.get(`/media/post/${postId}`, {
+    headers: {
+      wanderlust_token: token,
+    },
+  });
   return response.data;
 };
 
-// Obtener posts con media ya incluida
 export const getPostsWithMedia = async () => {
   const posts = await getAllPosts();
-
-  const enriched = await Promise.all(
-    posts.map(async (post) => {
-      try {
-        const media = await getMediaByPostId(post._id);
-        return { ...post, media };
-      } catch {
-        return { ...post, media: [] }; // Si falla el media, igual se retorna el post
-      }
-    })
-  );
-
-  return enriched;
+  return posts;
 };
-export const createPost = async ({ title, description, mediaFiles, tags, location }) => {
-  const token = await AsyncStorage.getItem("token");
-  if (!token) throw new Error("No has iniciado sesión");
 
+export const createPost = async ({
+  title,
+  description,
+  mediaFiles,
+  tags,
+  location,
+}) => {
   const formData = new FormData();
   formData.append("title", title);
   formData.append("description", description);
 
   if (tags && tags.length > 0) {
-    formData.append("tags", tags.join(",")); // por ejemplo: ["paisaje", "globos"]
+    formData.append("tags", tags.join(","));
   }
 
   if (location) {
@@ -53,8 +51,8 @@ export const createPost = async ({ title, description, mediaFiles, tags, locatio
   if (mediaFiles?.length > 0) {
     const file = mediaFiles[0];
     const filename = file.uri.split("/").pop();
-    const match = /\.(\w+)$/.exec(filename);
-    const type = match ? `image/${match[1]}` : "image";
+    const ext = /\.(\w+)$/.exec(filename)?.[1];
+    const type = ext ? `image/${ext}` : "image";
 
     formData.append("image", {
       uri: file.uri,
@@ -63,12 +61,12 @@ export const createPost = async ({ title, description, mediaFiles, tags, locatio
     });
   }
 
-  const response = await API.post("/post", formData, {
-    headers: {
-      wanderlust_token: token,
-      "Content-Type": "multipart/form-data",
-    },
-  });
+ const response = await API.post("/post", formData, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
 
+  console.log("✅ Respuesta del servidor:", response.data);
   return response.data;
 };

@@ -13,6 +13,8 @@ import BackButton from "../components/BackButton";
 import { useRoute } from "@react-navigation/native";
 import { currentUser, users, posts } from "../assets/data/Mocks";
 import PhotoCard from "../components/PhotoCard";
+import { useEffect, useState } from "react";
+import { getMyProfile } from "../assets/api/UserService";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -21,7 +23,38 @@ export default function ProfileScreen() {
   const params = route?.params || {};
   const { userId, isMyProfile = false } = route.params || {};
 
-  const user = isMyProfile ? currentUser : users.find((u) => u.id === userId);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // conexion a la api
+  useEffect (() => {
+     if (isMyProfile) {
+      (async () => {
+        try {
+          const data = await getMyProfile();
+          setUser(data);
+        } catch (error) {
+          console.error("Error al obtener perfil:", error);
+        } finally {
+          setLoading(false);
+        }
+      })();
+    } else {
+      //otros perfiles
+      const foundUser = users.find((u) => u.id === userId);
+      setUser(foundUser);
+      setLoading(false);
+    }
+  }, [isMyProfile]);
+
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" />
+      </SafeAreaView>
+    );
+  }
 
   if (!user) {
     return (
@@ -30,7 +63,9 @@ export default function ProfileScreen() {
       </SafeAreaView>
     );
   }
+
   const postsUser = posts.filter((post) => post.userId === user.id);
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -38,10 +73,10 @@ export default function ProfileScreen() {
 
       <CardProfile
         avatar={user.avatar}
-        name={user.name}
+        name={user.firstName + " " + user.lastName}
         username={user.username}
         bio={user.bio}
-        stats={user.stats || { posts: 0, followers: 0, following: 0 }}
+        stats={{ posts: postsUser.length, followers: 0, following: 0 }}
         isMyProfile={isMyProfile}
       />
 

@@ -33,7 +33,7 @@ export default function PhotoCard({ post, cardWidth }) {
   return (
     <TouchableOpacity style={[styles.card, { width: cardWidth }]} onPress={handlePost}>
       <ImageBackground
-        source={imageUrl ? { uri: imageUrl } : require("../assets/placeholder.jpg")}
+        source={{ uri: imageUrl } }
         style={styles.imageBackground}
         imageStyle={styles.image}
       >

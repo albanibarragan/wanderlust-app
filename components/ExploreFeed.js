@@ -8,10 +8,9 @@ import {
   ActivityIndicator,
   RefreshControl
 } from "react-native";
-import { getPostsWithMedia } from "../services/PostService";
+import { getPostsWithMedia } from "../assets/api/PostService";
 import { Dimensions } from "react-native";
-import PhotoCard from "../components/PhotoCard"
-import { RefreshControl } from 'react-native';
+import PhotoCard from "../components/PhotoCard";
 
 const numColumns = 2;
 const cardMargin = 8;
@@ -23,21 +22,14 @@ const ExploreFeed = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
-  };
-
 const fetchPosts = async () => {
   try {
     setError(null);
     const data = await getPostsWithMedia(); 
+    console.log("📦 Datos recibidos:", data);
     setPosts(data);
   } catch (err) {
+    console.error("❌ Error al cargar publicaciones:", err);
     setError("No se pudieron cargar las publicaciones.");
   } finally {
     setLoading(false);
@@ -64,7 +56,10 @@ if (loading) {
     );
   }
 
-
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchPosts();
+  };
     return (
     <FlatList
       data={posts}

@@ -8,13 +8,14 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
-  Alert,
+  Alert
 } from "react-native";
 import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import BackButton from "../components/BackButton";
 import CameraPicker from "../components/CameraPicker";
 import MediaPicker from "../components/MediaPicker";
 import MediaPreview from "../components/MediaPreview";
+import { API_URLL } from '@env';
 import { createPost } from "../assets/api/PostService";
 
 const CreatePostScreen = ({ navigation }) => {
@@ -23,50 +24,44 @@ const CreatePostScreen = ({ navigation }) => {
   const [content, setContent] = useState("");
   const [mediaFiles, setMediaFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [tags, setTags] = useState(""); // input como "paisaje,globos"
-  const [location, setLocation] = useState({
-    description: "",
-    latitude: "",
-    longitude: "",
-  });
 
-  const handlePost = async () => {
-    if (!content.trim()) {
-      Alert.alert("Error", "Por favor, escribe algo sobre tu experiencia.");
-      return;
-    }
+const handlePost = async () => {
+  if (!content.trim()) {
+    Alert.alert("Error", "Por favor, escribe algo sobre tu experiencia.");
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      const result = await createPost({
-        title,
-        description: content,
-        mediaFiles,
-        tags: tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-        location,
-      });
+  try {
+    await createPost({
+      title,
+      description: content,
+      mediaFiles,
+      tags: [], // opcional si lo usas
+      location: null, // opcional si usas geolocalización
+    });
+    console.log("Post creado con éxito");
+    Alert.alert("Éxito", "Tu publicación ha sido creada");
 
-      Alert.alert("Éxito", "Tu publicación ha sido creada");
-      setTitle("");
-      setContent("");
-      setShowTitle(false);
-      setMediaFiles([]);
-      navigation.goBack();
-    } catch (err) {
-      console.error("Error al crear publicación:", err);
-      const msg =
-        err?.response?.data?.msg || err?.message || "Error desconocido";
-      Alert.alert("Error", msg);
-    } finally {
-      setIsLoading(false);
-      Keyboard.dismiss();
-    }
-  };
+    // Limpiar formulario
+    setTitle("");
+    setContent("");
+    setShowTitle(false);
+    setMediaFiles([]);
 
+
+    navigation.goBack();
+  } catch (err) {
+    console.error("Error al crear la publicación:", err);
+    const msg =
+      err?.response?.data?.msg || err.message || "Error al crear la publicación.";
+    Alert.alert("Error", msg);
+  } finally {
+    setIsLoading(false);
+    Keyboard.dismiss();
+  }
+};
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <ScrollView
@@ -104,49 +99,6 @@ const CreatePostScreen = ({ navigation }) => {
           placeholderTextColor="#999"
         />
 
-        <Text style={styles.label}>Etiquetas (separadas por coma)</Text>
-        <TextInput
-          style={styles.contentInput}
-          placeholder="Ej: paisaje,globos"
-          value={tags}
-          onChangeText={setTags}
-          placeholderTextColor="#999"
-        />
-
-        <Text style={styles.label}>Ubicación</Text>
-        <TextInput
-          style={styles.contentInput}
-          placeholder="Descripción (ej. Barquisimeto)"
-          value={location.description}
-          onChangeText={(value) =>
-            setLocation((prev) => ({ ...prev, description: value }))
-          }
-          placeholderTextColor="#999"
-        />
-
-        <View style={{ flexDirection: "row", gap: 12 }}>
-          <TextInput
-            style={[styles.contentInput, { flex: 1 }]}
-            placeholder="Latitud"
-            value={location.latitude}
-            onChangeText={(value) =>
-              setLocation((prev) => ({ ...prev, latitude: value }))
-            }
-            keyboardType="numeric"
-            placeholderTextColor="#999"
-          />
-          <TextInput
-            style={[styles.contentInput, { flex: 1 }]}
-            placeholder="Longitud"
-            value={location.longitude}
-            onChangeText={(value) =>
-              setLocation((prev) => ({ ...prev, longitude: value }))
-            }
-            keyboardType="numeric"
-            placeholderTextColor="#999"
-          />
-        </View>
-
         <MediaPreview mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
 
         <View style={styles.actionsRow}>
@@ -160,8 +112,8 @@ const CreatePostScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={[styles.postButton, isLoading && styles.disabledButton]}
+        <TouchableOpacity 
+          style={[styles.postButton, isLoading && styles.disabledButton]} 
           onPress={handlePost}
           disabled={isLoading}
         >
@@ -172,7 +124,7 @@ const CreatePostScreen = ({ navigation }) => {
       </ScrollView>
     </TouchableWithoutFeedback>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
