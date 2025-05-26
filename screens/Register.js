@@ -86,7 +86,7 @@ const Register = ({ navigation }) => {
         bio,
       };
 
-      console.log("Payload a enviar:", payload); // 👀 Verifica aquí
+      console.log("Payload a enviar:", payload); 
       const result = await register(payload);
 
       console.log("Respuesta del backend:", result);
