@@ -65,6 +65,13 @@ const Register = ({ navigation }) => {
       return;
     }
 
+    const cleanedPhone = `${countryCode}${phoneNumber}`.replace(/\D/g, '').slice(-11);
+
+  if (cleanedPhone.length !== 11) {
+    Alert.alert("Error", "El número de teléfono debe tener exactamente 11 dígitos.");
+    return;
+  }
+
     setLoading(true);
 
     try {
@@ -74,7 +81,7 @@ const Register = ({ navigation }) => {
         username,
         email,
         password,
-        phone: `${countryCode}${phoneNumber}`,
+        phone: cleanedPhone,
         birthday: birthDate.toISOString().split("T")[0],
         bio,
       };
