@@ -4,9 +4,6 @@ import { API_URLL } from '@env';
 
 const API = axios.create({
    baseURL: API_URLL,  
-  headers: {
-    'Content-Type': 'application/json',
-  },
   timeout: 5000,
 });
 

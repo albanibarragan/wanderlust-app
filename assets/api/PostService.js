@@ -34,13 +34,15 @@ export const createPost = async ({
   tags = [],
   location = null,
 }) => {
+  const token = await AsyncStorage.getItem("wanderlust_token"); // Asegúrate que este es el nombre correcto
+
   const formData = new FormData();
 
   formData.append("title", title || "");
   formData.append("description", description || "");
 
   if (tags.length > 0) {
-    formData.append("tags", tags.join(",")); // Backend espera string, no array
+    formData.append("tags", tags.join(",")); // Backend espera un string separado por comas
   }
 
   if (location) {
@@ -50,8 +52,7 @@ export const createPost = async ({
   }
 
   if (mediaFiles.length > 0) {
-    const file = mediaFiles[0]; // SOLO UNA IMAGEN
-
+    const file = mediaFiles[0]; // Solo una imagen por ahora
     const uri = file.uri;
     const filename = uri.split("/").pop();
     const ext = /\.(\w+)$/.exec(filename)?.[1];
@@ -67,7 +68,9 @@ export const createPost = async ({
   const response = await API.post("/post", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
+      wanderlust_token: token, 
     },
+    timeout: 15000, 
   });
 
   console.log("✅ Respuesta del servidor:", response.data);

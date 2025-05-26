@@ -8,180 +8,179 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
-  Alert
+  Alert,
 } from "react-native";
 import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import BackButton from "../components/BackButton";
 import CameraPicker from "../components/CameraPicker";
 import MediaPicker from "../components/MediaPicker";
 import MediaPreview from "../components/MediaPreview";
-import { API_URLL } from '@env';
 import { createPost } from "../assets/api/PostService";
 
 const CreatePostScreen = ({ navigation }) => {
-  const [showTitle, setShowTitle] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [mediaFiles, setMediaFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [tagInput, setTagInput] = useState("");
-const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState([]);
 
-const handlePost = async () => {
-  if (!content.trim()) {
-    Alert.alert("Error", "Por favor, escribe algo sobre tu experiencia.");
-    return;
-  }
+  const handlePost = async () => {
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
 
-  setIsLoading(true);
+    if (!trimmedTitle) {
+      Alert.alert("Campo obligatorio", "Por favor, escribe un título para tu publicación.");
+      return;
+    }
 
-  try {
-    await createPost({
-      title,
-      description: content,
-      mediaFiles,
-      tags, 
-      location: null,
-    });
-    console.log("Post creado con éxito");
-    Alert.alert("Éxito", "Tu publicación ha sido creada");
+    if (!trimmedContent) {
+      Alert.alert("Campo obligatorio", "Por favor, escribe algo sobre tu experiencia.");
+      return;
+    }
 
-    // Limpiar formulario
-    setTitle("");
-    setContent("");
-    setShowTitle(false);
-    setMediaFiles([]);
+    if (mediaFiles.length === 0) {
+      Alert.alert("Imagen requerida", "Debes seleccionar al menos una imagen.");
+      return;
+    }
 
+    setIsLoading(true);
 
-    navigation.goBack();
-  } catch (err) {
-    console.error("Error al crear la publicación:", err);
-    const msg =
-      err?.response?.data?.msg || err.message || "Error al crear la publicación.";
-    Alert.alert("Error", msg);
-  } finally {
-    setIsLoading(false);
-    Keyboard.dismiss();
-  }
-};
- return (
-  <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <ScrollView
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
-      <BackButton title="Nuevo Post" />
+    try {
+      await createPost({
+        title: trimmedTitle,
+        description: trimmedContent,
+        mediaFiles,
+        tags,
+        location: null, 
+      });
 
-      {!showTitle && (
-        <TouchableOpacity
-          onPress={() => setShowTitle(true)}
-          style={styles.addTitleButton}
-        >
-          <AntDesign name="pluscircleo" size={20} color="#555" />
-          <Text style={styles.addTitleText}>Agregar título</Text>
-        </TouchableOpacity>
-      )}
+      Alert.alert("Éxito", "Tu publicación ha sido creada");
 
-      {showTitle && (
+      // Limpiar formulario
+      setTitle("");
+      setContent("");
+      setTags([]);
+      setTagInput("");
+      setMediaFiles([]);
+
+      navigation.goBack();
+    } catch (err) {
+      console.error("Error al crear la publicación:", err);
+      const msg =
+        err?.response?.data?.msg || err.message || "Error al crear la publicación.";
+      Alert.alert("Error", msg);
+    } finally {
+      setIsLoading(false);
+      Keyboard.dismiss();
+    }
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <BackButton title="Nuevo Post" />
+
         <TextInput
           style={styles.titleInput}
-          placeholder="Título (opcional)"
+          placeholder="Título de la publicación"
           value={title}
           onChangeText={setTitle}
           placeholderTextColor="#aaa"
         />
-      )}
 
-      <TextInput
-        style={styles.contentInput}
-        placeholder="Escribe sobre tu viaje..."
-        value={content}
-        onChangeText={(text) => {
-          if (text.length <= 500) setContent(text);
-        }}
-        multiline
-        placeholderTextColor="#999"
-      />
-      <Text style={styles.charCount}>{content.length}/500</Text>
-<View style={styles.tagSection}>
-  <View style={styles.tagInputRow}>
-    <TextInput
-      style={styles.tagInput}
-      placeholder="Escribe una etiqueta"
-      value={tagInput}
-      onChangeText={setTagInput}
-      onSubmitEditing={() => {
-        if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-          setTags((prev) => [...prev, tagInput.trim()]);
-        }
-        setTagInput("");
-      }}
-      placeholderTextColor="#aaa"
-    />
-    <TouchableOpacity
-      onPress={() => {
-        if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-          setTags((prev) => [...prev, tagInput.trim()]);
-        }
-        setTagInput("");
-      }}
-      style={styles.addTagButton}
-    >
-      <AntDesign name="plus" size={16} color="#fff" />
-    </TouchableOpacity>
-  </View>
+        <TextInput
+          style={styles.contentInput}
+          placeholder="Escribe sobre tu viaje..."
+          value={content}
+          onChangeText={(text) => {
+            if (text.length <= 500) setContent(text);
+          }}
+          multiline
+          placeholderTextColor="#999"
+        />
+        <Text style={styles.charCount}>{content.length}/500</Text>
 
-  <View style={styles.tagList}>
-    {tags.map((tag, index) => (
-      <View key={index} style={styles.tag}>
-        <Text style={styles.tagText}>#{tag}</Text>
-        <TouchableOpacity onPress={() => {
-          setTags(tags.filter((t) => t !== tag));
-        }}>
-          <AntDesign name="close" size={12} color="#fff" />
+        <View style={styles.tagSection}>
+          <View style={styles.tagInputRow}>
+            <TextInput
+              style={styles.tagInput}
+              placeholder="Escribe una etiqueta"
+              value={tagInput}
+              onChangeText={setTagInput}
+              onSubmitEditing={() => {
+                if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+                  setTags((prev) => [...prev, tagInput.trim()]);
+                }
+                setTagInput("");
+              }}
+              placeholderTextColor="#aaa"
+            />
+            <TouchableOpacity
+              onPress={() => {
+                if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+                  setTags((prev) => [...prev, tagInput.trim()]);
+                }
+                setTagInput("");
+              }}
+              style={styles.addTagButton}
+            >
+              <AntDesign name="plus" size={16} color="#fff" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.tagList}>
+            {tags.map((tag, index) => (
+              <View key={index} style={styles.tag}>
+                <Text style={styles.tagText}>#{tag}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setTags(tags.filter((t) => t !== tag));
+                  }}
+                >
+                  <AntDesign name="close" size={12} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <MediaPreview mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
+
+        {mediaFiles.length === 0 && (
+          <Text style={styles.warningText}>
+            Debes seleccionar al menos una imagen.
+          </Text>
+        )}
+
+        <View style={styles.actionsRow}>
+          <MediaPicker mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
+          <CameraPicker mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
+          <TouchableOpacity style={styles.iconButton}>
+            <Entypo name="location-pin" size={24} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <MaterialIcons name="emoji-emotions" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          style={[
+            styles.postButton,
+            (isLoading || !content.trim() || mediaFiles.length === 0 || !title.trim()) &&
+              styles.disabledButton,
+          ]}
+          onPress={handlePost}
+          disabled={isLoading || !content.trim() || mediaFiles.length === 0 || !title.trim()}
+        >
+          <Text style={styles.postButtonText}>
+            {isLoading ? "Publicando..." : "Publicar"}
+          </Text>
         </TouchableOpacity>
-      </View>
-    ))}
-  </View>
-</View>
-      <MediaPreview mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
-
-      {mediaFiles.length === 0 && (
-        <Text style={styles.warningText}>
-          Debes seleccionar al menos una imagen.
-        </Text>
-      )}
-
-
-      <View style={styles.actionsRow}>
-        <MediaPicker mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
-        <CameraPicker mediaFiles={mediaFiles} setMediaFiles={setMediaFiles} />
-        <TouchableOpacity style={styles.iconButton}>
-          <Entypo name="location-pin" size={24} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
-          <MaterialIcons name="emoji-emotions" size={24} color="#000" />
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity
-        style={[
-          styles.postButton,
-          (isLoading || !content.trim() || mediaFiles.length === 0) &&
-            styles.disabledButton,
-        ]}
-        onPress={handlePost}
-        disabled={isLoading || !content.trim() || mediaFiles.length === 0}
-      >
-        <Text style={styles.postButtonText}>
-          {isLoading ? "Publicando..." : "Publicar"}
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
-  </TouchableWithoutFeedback>
-);
-
-}
+      </ScrollView>
+    </TouchableWithoutFeedback>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
