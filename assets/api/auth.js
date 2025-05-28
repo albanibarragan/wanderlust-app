@@ -5,13 +5,8 @@ export const login = async ({ email, password }) => {
   try {
     const res = await API.post("/auth/login", { email, password });
 
-    console.log("🧪 Login response:", res.data);
-
     const token = res.data?.token;
     const userId = res.data?.user?.iduser;
-
-    console.log("🔐 Token recibido:", token);
-    console.log("🆔 userId recibido:", userId);
 
     if (token && userId) {
       await AsyncStorage.setItem("token", token);

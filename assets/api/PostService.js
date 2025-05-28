@@ -76,3 +76,25 @@ export const createPost = async ({
   console.log("✅ Respuesta del servidor:", response.data);
   return response.data;
 };
+
+export const getPostsByUserId = async (userId) => {
+  const token = await AsyncStorage.getItem("jwt");
+
+  const response = await API.get("/post/user", {
+    params: { userId },
+    headers: {
+      wanderlust_token: token,
+    },
+  });
+
+  const posts = response.data.posts;
+
+  const postsWithMedia = await Promise.all(
+    posts.map(async (post) => {
+      const media = await getMediaByPostId(post._id);
+      return { post, media };
+    })
+  );
+
+  return postsWithMedia;
+};

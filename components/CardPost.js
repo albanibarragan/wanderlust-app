@@ -13,14 +13,20 @@ import Reaction from "./Reaction";
 import { users, currentUser } from "../assets/data/Mocks";
 
 export default function CardPost({ item }) {
+  console.log("🧩 item en CardPost:", item);
   const navigation = useNavigation();
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(item.likes || 0);
+  const [likeCount, setLikeCount] = useState(item.likes?.length || 0);
 
-  const user =
-    item.userId === currentUser.id
-      ? currentUser
-      : users.find((u) => u.id === item.userId) || null;
+const user =
+  item.userId?._id === currentUser.id || item.userId === currentUser.id
+    ? currentUser
+    : {
+        id: item.userId?._id || item.userId,
+        username: item.userId?.username || "desconocido",
+        avatar: item.userId?.profilePicture || "https://via.placeholder.com/100",
+        location: item.locationDescription || "",
+      };
 
   const countLiked = () => {
     setLiked((prev) => {
@@ -38,7 +44,7 @@ export default function CardPost({ item }) {
     <View style={styles.card}>
       <View style={styles.imageWrapper}>
         <ImageBackground
-          source={{ uri: item.image }}
+          source={{ uri: item.image || "https://via.placeholder.com/500" }}
           style={styles.mainImage}
           imageStyle={styles.imageStyle}
         >
@@ -50,7 +56,9 @@ export default function CardPost({ item }) {
                   <Text style={styles.username}>
                     {user.id === "me" ? "Tú" : `@${user.username}`}
                   </Text>
-                  <Text style={styles.time}>{item.time}</Text>
+                  <Text style={styles.time}>
+                    {item.time || new Date(item.createdAt).toLocaleString()}
+                  </Text>
                 </View>
               </View>
               <TouchableOpacity>
@@ -61,21 +69,23 @@ export default function CardPost({ item }) {
         </ImageBackground>
 
         <View style={styles.content}>
-          <TouchableOpacity style={styles.postContent} onPress={handlePostPress}>
-            <Text style={styles.postText} numberOfLines={3}>{item.content}</Text>
+          <TouchableOpacity
+            style={styles.postContent}
+            onPress={handlePostPress}
+          >
+            <Text style={styles.postText} numberOfLines={3}>
+              {item.content || item.description || item.title || "Sin contenido"}
+            </Text>
             <Text style={styles.postText} numberOfLines={1}>
-              {item.location}, {item.country}
+              {item.location?.description || "Ubicación no disponible"},{" "}
+              {item.country || "País desconocido"}
             </Text>
           </TouchableOpacity>
 
           <View style={styles.actions}>
             <Reaction
               icon={
-                <Icon
-                  name="heart"
-                  size={20}
-                  color={liked ? "red" : "#fff"}
-                />
+                <Icon name="heart" size={20} color={liked ? "red" : "#fff"} />
               }
               count={likeCount}
               countColor="#fff"

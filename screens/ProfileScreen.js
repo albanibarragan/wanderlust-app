@@ -14,12 +14,14 @@ import PhotoCard from "../components/PhotoCard";
 import { useEffect, useState } from "react";
 import { getCurrentUserId } from "../assets/api/auth";
 import { getUserById } from "../assets/api/UserService";
+import { getPostsByUserId } from "../assets/api/PostService";
 
 const windowWidth = Dimensions.get("window").width;
 
 export default function ProfileScreen() {
   const route = useRoute();
   const { userId: paramUserId, isMyProfile = false } = route.params || {};
+  const [postsUser, setPostsUser] = useState([]);
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,6 +43,9 @@ export default function ProfileScreen() {
 
         const userData = await getUserById(idToFetch);
         setUser(userData);
+
+        const posts = await getPostsByUserId(idToFetch);
+        setPostsUser(posts);  
       } catch (error) {
         console.error("❌ Error al obtener perfil:", error);
       } finally {
@@ -67,48 +72,37 @@ export default function ProfileScreen() {
     );
   }
 
-  const postsUser = [
-  {
-    id: "1",
-    image: "https://picsum.photos/seed/1/600",
-    title: "Post 1",
-    userId: user._id || user.id,
-  },
-  {
-    id: "2",
-    image: "https://picsum.photos/seed/2/600",
-    title: "Post 2",
-    userId: user._id || user.id,
-  },
-  {
-    id: "3",
-    image: "https://picsum.photos/seed/3/600",
-    title: "Post 3",
-    userId: user._id || user.id,
-  },
-];
-
   return (
     <SafeAreaView style={styles.container}>
       <BackButton title={isMyProfile ? "Tu perfil" : "Perfil"} />
 
       <CardProfile
-        avatar={user.avatar}
+        avatar={user.profilePicture}
         name={`${user.firstName} ${user.lastName}`}
         username={user.username}
         bio={user.bio}
-        stats={{ posts: 0, followers: 0, following: 0 }} 
+        stats={{ posts: postsUser.length, followers: 0, following: 0 }}
         isMyProfile={isMyProfile}
       />
 
       <View style={styles.content}>
         <FlatList
           data={postsUser}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.post?._id}
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <PhotoCard post={item} cardWidth={windowWidth / 2 - 24} />
+            <PhotoCard
+              post={{
+                ...item.post,
+                image: item.media?.[0]?.url || null,
+                user: {
+                  username: user.username,
+                  profilePicture: user.profilePicture,
+                },
+              }}
+              cardWidth={windowWidth / 2 - 24}
+            />
           )}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>

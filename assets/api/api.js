@@ -13,6 +13,13 @@ API.interceptors.request.use(async (config) => {
     config.headers.wanderlust_token = token;
   }
 
+  console.log("🔍 Request completa:", {
+    baseURL: config.baseURL,
+    url: config.url,
+    fullURL: config.baseURL + config.url,
+    params: config.params,
+  });
+
   return config;
 });
 
