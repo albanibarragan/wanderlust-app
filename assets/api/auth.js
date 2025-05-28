@@ -1,26 +1,20 @@
-import API from "./api";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import API from "./api";
 
 export const login = async ({ email, password }) => {
-  try {
-    const res = await API.post("/auth/login", { email, password });
+  const res = await API.post("/auth/login", { email, password });
 
-    const token = res.data?.token;
-    const userId = res.data?.user?.iduser;
+  const token = res.data.token;
 
-    if (token && userId) {
-      await AsyncStorage.setItem("token", token);
-      await AsyncStorage.setItem("userId", userId);
-      console.log("✅ Token y userId guardados");
-    } else {
-      console.error("❌ token o userId faltan en la respuesta");
-    }
-
-    return res.data;
-
-  } catch (error) {
-    console.error("❌ ERROR EN LOGIN:", error);
+  if (token) {
+    await AsyncStorage.setItem("jwt", token); // 
+    console.log("✅ Token guardado correctamente:", token);
+  } else {
+    console.error("❌ No se recibió el token en la respuesta del login");
   }
+
+  return res.data;
 };
 
 export const register = async ({ firstName, lastName, email, password, phone, birthday, username, bio }) => {
@@ -32,7 +26,7 @@ export const register = async ({ firstName, lastName, email, password, phone, bi
     phone,
     birthday,
     username,
-    bio
+     bio
   });
   return res.data;
 };

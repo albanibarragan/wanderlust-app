@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
+import { login } from '../assets/api/auth';
 import { useState } from "react";
 import { login } from "../assets/api/auth";
 
@@ -22,28 +23,29 @@ const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const logo = require("../assets/brujula-logo.png");
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Todos los campos son obligatorios.");
-      return;
-    }
+ const handleLogin = async () => {
+  if (!email || !password) {
+    Alert.alert("Error", "Todos los campos son obligatorios.");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const res = await login({ email, password }); // ✅ Usa tu función que guarda token + userId
-      console.log("✅ Login completo:", res);
+  try {
+    const { token, user } = await login({ email, password });
 
-      navigation.navigate("Main"); // redirige si todo va bien
-    } catch (err) {
-      const msg = err?.response?.data?.msg || "Error al iniciar sesión";
-      Alert.alert("Error", msg);
-      console.error("Login error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    await AsyncStorage.setItem("token", token);
+    console.log("Login exitoso:", user);
 
+    navigation.replace("Main");
+  } catch (err) {
+    const msg = err?.msg || "Error al iniciar sesión";
+    Alert.alert("Error", msg);
+    console.error("Login error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView

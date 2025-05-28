@@ -1,5 +1,5 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -40,71 +40,54 @@ const Register = ({ navigation }) => {
     "Tu cuenta ha sido creada correctamente."
   );
 
-  const handleRegister = async () => {
-    if (
-      !firstName ||
-      !lastName ||
-      !username ||
-      !phoneNumber ||
-      !birthDate ||
-      !email ||
-      !password ||
-      !confirmPassword
-    ) {
-      Alert.alert("Error", "Por favor, completa todos los campos");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Las contraseñas no coinciden");
-      return;
-    }
-
-    if (!acceptTerms) {
-      Alert.alert("Términos", "Debes aceptar los términos y condiciones");
-      return;
-    }
-
-    const cleanedPhone = `${countryCode}${phoneNumber}`.replace(/\D/g, '').slice(-11);
-
-  if (cleanedPhone.length !== 11) {
-    Alert.alert("Error", "El número de teléfono debe tener exactamente 11 dígitos.");
+ const handleRegister = async () => {
+  if (
+    !firstName ||
+    !lastName ||
+    !username ||
+    !phoneNumber ||
+    !birthDate ||
+    !email ||
+    !password ||
+    !confirmPassword
+  ) {
+    Alert.alert("Error", "Por favor, completa todos los campos");
     return;
   }
 
-    setLoading(true);
+  if (password !== confirmPassword) {
+    Alert.alert("Error", "Las contraseñas no coinciden");
+    return;
+  }
 
-    try {
-      const payload = {
-        firstName,
-        lastName,
-        username,
-        email,
-        password,
-        phone: cleanedPhone,
-        birthday: birthDate.toISOString().split("T")[0],
-        bio,
-      };
+  if (!acceptTerms) {
+    Alert.alert("Términos", "Debes aceptar los términos y condiciones");
+    return;
+  }
 
-      console.log("Payload a enviar:", payload); 
-      const result = await register(payload);
+  setLoading(true);
 
-      console.log("Respuesta del backend:", result);
-      setSuccessMessage(
-        result?.msg || "Tu cuenta ha sido creada correctamente."
-      );
-      setIsModalVisible(true);
-    } catch (err) {
-      console.error("🔥 Error completo:", err); 
-      console.error("🔥 Error response data:", err?.response?.data);
+  try {
+    const result = await register({
+      firstName,
+      lastName,
+      username,
+      email,
+      password,
+      phone: `${countryCode}${phoneNumber}`,
+      birthday: birthDate.toISOString().split("T")[0],
+    });
 
-      const msg = err?.response?.data?.msg || err?.message ||"Error al registrar usuario";
-
-      Alert.alert("Error", msg);
-    } finally {
-      setLoading(false);
-    }
-  };
+    console.log("Registro exitoso:", result);
+    setIsModalVisible(true); 
+  } catch (err) {
+    const msg = err?.msg || "Error al registrar usuario";
+    Alert.alert("Error", msg);
+    console.error("Register error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleCountryCodePress = () => {
     console.log("Abrir selector de código de país");

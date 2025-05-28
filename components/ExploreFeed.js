@@ -113,6 +113,7 @@ const ExploreFeed = () => {
 const styles = StyleSheet.create({
   centered: {
     flex: 1,
+    padding: cardMargin,
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 50,

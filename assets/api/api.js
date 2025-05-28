@@ -1,26 +1,24 @@
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URLL } from '@env';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "@env";
 
 const API = axios.create({
-   baseURL: API_URLL,  
+  baseURL: "http://localhost:8080/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
   timeout: 5000,
 });
 
-API.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem('token');
-  if (token) {
-    config.headers.wanderlust_token = token;
-  }
-
-  console.log("🔍 Request completa:", {
-    baseURL: config.baseURL,
-    url: config.url,
-    fullURL: config.baseURL + config.url,
-    params: config.params,
-  });
-
-  return config;
-});
+API.interceptors.request.use(
+  async (config) => {
+    const token = await AsyncStorage.getItem("jwt");
+    if (token) {
+      config.headers["wanderlust_token"] = token; 
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default API;

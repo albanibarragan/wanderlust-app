@@ -12,6 +12,8 @@ import ChangeNameForm from "../components/ChangeNameForm";
 import ChangeEmailForm from "../components/ChangeEmailForm";
 import ChangePhoneForm from "../components/ChangePhoneForm";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function SettingScreen() {
   const [activeSetting, setActiveSetting] = useState(null);
@@ -21,10 +23,11 @@ export default function SettingScreen() {
   const [phone, setPhone] = useState(currentUser.phone);
   const navigation = useNavigation();
 
-  const handleLogout = () => {
-    console.log("Cerrando sesión...");
-    navigation.navigate("Login");
-  };
+  const handleLogout = async () => {
+  console.log("Cerrando sesión...");
+  await AsyncStorage.removeItem("token");
+  navigation.replace("Login");
+};
 
   return (
     <SafeAreaView style={styles.container}>
