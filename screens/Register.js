@@ -65,6 +65,13 @@ const Register = ({ navigation }) => {
       return;
     }
 
+    const cleanedPhone = `${countryCode}${phoneNumber}`.replace(/\D/g, '').slice(-11);
+
+  if (cleanedPhone.length !== 11) {
+    Alert.alert("Error", "El número de teléfono debe tener exactamente 11 dígitos.");
+    return;
+  }
+
     setLoading(true);
 
     try {
@@ -74,12 +81,12 @@ const Register = ({ navigation }) => {
         username,
         email,
         password,
-        phone: `${countryCode}${phoneNumber}`,
+        phone: cleanedPhone,
         birthday: birthDate.toISOString().split("T")[0],
         bio,
       };
 
-      console.log("Payload a enviar:", payload); // 👀 Verifica aquí
+      console.log("Payload a enviar:", payload); 
       const result = await register(payload);
 
       console.log("Respuesta del backend:", result);

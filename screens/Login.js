@@ -13,10 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import TextLink from "../components/TextLink";
-import API from "../assets/api/api";
 import { useState } from "react";
-import axios from "axios";
-import { API_URLL } from '@env';
+import { login } from "../assets/api/auth";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -33,35 +31,14 @@ const Login = ({ navigation }) => {
     setLoading(true);
 
     try {
-      console.log("revento1")
-      console.log(API_URLL);
-      // const res = await API.post("/auth/login", {
-      //   email,
-      //   password,
-      // });
+      const res = await login({ email, password }); // ✅ Usa tu función que guarda token + userId
+      console.log("✅ Login completo:", res);
 
-
-      const res = await axios.post('http://192.168.20.119:8080/api/auth/login', {
-        email,
-        password,
-      })
-      console.log("revento2")
-
-      // const s = await axios.post('http://192.168.20.119:8080/api/post') 
-
-      console.log(res)
-
-      const { token, user } = res.data;
-
-      await AsyncStorage.setItem("token", token);
-      console.log("Login exitoso:", user);
-
-      navigation.navigate("Main");
+      navigation.navigate("Main"); // redirige si todo va bien
     } catch (err) {
       const msg = err?.response?.data?.msg || "Error al iniciar sesión";
       Alert.alert("Error", msg);
       console.error("Login error:", err);
-      console.log(err.response.data);
     } finally {
       setLoading(false);
     }
