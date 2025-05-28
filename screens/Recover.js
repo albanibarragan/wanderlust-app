@@ -21,6 +21,11 @@ const Recover = ({ navigation }) => {
   const logo = require("../assets/brujula-logo.png");
 
   const handleRecover = async () => {
+    if (!email) {
+      alert("Por favor, ingresa tu correo electrónico");
+      return;
+    }
+
     navigation.navigate("ValidateEmail");
   };
 
