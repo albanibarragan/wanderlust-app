@@ -19,6 +19,8 @@ import Modal from "../components/Modal";
 const RecoverPassword = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const logo = require("../assets/brujula-logo.png");
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -35,8 +37,29 @@ const RecoverPassword = ({ navigation }) => {
     navigation.navigate("Login");
   };
 
+  // Validación de contraseña
+  const validatePassword = (pwd) => {
+    const regex = /^(?=.*[A-Z])(?=.*[.,\/\*\$\#])[A-Za-z\d.,\/\*\$\#]{5,8}$/;
+    if (!pwd) return "La contraseña no puede estar vacía";
+    if (!regex.test(pwd))
+      return "Debe tener 5-8 caracteres, una mayúscula y un carácter especial (.,/*$#)";
+    return "";
+  };
+
   const handleRecover = async () => {
-    setModalVisible(true);
+    const pwdError = validatePassword(password);
+    const confirmPwdError = !confirmPassword
+      ? "La confirmación no puede estar vacía"
+      : password !== confirmPassword
+        ? "Las contraseñas no coinciden"
+        : validatePassword(confirmPassword);
+
+    setPasswordError(pwdError);
+    setConfirmPasswordError(confirmPwdError);
+
+    if (!pwdError && !confirmPwdError) {
+      setModalVisible(true);
+    }
   };
 
   return (
@@ -62,17 +85,41 @@ const RecoverPassword = ({ navigation }) => {
                 label="Contraseña"
                 placeholder="********"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (passwordError) setPasswordError("");
+                }}
                 secureTextEntry={true}
+                style={[
+                  passwordError ? { borderColor: "red", borderWidth: 1 } : {},
+                ]}
               />
+              {passwordError ? (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                  {passwordError}
+                </Text>
+              ) : null}
 
               <Input
                 label="Confirmar Contraseña"
                 placeholder="********"
                 value={confirmPassword}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  if (confirmPasswordError) setConfirmPasswordError("");
+                }}
                 secureTextEntry={true}
+                style={[
+                  confirmPasswordError
+                    ? { borderColor: "red", borderWidth: 1 }
+                    : {},
+                ]}
               />
+              {confirmPasswordError ? (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                  {confirmPasswordError}
+                </Text>
+              ) : null}
 
               <Text style={styles.subtitle}>
                 Tu contraseña debe contener al menos una letra mayúscula

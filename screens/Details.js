@@ -9,47 +9,31 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
 import Icon from "react-native-vector-icons/Feather";
 
 import BackButton from "../components/BackButton";
 import UserHeader from "../components/UserHeader";
 import Reaction from "../components/Reaction";
 import ModalPost from "../components/ModalPost";
-import { users, likes, comments, currentUser } from "../assets/data/Mocks";
 import ModalDelete from "../components/ModalDelete";
 
+import { comments, currentUser, likes } from "../assets/data/Mocks";
+
 export default function Details({ route }) {
-  const { post, user: passedUser } = route.params;
+  const { post } = route.params;
   const navigation = useNavigation();
 
-  // 🔥 Combinar passedUser y fallback de búsqueda
-  const user =
-    passedUser ||
-    (post.userId === currentUser.id
-      ? currentUser
-      : users.find((u) => u.id === post.userId)) ||
-    null;
+  const user = post.user || { username: "usuario", avatar: null };
 
-  const isOwner = post.userId === currentUser.id;
+  const isOwner = user.username === currentUser.username;
 
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.likes || 0);
+  const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
   const [showComments, setShowComments] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleBack = () => navigation.goBack();
-
-  const handleDeletePost = () => {
-    console.log("Publicación eliminada:", post.id);
-    setShowDeleteModal(false);
-    navigation.goBack();
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteModal(false);
-  };
 
   const toggleLike = () => {
     setLiked((prev) => {
@@ -64,27 +48,37 @@ export default function Details({ route }) {
     setTimeout(() => setShowComments(true), 10);
   };
 
-  const getUserById = (userId) => {
-    if (userId === currentUser.id) return currentUser;
-    return users.find((u) => u.id === userId) || null;
+  const handleDeletePost = () => {
+    console.log("Publicación eliminada:", post._id);
+    setShowDeleteModal(false);
+    navigation.goBack();
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <BackButton onPress={handleBack} title="Publicación" />
+
         <Image source={{ uri: post.image }} style={styles.image} />
 
-        <UserHeader user={user} time={post.time} />
+        {/* ✅ User + Fecha */}
+        <UserHeader
+          user={user}
+          time={new Date(post.createdAt).toLocaleDateString("es-ES")}
+        />
 
+        {/* ✅ Contenido */}
         <View style={styles.postBody}>
           <Text style={styles.title}>“{post.title}”</Text>
           <Text style={styles.description}>{post.content}</Text>
+
           {isOwner && (
             <View style={styles.ownerActions}>
-              <TouchableOpacity
-                onPress={() => console.log("Editar Publicación", post.id)}
-              >
+              <TouchableOpacity onPress={() => console.log("Editar", post._id)}>
                 <Text style={styles.ownerActionText}>Editar</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowDeleteModal(true)}>
@@ -94,6 +88,7 @@ export default function Details({ route }) {
           )}
         </View>
 
+        {/* ✅ Reacciones */}
         <View style={styles.reactions}>
           <Reaction
             icon={
@@ -112,7 +107,6 @@ export default function Details({ route }) {
             icon={<Icon name="message-circle" size={22} color="#888" />}
             count={comments.length}
             onIconPress={openComments}
-            onCountPress={() => {}}
           />
         </View>
       </ScrollView>
@@ -122,17 +116,12 @@ export default function Details({ route }) {
         onClose={() => setShowLikes(false)}
         title="Me gusta"
         data={likes}
-        renderItem={({ item }) => {
-          const likeUser = getUserById(item.userId);
-          return (
-            <View style={styles.commentItem}>
-              <UserHeader
-                user={likeUser}
-                onCloseModal={() => setShowLikes(false)}
-              />
-            </View>
-          );
-        }}
+        renderItem={({ item }) => (
+          <UserHeader
+            user={item}
+            onCloseModal={() => setShowLikes(false)}
+          />
+        )}
       />
 
       <ModalPost
@@ -140,20 +129,17 @@ export default function Details({ route }) {
         onClose={() => setShowComments(false)}
         title="Comentarios"
         data={comments}
-        isComment={true}
-        renderItem={({ item }) => {
-          const commentUser = getUserById(item.userId);
-          return (
-            <View style={styles.commentItem}>
-              <UserHeader
-                user={commentUser}
-                time={item.time}
-                onCloseModal={() => setShowComments(false)}
-              />
-              <Text style={styles.commentText}>{item.comment}</Text>
-            </View>
-          );
-        }}
+        isComment
+        renderItem={({ item }) => (
+          <View style={styles.commentItem}>
+            <UserHeader
+              user={item.user}
+              time={item.time}
+              onCloseModal={() => setShowComments(false)}
+            />
+            <Text style={styles.commentText}>{item.comment}</Text>
+          </View>
+        )}
       />
 
       {showDeleteModal && (
@@ -169,42 +155,77 @@ export default function Details({ route }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: StatusBar.currentHeight,
+    backgroundColor: "#f9f9f9",
   },
   scrollContent: {
     paddingBottom: 32,
   },
   image: {
     width: "100%",
-    height: 450,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
+    height: 400,
     resizeMode: "cover",
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+  },
+  userContainer: {
+    marginTop: 12,
+    paddingHorizontal: 16,
   },
   postBody: {
-    paddingHorizontal: 16,
-    paddingTop: 10,
+    paddingHorizontal: 20,
+    paddingTop: 12,
   },
   title: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "bold",
-    marginTop: 16,
-    marginBottom: 8,
-    paddingHorizontal: 16,
-    color: "#111",
+    color: "#222",
+    marginBottom: 6,
   },
   description: {
-    fontSize: 15,
+    fontSize: 16,
+    color: "#555",
     lineHeight: 22,
-    color: "#444",
+    marginBottom: 16,
   },
   reactions: {
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    gap: 30,
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    marginHorizontal: 20,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  ownerActions: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 24,
+    marginTop: 10,
+  },
+  editButton: {
+    backgroundColor: "#EAF4FF",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  deleteButton: {
+    backgroundColor: "#FFECEC",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  editText: {
+    color: "#0077cc",
+    fontWeight: "600",
+  },
+  deleteText: {
+    color: "#cc0000",
+    fontWeight: "600",
   },
   commentItem: {
     marginBottom: 12,
@@ -214,16 +235,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#333",
     marginTop: 4,
-  },
-  ownerActions: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 20,
-    gap: 20,
-  },
-  ownerActionText: {
-    fontSize: 16,
-    color: "#0099ff",
-    fontWeight: "bold",
   },
 });

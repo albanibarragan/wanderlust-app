@@ -3,25 +3,66 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import HeaderWanderlust from "../components/HeaderWanderlust";
 import CardProfile from "../components/CardProfile";
 import BackButton from "../components/BackButton";
 import { useRoute } from "@react-navigation/native";
-import { currentUser, users, posts } from "../assets/data/Mocks";
 import PhotoCard from "../components/PhotoCard";
+import { useEffect, useState } from "react";
+import { getCurrentUserId } from "../assets/api/auth";
+import { getUserById } from "../assets/api/UserService";
+import { getPostsByUserId } from "../assets/api/PostService";
 
 const windowWidth = Dimensions.get("window").width;
 
 export default function ProfileScreen() {
   const route = useRoute();
-  const params = route?.params || {};
-  const { userId, isMyProfile = false } = route.params || {};
+  const { userId: paramUserId, isMyProfile = false } = route.params || {};
+  const [postsUser, setPostsUser] = useState([]);
 
-  const user = isMyProfile ? currentUser : users.find((u) => u.id === userId);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        let idToFetch = paramUserId;
+
+        if (isMyProfile) {
+          idToFetch = await getCurrentUserId();
+        }
+
+        if (!idToFetch) {
+          throw new Error("No se pudo obtener el ID del usuario.");
+        }
+
+        console.log("🔍 ID a buscar:", idToFetch);
+
+        const userData = await getUserById(idToFetch);
+        setUser(userData);
+
+        const posts = await getPostsByUserId(idToFetch);
+        setPostsUser(posts);  
+      } catch (error) {
+        console.error("❌ Error al obtener perfil:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [isMyProfile, paramUserId]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" />
+      </SafeAreaView>
+    );
+  }
 
   if (!user) {
     return (
@@ -30,29 +71,38 @@ export default function ProfileScreen() {
       </SafeAreaView>
     );
   }
-  const postsUser = posts.filter((post) => post.userId === user.id);
 
   return (
     <SafeAreaView style={styles.container}>
       <BackButton title={isMyProfile ? "Tu perfil" : "Perfil"} />
 
       <CardProfile
-        avatar={user.avatar}
-        name={user.name}
+        avatar={user.profilePicture}
+        name={`${user.firstName} ${user.lastName}`}
         username={user.username}
         bio={user.bio}
-        stats={user.stats || { posts: 0, followers: 0, following: 0 }}
+        stats={{ posts: postsUser.length, followers: 0, following: 0 }}
         isMyProfile={isMyProfile}
       />
 
       <View style={styles.content}>
         <FlatList
           data={postsUser}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.post?._id}
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <PhotoCard post={item} cardWidth={windowWidth / 2 - 24} />
+            <PhotoCard
+              post={{
+                ...item.post,
+                image: item.media?.[0]?.url || null,
+                user: {
+                  username: user.username,
+                  profilePicture: user.profilePicture,
+                },
+              }}
+              cardWidth={windowWidth / 2 - 24}
+            />
           )}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>

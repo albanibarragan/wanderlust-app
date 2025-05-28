@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import API from "../assets/api/api";
 
 // Components
 import BackButton from "../components/BackButton";
@@ -19,7 +20,6 @@ import Input from "../components/Input";
 import PhoneInput from "../components/PhoneInput";
 import Modal from "../components/Modal";
 import { register } from "../assets/api/auth";
-
 
 const Register = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
@@ -35,6 +35,10 @@ const Register = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const [successMessage, setSuccessMessage] = useState(
+    "Tu cuenta ha sido creada correctamente."
+  );
 
  const handleRegister = async () => {
   if (
@@ -101,7 +105,7 @@ const Register = ({ navigation }) => {
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || birthDate;
-    setShowDatePicker(Platform.OS === "ios"); // iOS only
+    setShowDatePicker(Platform.OS === "ios");
     setBirthDate(currentDate);
   };
 
@@ -147,6 +151,13 @@ const Register = ({ navigation }) => {
               placeholder="johndoe123"
               value={username}
               onChangeText={setUsername}
+            />
+
+            <Input
+              label="Biografía"
+              placeholder="Cuéntanos algo sobre ti..."
+              value={bio}
+              onChangeText={setBio}
             />
 
             <PhoneInput
@@ -227,7 +238,7 @@ const Register = ({ navigation }) => {
         <Modal
           visible={isModalVisible}
           title="¡Registro exitoso!"
-          message="Tu cuenta ha sido creada correctamente."
+          message={successMessage}
           buttonText="Iniciar sesión"
           onButtonPress={() => {
             setIsModalVisible(false);

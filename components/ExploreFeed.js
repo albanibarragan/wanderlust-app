@@ -1,83 +1,137 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  StyleSheet,
-  Text,
   View,
-} from 'react-native';
-
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+  Dimensions,
+} from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { getPostsWithMedia } from "../assets/api/PostService";
 import PhotoCard from "../components/PhotoCard";
-import { getAllPostsAPI } from '../assets/api/postService';
 
-const screenWidth = Dimensions.get('window').width;
-const cardMargin = 4;
-const cardWidth = screenWidth / 2 - 20;
+const numColumns = 2;
+const cardMargin = 10;
+const screenWidth = Dimensions.get("window").width;
 
-export default function ExploreFeed() {
+const cardWidth = (screenWidth - cardMargin * (numColumns + 1)) / numColumns;
+
+const ExploreFeed = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchPosts = async () => {
+    try {
+      setError(null);
+      const data = await getPostsWithMedia();
+      setPosts(data);
+    } catch (err) {
+      console.error("❌ Error al cargar publicaciones:", err);
+      setError("No se pudieron cargar las publicaciones.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const allPosts = await getAllPostsAPI();
-        console.log("Publicaciones:", allPosts);
-        setPosts(allPosts);
-      } catch (error) {
-        console.error(
-          "Error al obtener publicaciones:",
-          error.response?.data || error.message
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPosts();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchPosts();
+    }, [])
+  );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchPosts();
+  };
+
   if (loading) {
-    return <ActivityIndicator style={{ marginTop: 20 }} size="large" />;
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#FF5C5C" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text>{error}</Text>
+        <TouchableOpacity onPress={fetchPosts}>
+          <Text style={styles.retryText}>Reintentar</Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
-    <View style={styles.container}>
-      {posts.length > 0 ? (
-        <FlatList
-          data={posts}
-          renderItem={({ item }) => <PhotoCard post={item} cardWidth={cardWidth} />}
-          keyExtractor={(item) => item._id?.toString() || item.id?.toString()}
-          numColumns={2}
-          contentContainerStyle={styles.listContent}
-          columnWrapperStyle={styles.columnWrapper}
-          showsVerticalScrollIndicator={false}
-          removeClippedSubviews
-          windowSize={10}
+    <FlatList
+      data={posts}
+      numColumns={numColumns}
+      keyExtractor={(item, index) =>
+        item.post?._id?.toString() || index.toString()
+      }
+      columnWrapperStyle={styles.columnWrapper}
+      contentContainerStyle={styles.contentContainer}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={["#FF5C5C"]}
+          tintColor="#FF5C5C"
         />
-      ) : (
-        <Text style={styles.emptyText}>No hay publicaciones disponibles</Text>
-      )}
-    </View>
+      }
+      renderItem={({ item }) => {
+        const { post, media } = item;
+
+        return (
+          <PhotoCard
+            post={{
+              ...post,
+              image: media?.[0]?.url || null,
+              content: post.description || "", 
+              likes: post.likes || [], 
+              user: post.userId || { username: "anon" }, 
+            }}
+            cardWidth={cardWidth}
+          />
+        );
+      }}
+    />
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
+  centered: {
     flex: 1,
     padding: cardMargin,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 50,
   },
-  listContent: {
-    paddingBottom: 50,
+  retryText: {
+    color: "#FF5C5C",
+    marginTop: 10,
+    fontWeight: "500",
   },
   columnWrapper: {
     justifyContent: "space-between",
+    paddingHorizontal: cardMargin,
+    marginBottom: cardMargin,
   },
-  emptyText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: "#999",
-    fontSize: 16,
+  contentContainer: {
+    paddingTop: cardMargin,
+    paddingBottom: 80,
   },
 });
+
+export default ExploreFeed;

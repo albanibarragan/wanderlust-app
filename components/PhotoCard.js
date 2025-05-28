@@ -11,6 +11,8 @@ import Icon from "react-native-vector-icons/Feather";
 import Reaction from "./Reaction";
 
 export default function PhotoCard({ post, cardWidth }) {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
   const navigation = useNavigation();
 
   const username = post.userId?.username || "usuario";
@@ -29,14 +31,28 @@ export default function PhotoCard({ post, cardWidth }) {
     });
   };
 
+  const createdAt = post.createdAt ? new Date(post.createdAt) : new Date();
+  const formattedDate = createdAt.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   const handlePost = () => {
     navigation.navigate("PostDetail", { postId: post._id });
   };
 
+  const username = post.userId?.username || "usuario";
+  const title = post.title?.trim() ? post.title : "Sin título";
+  const imageUrl = post.image || post.media?.[0]?.url || null;
+
   return (
-    <TouchableOpacity style={[styles.card, { width: cardWidth }]}>
+    <TouchableOpacity
+      style={[styles.card, { width: cardWidth }]}
+      onPress={handlePost}
+    >
       <ImageBackground
-        source={{ uri: post.image }}
+        source={{ uri: imageUrl }}
         style={styles.imageBackground}
         imageStyle={styles.image}
       >
@@ -69,6 +85,7 @@ export default function PhotoCard({ post, cardWidth }) {
               countColor={"#fff"}
               onIconPress={toggleLike}
             />
+
             <TouchableOpacity style={styles.seeMoreButton} onPress={handlePost}>
               <Text style={styles.seeMoreText}>Más</Text>
             </TouchableOpacity>
@@ -81,7 +98,7 @@ export default function PhotoCard({ post, cardWidth }) {
 
 const styles = StyleSheet.create({
   card: {
-    margin: 8,
+    margin: 4,
     borderRadius: 20,
     overflow: "hidden",
     backgroundColor: "#fff",
@@ -93,18 +110,23 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     width: "100%",
-    height: Math.random() * (350 - 280) + 280,
+    height: 350,
     justifyContent: "space-between",
   },
   image: {
     borderRadius: 20,
   },
-  favoriteButton: {
+  date: {
     alignSelf: "flex-end",
-    margin: 12,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    padding: 6,
+    marginTop: 6,
+    marginRight: 6,
+    backgroundColor: "#00000088",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 20,
+  },
+  dateText: {
+    color: "#fff",
   },
   infoContainer: {
     backgroundColor: "rgba(0,0,0,0.3)",

@@ -15,6 +15,7 @@ import Input from "../components/Input";
 import TextLink from "../components/TextLink";
 import { login } from '../assets/api/auth';
 import { useState } from "react";
+import { login } from "../assets/api/auth";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -45,7 +46,6 @@ const Login = ({ navigation }) => {
     setLoading(false);
   }
 };
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -142,16 +142,16 @@ const styles = StyleSheet.create({
     maxWidth: 350,
   },
   footer: {
-    flexDirection: "row", 
+    flexDirection: "row",
     marginTop: 24,
-    alignItems: "center", 
-    justifyContent: "center", 
+    alignItems: "center",
+    justifyContent: "center",
     fontWeight: "bold",
   },
   registerLink: {
     fontSize: 12,
-    color: "#0FA3E2", 
-    fontWeight: "bold", 
+    color: "#0FA3E2",
+    fontWeight: "bold",
   },
 });
 
