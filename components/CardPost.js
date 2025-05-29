@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,26 +7,42 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
+  ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import Reaction from "./Reaction";
-import { users, currentUser } from "../assets/data/Mocks";
+import { getCurrentUserId } from "../assets/api/auth";
 
 export default function CardPost({ item }) {
-  console.log("🧩 item en CardPost:", item);
   const navigation = useNavigation();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likes?.length || 0);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
-const user =
-  item.userId?._id === currentUser.id || item.userId === currentUser.id
-    ? currentUser
-    : {
-        id: item.userId?._id || item.userId,
-        username: item.userId?.username || "desconocido",
-        avatar: item.userId?.profilePicture || "https://via.placeholder.com/100",
-        location: item.locationDescription || "",
-      };
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const id = await getCurrentUserId();
+      setCurrentUserId(id);
+    };
+    fetchUserId();
+  }, []);
+
+  if (!currentUserId) {
+    return <ActivityIndicator size="small" color="#FF5C5C" />;
+  }
+
+  const isCurrentUser =
+    item.userId?._id === currentUserId || item.userId === currentUserId;
+
+  const user = {
+    id: isCurrentUser ? currentUserId : item.userId?._id || item.userId,
+    username: isCurrentUser
+      ? "Tú"
+      : item.userId?.username || "desconocido",
+    avatar:
+      item.userId?.profilePicture || "https://via.placeholder.com/100",
+    location: item.locationDescription || "",
+  };
 
   const countLiked = () => {
     setLiked((prev) => {
@@ -48,24 +64,23 @@ const user =
           style={styles.mainImage}
           imageStyle={styles.imageStyle}
         >
-          {user && (
-            <View style={styles.userHeaderWrapper}>
-              <View style={styles.userInfo}>
-                <Image source={{ uri: user.avatar }} style={styles.avatar} />
-                <View style={styles.userText}>
-                  <Text style={styles.username}>
-                    {user.id === "me" ? "Tú" : `@${user.username}`}
-                  </Text>
-                  <Text style={styles.time}>
-                    {item.time || new Date(item.createdAt).toLocaleString()}
-                  </Text>
-                </View>
+          <View style={styles.userHeaderWrapper}>
+            <View style={styles.userInfo}>
+              <Image source={{ uri: user.avatar }} style={styles.avatar} />
+              <View style={styles.userText}>
+                <Text style={styles.username}>
+                  {isCurrentUser ? "Tú" : `@${user.username}`}
+                </Text>
+                <Text style={styles.time}>
+                  {item.time ||
+                    new Date(item.createdAt).toLocaleString()}
+                </Text>
               </View>
-              <TouchableOpacity>
-                <Icon name="more-vertical" size={20} color="#fff" />
-              </TouchableOpacity>
             </View>
-          )}
+            <TouchableOpacity>
+              <Icon name="more-vertical" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </ImageBackground>
 
         <View style={styles.content}>

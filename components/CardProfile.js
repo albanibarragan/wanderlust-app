@@ -32,7 +32,7 @@ export default function CardProfile({
           following={stats.following}
         />
 
-        {isMyProfile && !showSettings && <ProfileTabs />}
+        {isMyProfile && !showSettings && <ProfileTabs  />}
         {showSettings && (
           <View style={styles.section}>
             <Text style={styles.settings}>Ajustes</Text>

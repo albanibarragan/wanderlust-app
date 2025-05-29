@@ -6,13 +6,14 @@ import TabSelector from "../components/TabSelector";
 import HashtagList from "../components/HashtagList";
 import UserHeader from "../components/UserHeader";
 import CardPost from "../components/CardPost";
+import { searchGlobal } from "../assets/api/search";
 
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState(0);
   const [usersResults, setUsersResults] = useState([]);
   const [postsResults, setPostsResults] = useState([]);
-  const tabs = ["Usuarios", "Publicaciones", "Etiquetas"];
+  const tabs = ["Usuarios", "Publicaciones"];
 
   const fetchSearchResults = async () => {
     try {

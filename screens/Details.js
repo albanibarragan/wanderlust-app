@@ -18,6 +18,7 @@ import ModalPost from "../components/ModalPost";
 import ModalDelete from "../components/ModalDelete";
 import { getCommentsByPostId } from "../assets/api/comments";
 import { getCurrentUserId } from "../assets/api/auth";
+import { deletePostById } from "../assets/api/PostService";
 
 export default function Details({ route }) {
   const { post } = route.params;
@@ -67,8 +68,9 @@ useEffect(() => {
     setShowDeleteModal(false);
     navigation.goBack();
   } catch (error) {
+    console.error( error);
     setShowDeleteModal(false);
-    alert("Error al eliminar el post");
+    alert("Error al eliminar el post: " + error.message);
   }
 };
 

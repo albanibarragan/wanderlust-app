@@ -30,7 +30,6 @@ export default function ProfileScreen() {
     const fetchUser = async () => {
       try {
         let idToFetch = paramUserId;
-        console.log("🔍 ID del usuario desde params:", idToFetch);
 
         if (isMyProfile) {
           idToFetch = await getCurrentUserId();

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, StyleSheet, ScrollView } from "react-native";
 import CardProfile from "../components/CardProfile";
@@ -12,33 +12,50 @@ import ChangeNameForm from "../components/ChangeNameForm";
 import ChangeEmailForm from "../components/ChangeEmailForm";
 import ChangePhoneForm from "../components/ChangePhoneForm";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getCurrentUserId } from "../assets/api/auth";
+import { getUserById } from "../assets/api/UserService";
 
-
-export default function SettingScreen() {
+export default function SettingScreen({}) {
   const [activeSetting, setActiveSetting] = useState(null);
-  const [username, setUsername] = useState(currentUser.username);
+  const [user, setUser] = useState(null);
   const [name, setName] = useState(currentUser.name);
   const [email, setEmail] = useState(currentUser.email);
   const [phone, setPhone] = useState(currentUser.phone);
   const navigation = useNavigation();
 
   const handleLogout = async () => {
-  console.log("Cerrando sesión...");
-  await AsyncStorage.removeItem("token");
-  navigation.replace("Login");
-};
+    console.log("Cerrando sesión...");
+    await AsyncStorage.removeItem("token");
+    navigation.replace("Login");
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = await getCurrentUserId();
+      if (!userId) return;
+
+      try {
+        const userData = await getUserById(userId);
+        setUser(userData);
+      } catch (error) {
+        console.error("Error al cargar el usuario:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <BackButton />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <CardProfile
-          avatar={currentUser.avatar}
-          name={currentUser.name}
-          username={currentUser.username}
-          stats={currentUser.stats}
-          bio={currentUser.bio}
+          avatar={user?.profilePicture}
+          name={`${user?.firstName} ${user?.lastName}`}
+          username={user?.username}
+          stats={{ posts: 0, followers: 0, following: 0 }}
+          bio={user?.bio}
           showSettings={true}
         />
         {activeSetting === null && (
@@ -46,19 +63,19 @@ export default function SettingScreen() {
             <SettingsItem
               Icon={() => <Icon name="user" size={20} color="#555" />}
               title="Usuario"
-              subtitle={currentUser.username}
+              subtitle={user?.username}
               onPress={() => setActiveSetting("username")}
             />
             <SettingsItem
               Icon={() => <Icon name="info" size={20} color="#555" />}
               title="Nombre"
-              subtitle={currentUser.name}
+              subtitle={`${user?.firstName} ${user?.lastName}`}
               onPress={() => setActiveSetting("name")}
             />
             <SettingsItem
               Icon={() => <Icon name="mail" size={20} color="#555" />}
               title="Correo electrónico"
-              subtitle={currentUser.email}
+              subtitle={user?.email}
               onPress={() => setActiveSetting("email")}
             />
             <SettingsItem
@@ -70,7 +87,7 @@ export default function SettingScreen() {
             <SettingsItem
               Icon={() => <Icon name="phone" size={20} color="#555" />}
               title="Número de teléfono"
-              subtitle={currentUser.phone}
+              subtitle={user?.phone}
               onPress={() => setActiveSetting("phone")}
             />
             <SettingsItem

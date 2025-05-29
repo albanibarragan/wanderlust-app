@@ -33,7 +33,6 @@ export const register = async ({ firstName, lastName, email, password, phone, bi
 
 export const getCurrentUserId = async () => {
   const userId = await AsyncStorage.getItem("userId");
-  console.log("🆔 userId recuperado:", userId);
   if (!userId) {
     console.warn("⚠️ No se encontró userId en AsyncStorage");
     return null;

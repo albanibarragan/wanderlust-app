@@ -83,8 +83,9 @@ const response = await API.get("/post/userPost", {
 
   return response.data.posts;
 };
-// importante estar pendiente de la ruta 
+
 export const deletePostById = async (postId) => {
-  const response = await API.delete(`/post/${postId}`);
+  const response = await API.delete(`/post/post?postId=${postId}`);
   return response.data;
 };
+
