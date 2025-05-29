@@ -14,19 +14,12 @@ export default function PhotoCard({ post, cardWidth }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
   const navigation = useNavigation();
+  
 
-  const username = post.userId?.username || "usuario";
-  const initialLikes = post.likes?.length || 0;
-  const location = post.location?.description || "Sin ubicación";
-  const tags = post.tags?.map(t => t.tag).join(", ") || "Sin etiquetas";
-
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(initialLikes);
-
-  const toggleLike = () => {
-    setLiked(prev => {
+  const countLiked = () => {
+    setLiked((prev) => {
       const newLiked = !prev;
-      setLikeCount(count => (newLiked ? count + 1 : count - 1));
+      setLikeCount((count) => (newLiked ? count + 1 : count - 1));
       return newLiked;
     });
   };
@@ -38,9 +31,18 @@ export default function PhotoCard({ post, cardWidth }) {
     year: "numeric",
   });
 
-  const handlePost = () => {
-    navigation.navigate("PostDetail", { postId: post._id });
+const handlePost = () => {
+  const formattedPost = {
+    ...post.post,
+    image: post.media?.[0]?.url || null,
+    user: {
+      username: post.post.userId?.username || "usuario",
+      profilePicture: null, 
+    },
   };
+
+  navigation.navigate("PostDetail", { post: formattedPost });
+};
 
   const username = post.userId?.username || "usuario";
   const title = post.title?.trim() ? post.title : "Sin título";
@@ -56,20 +58,15 @@ export default function PhotoCard({ post, cardWidth }) {
         style={styles.imageBackground}
         imageStyle={styles.image}
       >
-        <TouchableOpacity style={styles.favoriteButton} onPress={toggleLike}>
-          <Icon
-            name="heart"
-            size={20}
-            color={liked ? "red" : "white"}
-            solid={liked}
-          />
-        </TouchableOpacity>
+
+        <View style={styles.date}>
+          <Text style={styles.dateText}>{formattedDate}</Text>
+        </View>
+
 
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>“{post.description}”</Text>
+          <Text style={styles.title}>“{title}”</Text>
           <Text style={styles.username}>@{username}</Text>
-          <Text style={styles.meta}>📍 {location}</Text>
-          <Text style={styles.meta}>🏷️ {tags}</Text>
 
           <View style={styles.bottomRow}>
             <Reaction
@@ -83,7 +80,7 @@ export default function PhotoCard({ post, cardWidth }) {
               }
               count={likeCount}
               countColor={"#fff"}
-              onIconPress={toggleLike}
+              onIconPress={countLiked}
             />
 
             <TouchableOpacity style={styles.seeMoreButton} onPress={handlePost}>

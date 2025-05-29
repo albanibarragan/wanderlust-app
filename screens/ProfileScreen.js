@@ -13,8 +13,8 @@ import { useRoute } from "@react-navigation/native";
 import PhotoCard from "../components/PhotoCard";
 import { useEffect, useState } from "react";
 import { getCurrentUserId } from "../assets/api/auth";
-import { getUserById } from "../assets/api/UserService";
 import { getPostsByUserId } from "../assets/api/PostService";
+import { getUserById } from "../assets/api/UserService";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -30,6 +30,7 @@ export default function ProfileScreen() {
     const fetchUser = async () => {
       try {
         let idToFetch = paramUserId;
+        console.log("🔍 ID del usuario desde params:", idToFetch);
 
         if (isMyProfile) {
           idToFetch = await getCurrentUserId();
@@ -45,7 +46,8 @@ export default function ProfileScreen() {
         setUser(userData);
 
         const posts = await getPostsByUserId(idToFetch);
-        setPostsUser(posts);  
+        console.log("🔍 Posts recibidos en ProfileScreen:", posts);
+        setPostsUser(posts);
       } catch (error) {
         console.error("❌ Error al obtener perfil:", error);
       } finally {
@@ -90,20 +92,24 @@ export default function ProfileScreen() {
           data={postsUser}
           keyExtractor={(item) => item.post?._id}
           numColumns={2}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <PhotoCard
-              post={{
-                ...item.post,
-                image: item.media?.[0]?.url || null,
-                user: {
-                  username: user.username,
-                  profilePicture: user.profilePicture,
-                },
-              }}
-              cardWidth={windowWidth / 2 - 24}
-            />
-          )}
+          renderItem={({ item }) => {
+            const post = item.post;
+            const image = item.media?.[0]?.url || null;
+
+            return (
+              <PhotoCard
+                post={{
+                  ...post,
+                  image,
+                  user: {
+                    username: post.userId?.username,
+                    profilePicture: null,
+                  },
+                }}
+                cardWidth={windowWidth / 2 - 24}
+              />
+            );
+          }}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>

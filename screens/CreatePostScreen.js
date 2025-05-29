@@ -15,7 +15,7 @@ import BackButton from "../components/BackButton";
 import CameraPicker from "../components/CameraPicker";
 import MediaPicker from "../components/MediaPicker";
 import MediaPreview from "../components/MediaPreview";
-import { createPost } from "../assets/api/PostService";
+import { createPost } from "../assets/api/PostService"
 
 const CreatePostScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");

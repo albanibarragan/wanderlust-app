@@ -15,6 +15,8 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import BackButton from "../components/BackButton";
 import Modal from "../components/Modal";
+import { getCurrentUserId } from "../assets/api/auth";
+import { restorePassword } from "../assets/api/UserService";
 
 const RecoverPassword = ({ navigation }) => {
   const [password, setPassword] = useState("");
@@ -46,21 +48,30 @@ const RecoverPassword = ({ navigation }) => {
     return "";
   };
 
-  const handleRecover = async () => {
-    const pwdError = validatePassword(password);
-    const confirmPwdError = !confirmPassword
-      ? "La confirmación no puede estar vacía"
-      : password !== confirmPassword
-        ? "Las contraseñas no coinciden"
-        : validatePassword(confirmPassword);
 
-    setPasswordError(pwdError);
-    setConfirmPasswordError(confirmPwdError);
+const handleRecover = async () => {
+  const pwdError = validatePassword(password);
+  const confirmPwdError = !confirmPassword
+    ? "La confirmación no puede estar vacía"
+    : password !== confirmPassword
+    ? "Las contraseñas no coinciden"
+    : validatePassword(confirmPassword);
 
-    if (!pwdError && !confirmPwdError) {
+  setPasswordError(pwdError);
+  setConfirmPasswordError(confirmPwdError);
+
+  if (!pwdError && !confirmPwdError) {
+    try {
+      const userId = await getCurrentUserId();
+      const res = await restorePassword(userId, password);
+      console.log("✅ Contraseña actualizada:", res.msg);
       setModalVisible(true);
+    } catch (err) {
+      console.error("❌ Error al cambiar contraseña:", err);
+      alert("Ocurrió un error al cambiar tu contraseña.");
     }
-  };
+  }
+};
 
   return (
     <SafeAreaView style={styles.safeArea}>

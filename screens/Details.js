@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -18,20 +18,63 @@ import ModalPost from "../components/ModalPost";
 import ModalDelete from "../components/ModalDelete";
 
 import { comments, currentUser, likes } from "../assets/data/Mocks";
+import { getPostById } from "../assets/api/PostService";
 
 export default function Details({ route }) {
-  const { post } = route.params;
+  const { postId } = route.params; 
   const navigation = useNavigation();
 
-  const user = post.user || { username: "usuario", avatar: null };
+  const [post, setPost] = useState(null);
+  const [media, setMedia] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const isOwner = user.username === currentUser.username;
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const { post, media } = await getPostById(postId);
+        setPost(post);
+        setMedia(media);
+      } catch (error) {
+        console.error("Error al obtener el post:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPost();
+  }, [postId]);
 
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
+  const [likeCount, setLikeCount] = useState(0);
   const [showComments, setShowComments] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
+
+  useEffect(() => {
+    if (post) {
+      setLikeCount(post.likes?.length || 0);
+      setCommentCount(post.comments?.length || 0); // Si tienes comments en el post
+    }
+  }, [post]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Text>Cargando...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!post) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Text>Publicación no encontrada</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const user = post.userId || { username: "usuario", avatar: null };
+  const isOwner = user.username === currentUser.username;
 
   const handleBack = () => navigation.goBack();
 
@@ -63,18 +106,18 @@ export default function Details({ route }) {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <BackButton onPress={handleBack} title="Publicación" />
 
-        <Image source={{ uri: post.image }} style={styles.image} />
-
-        {/* ✅ User + Fecha */}
+        <Image
+          source={{ uri: media[0]?.url || undefined }}
+          style={styles.image}
+        />
         <UserHeader
           user={user}
           time={new Date(post.createdAt).toLocaleDateString("es-ES")}
         />
 
-        {/* ✅ Contenido */}
         <View style={styles.postBody}>
           <Text style={styles.title}>“{post.title}”</Text>
-          <Text style={styles.description}>{post.content}</Text>
+          <Text style={styles.description}>{post.description}</Text>
 
           {isOwner && (
             <View style={styles.ownerActions}>
@@ -87,8 +130,6 @@ export default function Details({ route }) {
             </View>
           )}
         </View>
-
-        {/* ✅ Reacciones */}
         <View style={styles.reactions}>
           <Reaction
             icon={
@@ -105,7 +146,7 @@ export default function Details({ route }) {
           />
           <Reaction
             icon={<Icon name="message-circle" size={22} color="#888" />}
-            count={comments.length}
+            count={commentCount}
             onIconPress={openComments}
           />
         </View>

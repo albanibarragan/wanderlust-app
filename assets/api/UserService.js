@@ -11,3 +11,16 @@ export const getUserById = async (id) => {
 
   return response.data.user;
 };
+
+export const restorePassword = async (email) => {
+  try {
+    const response = await API.post("/auth/restorePassword", {
+      email,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error al restaurar contraseña:", error);
+    throw error.response?.data || { msg: "Error desconocido" };
+  }
+};
