@@ -33,7 +33,7 @@ export const createPost = async ({
   tags = [],
   location = null,
 }) => {
-  const token = await AsyncStorage.getItem("wanderlust_token"); // Asegúrate que este es el nombre correcto
+  const token = await AsyncStorage.getItem("wanderlust_token");  
 
   const formData = new FormData();
 
@@ -41,7 +41,7 @@ export const createPost = async ({
   formData.append("description", description || "");
 
   if (tags.length > 0) {
-    formData.append("tags", tags.join(",")); // Backend espera un string separado por comas
+    formData.append("tags", tags.join(","));  
   }
 
   if (location) {
@@ -82,4 +82,9 @@ const response = await API.get("/post/userPost", {
 });
 
   return response.data.posts;
+};
+// importante estar pendiente de la ruta 
+export const deletePostById = async (postId) => {
+  const response = await API.delete(`/post/${postId}`);
+  return response.data;
 };

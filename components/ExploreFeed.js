@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { getPostsWithMedia } from "../assets/api/PostService";
+import { getAllPosts, getPostsWithMedia } from "../assets/api/PostService";
 import PhotoCard from "../components/PhotoCard";
 
 const numColumns = 2;
@@ -28,7 +28,7 @@ const ExploreFeed = () => {
   const fetchPosts = async () => {
     try {
       setError(null);
-      const data = await getPostsWithMedia();
+      const data = await getAllPosts();
       setPosts(data);
     } catch (err) {
       console.error("❌ Error al cargar publicaciones:", err);
@@ -113,7 +113,6 @@ const ExploreFeed = () => {
 const styles = StyleSheet.create({
   centered: {
     flex: 1,
-    padding: cardMargin,
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 50,

@@ -7,17 +7,19 @@ export default function UserHeader({ user, showCommentBox = false, subText = "",
 
   if (!user) return null;
 
-  const handlePress = () => {
-    onCloseModal?.();
-    if (user?.id === currentUser.id) {
-      navigation.navigate("Profile");
-    } else {
-      navigation.navigate("OtherProfile", {
-        userId: user.id,
-        isMyProfile: false,
-      });
-    }
-  };
+const handlePress = () => {
+  onCloseModal?.();
+  const userId = user._id || user.id;
+  if (userId === currentUser.id || userId === currentUser._id) {
+    navigation.navigate("Profile");
+  } else {
+    navigation.navigate("OtherProfile", {
+      userId,
+      isMyProfile: false,
+    });
+  }
+};
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handlePress}>

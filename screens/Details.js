@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -16,65 +16,34 @@ import UserHeader from "../components/UserHeader";
 import Reaction from "../components/Reaction";
 import ModalPost from "../components/ModalPost";
 import ModalDelete from "../components/ModalDelete";
-
-import { comments, currentUser, likes } from "../assets/data/Mocks";
-import { getPostById } from "../assets/api/PostService";
+import { getCommentsByPostId } from "../assets/api/comments";
+import { getCurrentUserId } from "../assets/api/auth";
 
 export default function Details({ route }) {
-  const { postId } = route.params; 
+  const { post } = route.params;
   const navigation = useNavigation();
 
-  const [post, setPost] = useState(null);
-  const [media, setMedia] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const { post, media } = await getPostById(postId);
-        setPost(post);
-        setMedia(media);
-      } catch (error) {
-        console.error("Error al obtener el post:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPost();
-  }, [postId]);
+  const user = post.user || post.userId || { username: "usuario", avatar: null };
 
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
+  const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [commentCount, setCommentCount] = useState(0);
+  const [showOptions, setShowOptions] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
-  useEffect(() => {
-    if (post) {
-      setLikeCount(post.likes?.length || 0);
-      setCommentCount(post.comments?.length || 0); // Si tienes comments en el post
-    }
-  }, [post]);
+useEffect(() => {
+  const fetchCurrentUser = async () => {
+    const userId = await getCurrentUserId();
+    setCurrentUserId(userId);
+  };
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.safeArea}>
-        <Text>Cargando...</Text>
-      </SafeAreaView>
-    );
-  }
+  fetchCurrentUser();
+}, []);
 
-  if (!post) {
-    return (
-      <SafeAreaView style={styles.safeArea}>
-        <Text>Publicación no encontrada</Text>
-      </SafeAreaView>
-    );
-  }
-
-  const user = post.userId || { username: "usuario", avatar: null };
-  const isOwner = user.username === currentUser.username;
+  const isOwner = post.userId?._id === currentUserId || post.userId === currentUserId;
 
   const handleBack = () => navigation.goBack();
 
@@ -91,25 +60,37 @@ export default function Details({ route }) {
     setTimeout(() => setShowComments(true), 10);
   };
 
-  const handleDeletePost = () => {
+  const handleDeletePost = async () => {
+  try {
+    await deletePostById(post._id);
     console.log("Publicación eliminada:", post._id);
     setShowDeleteModal(false);
     navigation.goBack();
-  };
+  } catch (error) {
+    setShowDeleteModal(false);
+    alert("Error al eliminar el post");
+  }
+};
 
   const handleCancelDelete = () => {
     setShowDeleteModal(false);
   };
+  
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      const fetchedComments = await getCommentsByPostId(post._id);
+      setComments(fetchedComments);
+    };
+    fetchComments();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <BackButton onPress={handleBack} title="Publicación" />
+        <Image source={{ uri: post.image }} style={styles.image} />
 
-        <Image
-          source={{ uri: media[0]?.url || undefined }}
-          style={styles.image}
-        />
         <UserHeader
           user={user}
           time={new Date(post.createdAt).toLocaleDateString("es-ES")}
@@ -117,19 +98,38 @@ export default function Details({ route }) {
 
         <View style={styles.postBody}>
           <Text style={styles.title}>“{post.title}”</Text>
-          <Text style={styles.description}>{post.description}</Text>
 
           {isOwner && (
-            <View style={styles.ownerActions}>
-              <TouchableOpacity onPress={() => console.log("Editar", post._id)}>
-                <Text style={styles.ownerActionText}>Editar</Text>
+            <View style={{ alignItems: 'flex-end', marginTop: 10 }}>
+              <TouchableOpacity
+                onPress={() => setShowOptions((prev) => !prev)}
+                style={{ padding: 8, borderRadius: 20 }}
+                activeOpacity={0.6}
+              >
+                <Icon name="more-vertical" size={28} color="#888" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setShowDeleteModal(true)}>
-                <Text style={styles.ownerActionText}>Eliminar</Text>
-              </TouchableOpacity>
+              {showOptions && (
+                <View style={styles.optionsMenu}>
+                  <TouchableOpacity
+                    style={styles.optionButton}
+                    onPress={() => console.log("Editar", post._id)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.editText}>Editar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.optionButton}
+                    onPress={() => setShowDeleteModal(true)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.deleteText}>Eliminar</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           )}
         </View>
+
         <View style={styles.reactions}>
           <Reaction
             icon={
@@ -146,7 +146,7 @@ export default function Details({ route }) {
           />
           <Reaction
             icon={<Icon name="message-circle" size={22} color="#888" />}
-            count={commentCount}
+            count={comments.length}
             onIconPress={openComments}
           />
         </View>
@@ -156,7 +156,7 @@ export default function Details({ route }) {
         visible={showLikes}
         onClose={() => setShowLikes(false)}
         title="Me gusta"
-        data={likes}
+        data={post.likes || []}
         renderItem={({ item }) => (
           <UserHeader
             user={item}
@@ -174,11 +174,11 @@ export default function Details({ route }) {
         renderItem={({ item }) => (
           <View style={styles.commentItem}>
             <UserHeader
-              user={item.user}
-              time={item.time}
+              user={item.userId || { username: "usuario" }}
+              time={new Date(item.createdAt).toLocaleDateString("es-ES")}
               onCloseModal={() => setShowComments(false)}
             />
-            <Text style={styles.commentText}>{item.comment}</Text>
+            <Text style={styles.commentText}>{item.content}</Text>
           </View>
         )}
       />
@@ -192,6 +192,7 @@ export default function Details({ route }) {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -276,5 +277,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#333",
     marginTop: 4,
+  },
+  optionsMenu: {
+    position: 'absolute',
+    top: 38,
+    right: 0,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingVertical: 8,
+    minWidth: 120,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 6,
+    zIndex: 10,
+  },
+  optionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
 });

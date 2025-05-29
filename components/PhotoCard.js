@@ -14,7 +14,6 @@ export default function PhotoCard({ post, cardWidth }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
   const navigation = useNavigation();
-  
 
   const countLiked = () => {
     setLiked((prev) => {
@@ -31,18 +30,9 @@ export default function PhotoCard({ post, cardWidth }) {
     year: "numeric",
   });
 
-const handlePost = () => {
-  const formattedPost = {
-    ...post.post,
-    image: post.media?.[0]?.url || null,
-    user: {
-      username: post.post.userId?.username || "usuario",
-      profilePicture: null, 
-    },
+  const handlePost = () => {
+    navigation.navigate("PostDetail", { post });
   };
-
-  navigation.navigate("PostDetail", { post: formattedPost });
-};
 
   const username = post.userId?.username || "usuario";
   const title = post.title?.trim() ? post.title : "Sin título";
